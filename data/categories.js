@@ -5,7 +5,7 @@ module.exports = [
   {
     id: 'goty',
     en: 'GAME OF THE YEAR',
-    cn: '年度游戏大奖',
+    cn: '年度最佳游戏',
     tab: 'game',
     nominees: [
       { id: '007-first-light', name: '007 初露锋芒', en: '007 First Light', sub: 'IO Interactive', intro: '《杀手》系列团队 IO Interactive 打造的邦德起源故事，你将扮演刚加入军情六处的年轻詹姆斯·邦德，展开电影式间谍冒险。' },
@@ -58,7 +58,7 @@ module.exports = [
   {
     id: 'best-score',
     en: 'BEST SCORE AND MUSIC',
-    cn: '最佳音乐/配乐',
+    cn: '最佳配乐与音乐',
     tab: 'production',
     nominees: [
       { id: 'ace-combat-8', name: '皇牌空战8：希孚之翼', en: 'Ace Combat 8: Wings of Theve', sub: 'Bandai Namco Aces', intro: '《皇牌空战》系列新作，围绕“希孚之翼”展开空中战争叙事，主打高速空战与电影化演出。' },
@@ -97,7 +97,7 @@ module.exports = [
   {
     id: 'games-for-impact',
     en: 'GAMES FOR IMPACT',
-    cn: '感动人心游戏奖',
+    cn: '最具影响力游戏',
     tab: 'game',
     nominees: [
       { id: 'big-walk', name: '大步走', en: 'Big Walk', sub: 'House House / Panic', intro: '《无名鹅作剧》团队新作，一款关于朋友、沟通与迷路的合作步行探索游戏。' },
@@ -150,7 +150,7 @@ module.exports = [
   {
     id: 'best-debut-indie',
     en: 'BEST DEBUT INDIE',
-    cn: '最佳独立处女作',
+    cn: '最佳独立游戏首作',
     tab: 'game',
     nominees: [
       { id: 'dressmaker', name: '针影裁梦', en: 'Dressmaker', sub: 'Cozy Lives / Free Lives', intro: '以裁缝与针线为灵感的手绘风独立冒险，用一针一线缝补破碎的世界。' },
@@ -163,7 +163,7 @@ module.exports = [
   {
     id: 'best-mobile',
     en: 'BEST MOBILE GAME',
-    cn: '最佳手机游戏',
+    cn: '最佳移动游戏',
     tab: 'game',
     nominees: [
       { id: 'arknights-endfield', name: '明日方舟：终末地', en: 'Arknights: Endfield', sub: 'Hypergryph', intro: '《明日方舟》世界观下的 3D 即时策略 RPG，作为管理员前往塔卫二开拓新家园。' },
@@ -295,7 +295,7 @@ module.exports = [
   {
     id: 'best-adaptation',
     en: 'BEST ADAPTATION',
-    cn: '最佳游戏改编作品',
+    cn: '最佳改编作品',
     tab: 'production',
     nominees: [
       { id: 'edgerunners-2', name: '赛博朋克：边缘行者2', en: 'Cyberpunk: Edgerunners 2', sub: 'Studio Trigger / Netflix', intro: '《赛博朋克：边缘行者》动画续作，继续描绘夜之城的残酷青春。' },
