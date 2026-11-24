@@ -1,0 +1,44 @@
+TGA 2026 玩家票选 · 使用说明
+==============================
+
+一、运行环境
+  - 需要 Node.js 18 或更高版本（仅此一个依赖，无需 npm install）
+  - 下载地址：https://nodejs.org/zh-cn （选 LTS 版本，一路下一步安装）
+
+二、Windows 启动
+  1. 双击 start.bat
+  2. 看到“正在启动”后，用浏览器打开：http://localhost:3000
+  3. 后台统计页面：http://localhost:3000/admin
+     默认密码：tga2026admin
+  4. 关闭命令行窗口即停止服务
+
+三、Mac / Linux 启动
+  在终端进入本文件夹，执行：
+      node server.js
+  然后浏览器打开 http://localhost:3000
+
+四、修改后台密码
+  Windows：先设置环境变量再启动，例如在 PowerShell 中：
+      $env:ADMIN_PASSWORD="你的新密码"; node server.js
+  也可以在服务器上设置同名环境变量。
+
+五、让别人访问（局域网）
+  1. 本机运行 ipconfig，找到“IPv4 地址”，如 192.168.1.23
+  2. 同一网络下的人访问：http://192.168.1.23:3000
+  3. 若打不开，请在 Windows 防火墙中允许 Node.js 访问专用网络
+  注意：需要你的电脑保持开机且服务运行中。
+
+六、数据与备份
+  - 所有投票保存在 storage/votes.json（首次运行自动创建）
+  - 备份：直接复制该文件
+  - 清零：在后台页面点“清空数据”，或删除 storage/votes.json 后重启
+
+七、常用自定义
+  - 奖项与提名：data/categories.js
+  - 封面图片：public/covers/{提名id}.jpg（把新图按同名覆盖即可）
+  - 端口：设置环境变量 PORT，例如 PORT=8080
+  - 投票限制：同一浏览器每个奖项限投一票（基于 Cookie）
+
+八、说明
+  - 本站为玩家自建活动，与 The Game Awards 官方无关
+  - 作品封面取自各发行商官方商店/官网，版权归原权利人所有，仅供展示

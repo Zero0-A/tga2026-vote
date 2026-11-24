@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TGA 2026 提名游戏票选</title>
+  <meta name="description" content="为 TGA 2026 提名游戏投出你的一票，查看游戏简介与实时票数。" />
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0c10'/%3E%3Ctext x='32' y='43' font-size='28' font-family='Arial' font-weight='bold' fill='%23f5c542' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E" />
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="/">
+        <span class="brand-mark">TGA</span>
+        <span class="brand-text">2026 票选</span>
+      </a>
+      <nav class="topnav">
+        <a href="#categories">奖项列表</a>
+        <a href="#about">活动说明</a>
+        <a class="admin-link" href="/admin">后台</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-badge">玩家票选 · 非官方</div>
+      <h1>
+        TGA 2026<br />
+        <span class="hero-gradient">提名游戏票选</span>
+      </h1>
+      <p class="hero-sub">为你心中的年度游戏投出一票。30 个奖项，全部提名作品与简介一次看全。</p>
+
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-value" id="statVotes">--</span>
+          <span class="stat-label">累计票数</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value" id="statVoters">--</span>
+          <span class="stat-label">参与人数</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value" id="statCats">30</span>
+          <span class="stat-label">奖项数</span>
+        </div>
+      </div>
+
+      <div class="countdown">
+        <span class="countdown-label">距离颁奖典礼（北京时间 12 月 11 日）</span>
+        <div class="countdown-boxes" id="countdown">
+          <div class="cd-box"><span id="cdD">--</span><em>天</em></div>
+          <div class="cd-box"><span id="cdH">--</span><em>时</em></div>
+          <div class="cd-box"><span id="cdM">--</span><em>分</em></div>
+          <div class="cd-box"><span id="cdS">--</span><em>秒</em></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="board" id="categories">
+      <div class="board-head">
+        <h2>全部奖项</h2>
+        <p>同一浏览器每个奖项限投一票，投票后不可更改。</p>
+      </div>
+
+      <div class="tabs" id="tabs" role="tablist">
+        <button class="tab active" data-tab="all" role="tab" aria-selected="true">全部 <span id="tabAllCount">30</span></button>
+        <button class="tab" data-tab="game" role="tab" aria-selected="false">游戏类</button>
+        <button class="tab" data-tab="esports" role="tab" aria-selected="false">电竞类</button>
+        <button class="tab" data-tab="production" role="tab" aria-selected="false">制作类</button>
+      </div>
+
+      <div class="grid" id="categoryGrid">
+        <div class="loading">正在加载奖项数据…</div>
+      </div>
+    </section>
+
+    <section class="about" id="about">
+      <div class="about-card">
+        <h3>关于本次票选</h3>
+        <p>TGA 2026 提名名单于 11 月 18 日公布，《GTA6》以 8 项提名领跑，《控制：共振》《生化危机：安魂曲》各获 6 项提名。本站还原全部 30 个奖项，方便玩家为喜欢的作品投票并查看游戏简介。</p>
+        <ul>
+          <li>投票为匿名记录，仅保存浏览器标识与投票时间，用于防止重复投票。</li>
+          <li>游戏简介整理自公开资料，仅供了解作品，不代表官方描述。</li>
+          <li>作品封面取自 Steam 商店官方主视觉图；人物、战队、主播等以文字头像展示。</li>
+          <li>本站为玩家自建活动，与 The Game Awards 官方没有任何关联。</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>TGA 2026 玩家票选 · 与 The Game Awards 官方无关</p>
+    <p class="footer-dim">数据保存在本站服务器，管理员可在后台查看实时结果。</p>
+  </footer>
+
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close></div>
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <div>
+          <p class="modal-en" id="modalEn"></p>
+          <h3 class="modal-title" id="modalTitle"></h3>
+        </div>
+        <button class="icon-btn" data-close aria-label="关闭">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+      <div class="modal-foot">
+        <span id="modalHint">同一浏览器每个奖项限投一票</span>
+        <span class="modal-my" id="modalMy"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="/app.js"></script>
+</body>
+</html>

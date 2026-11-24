@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>后台 · TGA 2026 票选</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    .admin-wrap { max-width: 1080px; margin: 0 auto; padding: 40px 24px 80px; }
+    .admin-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 28px; }
+    .admin-top h1 { font-size: 24px; letter-spacing: -0.01em; }
+    .admin-top p { font-size: 12px; color: var(--dim); margin-top: 2px; }
+    .admin-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn {
+      font-size: 13px; font-weight: 600; padding: 9px 16px; border-radius: 10px;
+      border: 1px solid var(--line-strong); background: rgba(255,255,255,.04); color: var(--text);
+      transition: all .2s;
+    }
+    .btn:hover { background: rgba(255,255,255,.08); border-color: rgba(245,197,66,.45); }
+    .btn.primary { background: var(--accent); color: #1a1405; border: 0; }
+    .btn.primary:hover { filter: brightness(1.07); }
+    .btn.danger { border-color: rgba(255, 92, 92, .4); color: #ff8f8f; }
+    .btn.danger:hover { background: rgba(255, 92, 92, .12); }
+    .btn[disabled] { opacity: .5; cursor: default; }
+
+    .login-shell { min-height: 68vh; display: flex; align-items: center; justify-content: center; }
+    .login-card {
+      width: min(400px, 100%); background: linear-gradient(180deg, #14171f, #0d0f15);
+      border: 1px solid var(--line-strong); border-radius: 20px; padding: 34px 30px;
+      box-shadow: var(--shadow);
+    }
+    .login-card h2 { font-size: 20px; margin-bottom: 6px; }
+    .login-card p { font-size: 13px; color: var(--dim); margin-bottom: 22px; }
+    .login-card input {
+      width: 100%; padding: 12px 14px; border-radius: 10px; font-size: 14px;
+      background: rgba(255,255,255,.05); border: 1px solid var(--line-strong); color: var(--text);
+      outline: none; transition: border-color .2s;
+    }
+    .login-card input:focus { border-color: rgba(245,197,66,.6); }
+    .login-card .btn { width: 100%; margin-top: 14px; padding: 12px; }
+    .login-err { min-height: 18px; margin-top: 10px; font-size: 12px; color: #ff8f8f; }
+
+    .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-bottom: 26px; }
+    .stat-card {
+      background: linear-gradient(180deg, rgba(21,25,34,.9), rgba(14,16,22,.9));
+      border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px;
+    }
+    .stat-card .k { font-size: 12px; color: var(--dim); letter-spacing: .08em; }
+    .stat-card .v { font-size: 28px; font-weight: 800; margin-top: 6px; font-variant-numeric: tabular-nums; }
+    .stat-card .v small { font-size: 13px; color: var(--dim); font-weight: 500; }
+    .live-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #46d27f; margin-right: 7px; box-shadow: 0 0 8px #46d27f; }
+
+    .cat-block {
+      background: rgba(18, 21, 29, .75); border: 1px solid var(--line); border-radius: 16px;
+      margin-bottom: 12px; overflow: hidden;
+    }
+    .cat-block-head {
+      display: flex; align-items: center; gap: 12px; padding: 15px 20px; cursor: pointer;
+      user-select: none; transition: background .2s;
+    }
+    .cat-block-head:hover { background: rgba(255,255,255,.03); }
+    .cat-block-head .tag {
+      font-size: 10px; padding: 2px 8px; border-radius: 99px; border: 1px solid var(--line);
+      color: var(--dim); flex-shrink: 0;
+    }
+    .cat-block-head .cn { font-size: 15px; font-weight: 700; }
+    .cat-block-head .en { font-size: 11px; color: var(--dim); letter-spacing: .06em; }
+    .cat-block-head .total { margin-left: auto; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+    .cat-block-head .caret { color: var(--dim); font-size: 11px; transition: transform .2s; }
+    .cat-block.open .caret { transform: rotate(180deg); }
+    .cat-block-body { display: none; padding: 4px 20px 18px; border-top: 1px solid var(--line); }
+    .cat-block.open .cat-block-body { display: block; }
+    .res-row { margin-top: 12px; }
+    .res-line { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+    .res-line .name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .res-line .num { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12px; }
+    .res-line .pct { font-weight: 700; width: 52px; text-align: right; font-variant-numeric: tabular-nums; }
+    .res-bar { height: 5px; background: rgba(255,255,255,.06); border-radius: 99px; margin-top: 6px; overflow: hidden; }
+    .res-bar i { display: block; height: 100%; background: linear-gradient(90deg,#8a6a1f,#f5c542); border-radius: 99px; }
+    .res-row.top .res-bar i { background: linear-gradient(90deg,#f5c542,#ff8a2a); }
+
+    .recent { margin-top: 26px; background: rgba(18,21,29,.75); border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
+    .recent h3 { font-size: 15px; margin-bottom: 12px; }
+    .recent-row { display: flex; align-items: center; gap: 12px; padding: 7px 0; border-top: 1px dashed rgba(255,255,255,.06); font-size: 12px; }
+    .recent-row:first-of-type { border-top: 0; }
+    .recent-row .t { color: var(--dim); flex-shrink: 0; font-variant-numeric: tabular-nums; }
+    .recent-row .c { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .recent-row .n { margin-left: auto; color: var(--gold); font-weight: 600; flex-shrink: 0; }
+    .empty { color: var(--dim); font-size: 13px; padding: 10px 0; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="/">
+        <span class="brand-mark">TGA</span>
+        <span class="brand-text">2026 后台</span>
+      </a>
+      <nav class="topnav">
+        <a href="/">返回投票页</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="admin-wrap">
+    <!-- 登录 -->
+    <div class="login-shell" id="loginView">
+      <form class="login-card" id="loginForm">
+        <h2>管理员登录</h2>
+        <p>输入后台密码查看实时投票数据。</p>
+        <input type="password" id="passwordInput" placeholder="请输入后台密码" autocomplete="current-password" required />
+        <button class="btn primary" type="submit" id="loginBtn">进入后台</button>
+        <div class="login-err" id="loginErr"></div>
+      </form>
+    </div>
+
+    <!-- 数据面板 -->
+    <div id="dashView" class="hidden">
+      <div class="admin-top">
+        <div>
+          <h1>实时投票数据</h1>
+          <p><span class="live-dot"></span><span id="lastUpdated">加载中…</span></p>
+        </div>
+        <div class="admin-actions">
+          <button class="btn" id="refreshBtn">刷新</button>
+          <button class="btn" id="autoBtn">自动刷新：开</button>
+          <button class="btn" id="exportBtn">导出 CSV</button>
+          <button class="btn danger" id="resetBtn">清空数据</button>
+          <button class="btn" id="logoutBtn">退出登录</button>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-card"><div class="k">累计票数</div><div class="v" id="dTotalVotes">--</div></div>
+        <div class="stat-card"><div class="k">参与人数</div><div class="v" id="dVoters">--</div></div>
+        <div class="stat-card"><div class="k">已有票数的奖项</div><div class="v" id="dCatVoted">-- <small>/ 30</small></div></div>
+        <div class="stat-card"><div class="k">数据文件</div><div class="v" style="font-size:14px;font-weight:600;line-height:1.8">storage/votes.json</div></div>
+      </div>
+
+      <div id="catList"></div>
+
+      <div class="recent">
+        <h3>最近投票</h3>
+        <div id="recentList"><div class="empty">暂无投票记录</div></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const $ = (s) => document.querySelector(s);
+      const loginView = $('#loginView');
+      const dashView = $('#dashView');
+      let statsData = null;
+      let autoTimer = null;
+      let autoOn = true;
+
+      const fmt = (n) => Number(n || 0).toLocaleString('zh-CN');
+      const TAB_NAMES = { game: '游戏类', esports: '电竞类', production: '制作类' };
+
+      async function api(url, options = {}) {
+        const res = await fetch(url, {
+          headers: { 'Content-Type': 'application/json' },
+          ...options
+        });
+        let data = null;
+        try { data = await res.json(); } catch (e) { data = {}; }
+        return { ok: res.ok, status: res.status, data };
+      }
+
+      function showLogin() {
+        loginView.classList.remove('hidden');
+        dashView.classList.add('hidden');
+        stopAuto();
+      }
+
+      function showDash() {
+        loginView.classList.add('hidden');
+        dashView.classList.remove('hidden');
+        if (autoOn) startAuto();
+      }
+
+      async function loadStats(silent = false) {
+        const { ok, status, data } = await api('/api/admin/stats');
+        if (!ok) {
+          if (status === 401) {
+            showLogin();
+            return;
+          }
+          if (!silent) alert('加载失败：' + (data.error || '未知错误'));
+          return;
+        }
+        statsData = data;
+        render();
+      }
+
+      function render() {
+        const d = statsData;
+        $('#dTotalVotes').textContent = fmt(d.totalVotes);
+        $('#dVoters').textContent = fmt(d.voters);
+        const votedCats = d.categories.filter((c) => c.total > 0).length;
+        $('#dCatVoted').innerHTML = `${votedCats} <small>/ ${d.categories.length}</small>`;
+        $('#lastUpdated').textContent = '最后更新 ' + new Date().toLocaleTimeString('zh-CN');
+
+        $('#catList').innerHTML = d.categories
+          .map((c, idx) => {
+            const rows = c.nominees
+              .map((n, i) => `
+                <div class="res-row ${i === 0 && n.votes > 0 ? 'top' : ''}">
+                  <div class="res-line">
+                    <span class="name"><strong>${n.name}</strong> <span style="color:var(--dim)">${n.en || ''}</span></span>
+                    <span class="num">${fmt(n.votes)} 票</span>
+                    <span class="pct">${n.votes > 0 ? n.pct + '%' : '-'}</span>
+                  </div>
+                  <div class="res-bar"><i style="width:${n.votes > 0 ? n.pct : 0}%"></i></div>
+                </div>`)
+              .join('');
+            return `
+              <div class="cat-block" data-id="${c.id}">
+                <div class="cat-block-head">
+                  <span class="tag">${String(idx + 1).padStart(2, '0')}</span>
+                  <div>
+                    <div class="cn">${c.cn}</div>
+                    <div class="en">${c.en}</div>
+                  </div>
+                  <span class="total">${c.total > 0 ? fmt(c.total) + ' 票' : '暂无投票'}</span>
+                  <span class="caret">▼</span>
+                </div>
+                <div class="cat-block-body">${rows || '<div class="empty">暂无提名</div>'}</div>
+              </div>`;
+          })
+          .join('');
+
+        const recentEl = $('#recentList');
+        if (d.recent.length === 0) {
+          recentEl.innerHTML = '<div class="empty">暂无投票记录</div>';
+        } else {
+          recentEl.innerHTML = d.recent
+            .map((r) => {
+              const t = new Date(r.ts);
+              const time = `${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}:${String(t.getSeconds()).padStart(2, '0')}`;
+              return `<div class="recent-row"><span class="t">${time}</span><span class="c">${r.category}</span><span class="n">${r.nominee}</span></div>`;
+            })
+            .join('');
+        }
+      }
+
+      function startAuto() {
+        stopAuto();
+        autoTimer = setInterval(() => loadStats(true), 15000);
+        $('#autoBtn').textContent = '自动刷新：开';
+      }
+
+      function stopAuto() {
+        if (autoTimer) clearInterval(autoTimer);
+        autoTimer = null;
+        $('#autoBtn').textContent = '自动刷新：关';
+      }
+
+      /* 登录 */
+      $('#loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = $('#loginBtn');
+        const errEl = $('#loginErr');
+        btn.disabled = true;
+        btn.textContent = '登录中…';
+        errEl.textContent = '';
+        const { ok, data } = await api('/api/admin/login', {
+          method: 'POST',
+          body: JSON.stringify({ password: $('#passwordInput').value })
+        });
+        btn.disabled = false;
+        btn.textContent = '进入后台';
+        if (ok) {
+          $('#passwordInput').value = '';
+          showDash();
+          await loadStats();
+        } else {
+          errEl.textContent = data.error || '登录失败';
+        }
+      });
+
+      $('#logoutBtn').addEventListener('click', async () => {
+        await api('/api/admin/logout', { method: 'POST' });
+        statsData = null;
+        showLogin();
+      });
+
+      $('#refreshBtn').addEventListener('click', () => loadStats());
+
+      $('#autoBtn').addEventListener('click', () => {
+        autoOn = !autoOn;
+        if (autoOn) startAuto(); else stopAuto();
+      });
+
+      $('#exportBtn').addEventListener('click', () => {
+        if (!statsData) return;
+        const lines = ['奖项分类,奖项(中文),奖项(英文),提名,票数,占比'];
+        statsData.categories.forEach((c) => {
+          c.nominees.forEach((n) => {
+            lines.push([TAB_NAMES[c.tab] || c.tab, c.cn, c.en, n.name, n.votes, n.votes > 0 ? n.pct + '%' : '0%'].join(','));
+          });
+        });
+        const blob = new Blob(['\uFEFF' + lines.join('\n')], { type: 'text/csv;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'tga2026-votes-' + new Date().toISOString().slice(0, 10) + '.csv';
+        a.click();
+        URL.revokeObjectURL(a.href);
+      });
+
+      $('#resetBtn').addEventListener('click', async () => {
+        if (!confirm('确定要清空全部投票数据吗？此操作不可恢复。')) return;
+        if (!confirm('再次确认：所有投票记录将被删除。')) return;
+        const { ok } = await api('/api/admin/reset', { method: 'POST', body: '{}' });
+        if (ok) {
+          await loadStats();
+          alert('已清空全部投票数据');
+        } else {
+          alert('清空失败，请重新登录后再试');
+        }
+      });
+
+      $('#catList').addEventListener('click', (e) => {
+        const head = e.target.closest('.cat-block-head');
+        if (!head) return;
+        head.parentElement.classList.toggle('open');
+      });
+
+      /* 初始化 */
+      (async () => {
+        const { ok, status } = await api('/api/admin/stats');
+        if (ok) {
+          await loadStats();
+          showDash();
+        } else {
+          showLogin();
+          // 首次访问时自动展开第一个请求已消耗，无需处理
+        }
+      })();
+    })();
+  </script>
+</body>
+</html>

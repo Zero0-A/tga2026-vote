@@ -1,0 +1,13 @@
+{
+  "name": "tga2026-vote",
+  "version": "1.0.0",
+  "private": true,
+  "description": "TGA 2026 提名游戏玩家票选（零依赖 Node.js）",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
