@@ -295,7 +295,7 @@ module.exports = [
   {
     id: 'best-adaptation',
     en: 'BEST ADAPTATION',
-    cn: '最佳改编作品',
+    cn: '最佳游戏改编',
     tab: 'production',
     nominees: [
       { id: 'edgerunners-2', name: '赛博朋克：边缘行者2', en: 'Cyberpunk: Edgerunners 2', sub: 'Studio Trigger / Netflix', intro: '《赛博朋克：边缘行者》动画续作，继续描绘夜之城的残酷青春。' },
