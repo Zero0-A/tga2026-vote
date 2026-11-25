@@ -1,16 +1,6 @@
 (() => {
   const $ = (sel) => document.querySelector(sel);
   const gridEl = $('#categoryGrid');
-  const coverMotionToggle = $('#coverMotionToggle');
-  const coverMotionPreference = matchMedia('(prefers-reduced-motion: reduce)');
-  const coverHoverPreference = matchMedia('(any-hover: hover)');
-  const coverMinHold = 4500;
-  const coverHoldVariation = 1700;
-  const coverSpacingVariation = 180;
-  const coverSlideDuration = 500;
-  const coverDeadlines = new Map();
-  let nextCoverSlot = 0;
-  let coverRotationEnabled = false;
   const heroAward = $('#hero-award');
   const heroVote = $('#hero-vote');
   const heroList = $('#hero-nominee-list');
@@ -108,7 +98,6 @@
           </button>
         </article>`;
     }).join('');
-    coverDeadlines.clear();
     gridEl.querySelectorAll('.cat-cover-stage').forEach((stage) => showAwardCover(stage, 0));
   }
 
@@ -125,73 +114,12 @@
     card.querySelector('.cat-cover-caption').textContent = nomineeName(category, activeId);
   }
 
-  function coverDeadline(now) {
-    return now + coverMinHold + Math.random() * coverHoldVariation;
-  }
-
   function stepAwardCover(stage, step) {
     const count = stage.childElementCount;
     const index = (Number(stage.dataset.coverIndex) + step + count) % count;
-    const now = performance.now();
-    coverDeadlines.set(stage, coverDeadline(now));
-    nextCoverSlot = now + coverSlideDuration + Math.random() * coverSpacingVariation;
     showAwardCover(stage, index);
     return index;
   }
-
-  function rotateAwardCovers() {
-    if (document.hidden || modal.open || !coverRotationEnabled || coverMotionPreference.matches) {
-      coverDeadlines.clear();
-      return;
-    }
-    const now = performance.now();
-    const visibleTop = Math.max(0, tabsEl.getBoundingClientRect().bottom);
-    let nextStage;
-    let oldestDeadline = Infinity;
-    for (const stage of gridEl.querySelectorAll('.cat-cover-stage')) {
-      if (stage.childElementCount < 2) continue;
-      const card = stage.closest('.cat-card');
-      const box = stage.getBoundingClientRect();
-      const visibleHeight = Math.min(box.bottom, innerHeight) - Math.max(box.top, visibleTop);
-      const hovered = coverHoverPreference.matches && card.matches(':hover');
-      if (visibleHeight < box.height / 2 || hovered || card.querySelector(':focus-visible')) {
-        coverDeadlines.delete(stage);
-        continue;
-      }
-      const deadline = coverDeadlines.get(stage);
-      if (deadline === undefined) {
-        coverDeadlines.set(stage, coverDeadline(now));
-      } else if (deadline <= now && deadline < oldestDeadline) {
-        oldestDeadline = deadline;
-        nextStage = stage;
-      }
-    }
-    // 同一时段只让一张奖项卡片自动滑动，并优先处理等得最久的一张。
-    if (nextStage && now >= nextCoverSlot) stepAwardCover(nextStage, 1);
-  }
-
-  function updateCoverMotionToggle() {
-    coverDeadlines.clear();
-    coverMotionToggle.hidden = coverMotionPreference.matches;
-    coverMotionToggle.textContent = coverRotationEnabled ? '暂停自动轮换' : '开启自动轮换';
-  }
-
-  coverMotionToggle.addEventListener('click', () => {
-    coverRotationEnabled = !coverRotationEnabled;
-    updateCoverMotionToggle();
-  });
-  coverMotionPreference.addEventListener('change', () => {
-    if (coverMotionPreference.matches) coverRotationEnabled = false;
-    updateCoverMotionToggle();
-  });
-  gridEl.addEventListener('focusin', (event) => {
-    if (!coverRotationEnabled || !event.target.matches(':focus-visible')) return;
-    coverRotationEnabled = false;
-    updateCoverMotionToggle();
-  });
-  document.addEventListener('visibilitychange', () => coverDeadlines.clear());
-  updateCoverMotionToggle();
-  setInterval(rotateAwardCovers, 125);
 
   function renderFeaturedNominees() {
     const category = findCategory('goty');
@@ -281,6 +209,26 @@
     }));
   }
 
+  function renderCriticReviews(info) {
+    if (!info.score?.criticReviewCount) return null;
+    const reviews = element('section', 'ballot-media');
+    const header = element('div', 'ballot-media-head');
+    const source = externalLink('查看全部 ' + fmt(info.score.criticReviewCount) + ' 篇评测', info.score.source);
+    header.append(element('h4', 'ballot-section-label', '媒体评测'), source);
+    reviews.append(header);
+    if (info.criticReviews?.length) {
+      const list = element('ul', 'ballot-review-list');
+      for (const review of info.criticReviews) {
+        const item = element('li', 'ballot-review');
+        item.append(externalLink(review.outlet, review.source), element('span', 'ballot-review-score', review.score + ' / 100'));
+        if (review.summary) item.append(element('p', 'ballot-review-summary', review.summary));
+        list.append(item);
+      }
+      reviews.append(list);
+    }
+    return reviews;
+  }
+
   function renderModal(categoryId, animate = false) {
     if (ui.openCategory !== categoryId) return;
     const category = findCategory(categoryId);
@@ -364,6 +312,8 @@
     const description = element('div', 'ballot-description');
     description.append(element('h4', 'ballot-section-label', introLabel), intro);
     content.append(description);
+    const reviews = isGame && renderCriticReviews(info);
+    if (reviews) content.append(reviews);
 
     const links = element('div', 'ballot-links');
     for (const link of info.links || []) links.append(externalLink(link.label, link.url));

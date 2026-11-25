@@ -226,9 +226,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
 .board-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px 16px;
   min-height: 88px;
   padding: 14px clamp(13px, 2.4vw, 28px);
   border-inline-start: 4px solid var(--mint);
@@ -236,9 +233,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
   background: var(--paper);
 }
 .board-head p { margin-top: 4px; color: #593d73; font-size: 13px; }
-.cover-motion-toggle { min-height: 40px; padding: 4px 8px; border: 0; background: transparent; color: var(--ink); font-size: 12px; font-weight: 650; }
-.cover-motion-toggle:hover { text-decoration: underline; text-underline-offset: 3px; }
-.cover-motion-toggle:focus-visible { outline-color: var(--ink); }
 .tabs {
   position: sticky;
   top: calc(var(--bar) + env(safe-area-inset-top));
@@ -405,7 +399,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
   .cat-cover-stage { height: clamp(80px, 24vw, 98px); }
   .cat-top { grid-area: 1 / 2; align-self: end; }
   .cat-card .ghost-btn { grid-area: 2 / 2; justify-self: start; align-self: start; padding-inline: 0; }
-  .cover-motion-toggle { padding-inline: 0; }
 }
 @media (max-width: 430px) {
   /* 窄屏只留外链图标，避免导航挤压换行 */
@@ -577,6 +570,28 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
 .ballot-description { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--ballot-rule); }
 .ballot-section-label { margin-bottom: 6px; color: var(--ballot-muted); font-size: 13px; font-weight: 700; }
 .ballot-intro { max-width: 41em; color: inherit; line-height: 1.65; font-size: 16px; }
+.ballot-media {
+  margin-top: 15px;
+  padding: 5px 13px 9px;
+  border-inline-start: 2px solid #9978bf;
+  background: color-mix(in srgb, currentColor 5%, transparent);
+}
+.ballot-media-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; column-gap: 12px; }
+.ballot-media-head .ballot-section-label { margin-bottom: 0; color: inherit; }
+.ballot-media-head .ballot-link { color: var(--ballot-muted); font-size: 12px; }
+.ballot-review-list { display: grid; gap: 4px; padding: 0; list-style: none; }
+.ballot-review {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 10px;
+  padding-block: 2px 5px;
+  border-top: 1px solid var(--ballot-rule);
+}
+.ballot-review .ballot-link { justify-self: start; min-height: 32px; text-decoration: none; font-weight: 700; }
+.ballot-review .ballot-link:hover, .ballot-review .ballot-link:focus-visible { text-decoration: underline; }
+.ballot-review-score { color: var(--ballot-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.ballot-review-summary { grid-column: 1 / -1; font-size: 14px; line-height: 1.5; }
 .ballot-links { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; margin-top: 14px; }
 .ballot-link { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; text-decoration: underline; text-underline-offset: 4px; font-size: 13px; }
 .ballot-link .ui-icon { width: 13px; height: 13px; }
@@ -733,6 +748,9 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
   .ballot-description { margin-top: 13px; padding-top: 8px; border-color: #a68fbf; }
   .ballot-intro { font-size: 14px; }
   .ballot-links { margin-top: 7px; }
+  .ballot-media { margin-top: 12px; padding-inline: 10px; }
+  .ballot-media-head .ballot-link, .ballot-review-score { color: #593d73; }
+  .ballot-review { border-color: #a68fbf; }
   .ballot-link .ui-icon { filter: none; }
   .ballot-link:hover { color: #633993; }
   .ballot-copy :focus-visible { outline-color: var(--ballot-ink); }
