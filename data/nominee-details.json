@@ -125,7 +125,14 @@
         "label": "育碧官网",
         "url": "https://zh-cn.ubisoft.com/acbr"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/assassins-creed-black-flag-resynced/",
+    "score": {
+      "value": 83,
+      "platform": "PS5",
+      "criticReviewCount": 101,
+      "source": "https://www.metacritic.com/game/assassins-creed-black-flag-resynced/critic-reviews/?platform=playstation-5"
+    }
   },
   "ace-combat-8": {
     "storeIntro": "化身王牌飞行员，在高空机动、锁定目标并与敌机交战。飞行任务穿插电影式叙事，从空中呈现海岸、山地与都市战场。",
@@ -135,7 +142,14 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/2288340/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/ace-combat-8-wings-of-theve/",
+    "score": {
+      "value": 87,
+      "platform": "PS5",
+      "criticReviewCount": 76,
+      "source": "https://www.metacritic.com/game/ace-combat-8-wings-of-theve/critic-reviews/?platform=playstation-5"
+    }
   },
   "avatar-legends": {
     "storeIntro": "从《降世神通》的角色中选出战士，在手绘二维场景展开一对一格斗。不同角色通过元素招式、位移和组合技打出各自的节奏。",
@@ -145,7 +159,14 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/2424420/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/avatar-legends-the-fighting-game/",
+    "score": {
+      "value": 77,
+      "platform": "PS5",
+      "criticReviewCount": 27,
+      "source": "https://www.metacritic.com/game/avatar-legends-the-fighting-game/critic-reviews/?platform=playstation-5"
+    }
   },
   "big-walk": {
     "storeIntro": "和朋友一起探索辽阔的野外，边走边聊，协调行动来解决遇到的难题。沿途也可以自由闲逛，发现藏在风景里的小乐趣。",
@@ -172,7 +193,14 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/3751260/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/the-blood-of-dawnwalker/",
+    "score": {
+      "value": 83,
+      "platform": "PS5",
+      "criticReviewCount": 81,
+      "source": "https://www.metacritic.com/game/the-blood-of-dawnwalker/critic-reviews/?platform=playstation-5"
+    }
   },
   "cairn": {
     "storeIntro": "手动安排攀岩者艾瓦的手脚位置，为攀登神之山规划线路。岩钉、食物和体力都有限，每一段冒险都要在安全与速度之间作出选择。",
@@ -182,7 +210,14 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/1588550/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/cairn/",
+    "score": {
+      "value": 86,
+      "platform": "PC",
+      "criticReviewCount": 43,
+      "source": "https://www.metacritic.com/game/cairn/critic-reviews/?platform=pc"
+    }
   },
   "cod-mw4": {
     "storeIntro": "故事从朝鲜半岛爆发战争开始。玩家在电影式战役中经历冲突的不同战线，也能在多人模式里进行快节奏的枪战。",
@@ -209,7 +244,14 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/730/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/counter-strike-2/",
+    "score": {
+      "value": 82,
+      "platform": "PC",
+      "criticReviewCount": 16,
+      "source": "https://www.metacritic.com/game/counter-strike-2/critic-reviews/?platform=pc"
+    }
   },
   "denshattack": {
     "storeIntro": "在色彩鲜明的日式未来都市里驾驶电车，靠跳跃、滑轨和空中动作闯过赛道。与地头帮派竞争，争夺被大企业控制的轨道。",
@@ -253,7 +295,14 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/2057760/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/esoteric-ebb/",
+    "score": {
+      "value": 85,
+      "platform": "PC",
+      "criticReviewCount": 41,
+      "source": "https://www.metacritic.com/game/esoteric-ebb/critic-reviews/?platform=pc"
+    }
   },
   "fable": {
     "storeIntro": "走进阿尔比恩，在奇幻开放世界里接任务、结识人物并参与战斗。你的选择会影响别人如何看待你，以及接下来能走怎样的路。",
@@ -263,7 +312,9 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/2769570/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/fable/",
+    "metacriticPending": true
   },
   "ff-resonance": {
     "storeIntro": "以新像素画风讲述围绕水晶展开的故事。战斗采用回合制指令系统，并可通过更换能力改变角色在队伍中的职责。",
@@ -273,7 +324,14 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/3259780/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/final-fantasy-resonance/",
+    "score": {
+      "value": 85,
+      "platform": "PS5",
+      "criticReviewCount": 63,
+      "source": "https://www.metacritic.com/game/final-fantasy-resonance/critic-reviews/?platform=playstation-5"
+    }
   },
   "ff7-revelation": {
     "storeIntro": "重制项目的完结篇。克劳德与伙伴驾驶飞空艇探索更大的世界，逐步接近故事终点，并迎接与萨菲罗斯的最终对决。",
@@ -283,7 +341,9 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/4354570/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/final-fantasy-vii-revelation/",
+    "metacriticPending": true
   },
   "forefront": {
     "storeIntro": "支持最多三十二人的虚拟现实团队射击游戏。玩家可以在地面协同作战，也能驾驶陆、海、空载具争夺地图上的关键位置。",
@@ -293,7 +353,9 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/2981220/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/forefront/",
+    "metacriticPending": true
   },
   "forever-ago": {
     "storeIntro": "变故之后，阿尔弗雷德独自踏上一路向北的旅程。驾驶车辆穿过不同地方，在休息与见闻中逐渐拼出他的过去。",
@@ -303,7 +365,14 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/1215940/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/forever-ago/",
+    "score": {
+      "value": 75,
+      "platform": "PS5",
+      "criticReviewCount": 19,
+      "source": "https://www.metacritic.com/game/forever-ago/critic-reviews/?platform=playstation-5"
+    }
   },
   "forza-horizon-6": {
     "storeIntro": "在以日本为舞台的开放世界中驾驶数百款真实车型，穿越都市、乡间与山路，参加不同赛制的竞速活动。",
@@ -313,7 +382,14 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/2483190/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/forza-horizon-6/",
+    "score": {
+      "value": 90,
+      "platform": "Xbox Series X",
+      "criticReviewCount": 83,
+      "source": "https://www.metacritic.com/game/forza-horizon-6/critic-reviews/?platform=xbox-series-x"
+    }
   },
   "gears-e-day": {
     "storeIntro": "回到系列的事变日，跟随年轻的马库斯和多姆面对突然涌出地面的兽族。游戏用第三人称掩体战斗讲述战争刚开始时的故事。",
@@ -323,7 +399,14 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/3010850/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/gears-of-war-e-day/",
+    "score": {
+      "value": 87,
+      "platform": "Xbox Series X",
+      "criticReviewCount": 83,
+      "source": "https://www.metacritic.com/game/gears-of-war-e-day/critic-reviews/?platform=xbox-series-x"
+    }
   },
   "into-the-radius-2": {
     "storeIntro": "深入被异常现象笼罩的禁区，使用拟真的武器对抗危险生物。出发前要整理装备和物资，进入禁区后再决定探索多久、何时撤离。",
@@ -333,7 +416,9 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/2307350/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/into-the-radius-2/",
+    "metacriticPending": true
   },
   "invincible-vs": {
     "storeIntro": "以《无敌少侠》漫画与动画为背景的三对三换人格斗游戏。玩家可选择熟悉的角色组队，利用替换、支援和连招赢得对局。",
@@ -343,7 +428,14 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/2353060/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/invincible-vs/",
+    "score": {
+      "value": 76,
+      "platform": "PS5",
+      "criticReviewCount": 56,
+      "source": "https://www.metacritic.com/game/invincible-vs/critic-reviews/?platform=playstation-5"
+    }
   },
   "life-is-strange-reunion": {
     "storeIntro": "在这部叙事冒险中分别操作麦珂茜和歌露儿。卡利登大学的一场火灾迫使两人追查原因，也让她们再次面对彼此的过去与未来。",
@@ -357,7 +449,14 @@
         "label": "PlayStation 中文资料",
         "url": "https://www.playstation.com/zh-hans-hk/games/life-is-strange-reunion/"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/life-is-strange-reunion/",
+    "score": {
+      "value": 71,
+      "platform": "PS5",
+      "criticReviewCount": 61,
+      "source": "https://www.metacritic.com/game/life-is-strange-reunion/critic-reviews/?platform=playstation-5"
+    }
   },
   "lilys-world": {
     "storeIntro": "你发现了莉莉在二〇〇四年使用的笔记本电脑。通过翻阅日记和与朋友聊天调查她的遭遇，逐渐察觉还有别人在接触这台电脑。",
@@ -367,7 +466,14 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/3195580/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/lilys-world-xd/",
+    "score": {
+      "value": 74,
+      "platform": "PC",
+      "criticReviewCount": 6,
+      "source": "https://www.metacritic.com/game/lilys-world-xd/critic-reviews/?platform=pc"
+    }
   },
   "little-nightmares-vr": {
     "storeIntro": "以第一人称扮演神秘的黑暗小六，在诡异空间里解开机关，躲开体形远大于你的敌人，寻找让自己重新完整的方法。",
@@ -377,7 +483,14 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/2482940/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/little-nightmares-vr-altered-echoes/",
+    "score": {
+      "value": 68,
+      "platform": "PS5",
+      "criticReviewCount": 13,
+      "source": "https://www.metacritic.com/game/little-nightmares-vr-altered-echoes/critic-reviews/?platform=playstation-5"
+    }
   },
   "marathon": {
     "storeIntro": "深入天仓五第四行星的废弃殖民地，搜寻武器、装备和情报。你可以独自行动或组队，在敌对玩家和守卫的夹击下尽量带着战利品撤离。",
@@ -391,7 +504,14 @@
         "label": "PlayStation 游戏页",
         "url": "https://www.playstation.com/zh-hans-hk/games/marathon/"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/marathon/",
+    "score": {
+      "value": 81,
+      "platform": "PS5",
+      "criticReviewCount": 61,
+      "source": "https://www.metacritic.com/game/marathon/critic-reviews/?platform=playstation-5"
+    }
   },
   "marvel-tokon": {
     "storeIntro": "挑选四名漫威角色组成战队，在四对四格斗中运用角色切换、援护与组合技。不同英雄和反派的能力可以搭配出不同的进攻方式。",
@@ -401,7 +521,14 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/3787240/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/marvel-tokon-fighting-souls/",
+    "score": {
+      "value": 85,
+      "platform": "PS5",
+      "criticReviewCount": 89,
+      "source": "https://www.metacritic.com/game/marvel-tokon-fighting-souls/critic-reviews/?platform=playstation-5"
+    }
   },
   "meccha-chameleon": {
     "storeIntro": "一款以绘画为核心的多人捉迷藏游戏。躲藏者在身体上画出与场景相似的图案，再摆好姿势，在规定时间内避开追捕者。",
@@ -411,7 +538,9 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/4704690/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/meccha-chameleon/",
+    "metacriticPending": true
   },
   "mewgenics": {
     "storeIntro": "培育猫咪并挑选遗传特性，组成队伍参加回合制战术冒险。不同技能、装备和性格会影响当前战斗，也会影响接下来的猫咪世代。",
@@ -540,7 +669,14 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/3357650/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/pragmata/",
+    "score": {
+      "value": 85,
+      "platform": "PS5",
+      "criticReviewCount": 110,
+      "source": "https://www.metacritic.com/game/pragmata/critic-reviews/?platform=playstation-5"
+    }
   },
   "re-veronica": {
     "storeIntro": "以《生化危机 代号：维罗妮卡》为蓝本的重制作品。克莱尔与克里斯分别展开调查，在阴谋和感染危机中寻找彼此。",
@@ -550,7 +686,9 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/4824610/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/resident-evil-veronica/",
+    "metacriticPending": true
   },
   "replaced": {
     "storeIntro": "在架空的八十年代美国，扮演被困在人类身体里的人工智能。以像素场景讲述赛博朋克故事，将横版探索与近身战斗结合起来。",
@@ -560,7 +698,14 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/1663850/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/replaced/",
+    "score": {
+      "value": 76,
+      "platform": "PC",
+      "criticReviewCount": 62,
+      "source": "https://www.metacritic.com/game/replaced/critic-reviews/?platform=pc"
+    }
   },
   "silver-pines": {
     "storeIntro": "一名私家侦探来到衰败的美国小镇，调查失踪事件。在类银河战士恶魔城的地图里抵御敌人、破解谜题，并小心分配有限物资。",
@@ -587,7 +732,9 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/2868840/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/slay-the-spire-2/",
+    "metacriticPending": true
   },
   "thief-vr": {
     "storeIntro": "扮演在城中讨生活的盗贼喜鹊，用虚拟现实操作潜行、翻找、撬锁和避开守卫，追查一件被藏在保险库里的遗物。",
@@ -597,7 +744,14 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/2800080/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/thief-vr-legacy-of-shadow/",
+    "score": {
+      "value": 69,
+      "platform": "PS5",
+      "criticReviewCount": 10,
+      "source": "https://www.metacritic.com/game/thief-vr-legacy-of-shadow/critic-reviews/?platform=playstation-5"
+    }
   },
   "trails-sky-2nd": {
     "storeIntro": "延续前作结局。约书亚突然失踪，艾丝蒂尔为寻找他踏上新的旅程，并在熟悉的利贝尔各地遇到新的伙伴与威胁。",
@@ -607,7 +761,14 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/4225980/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/trails-in-the-sky-2nd-chapter/",
+    "score": {
+      "value": 90,
+      "platform": "PS5",
+      "criticReviewCount": 27,
+      "source": "https://www.metacritic.com/game/trails-in-the-sky-2nd-chapter/critic-reviews/?platform=playstation-5"
+    }
   },
   "warframe": {
     "storeIntro": "唤醒并操控各有能力的战甲，在太阳系执行任务。收集和改装武器，培养战甲能力，也可以与其他玩家组队挑战较难的关卡。",
@@ -634,7 +795,14 @@
         "label": "Steam 商店",
         "url": "https://store.steampowered.com/app/553850/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/helldivers-2/",
+    "score": {
+      "value": 82,
+      "platform": "PS5",
+      "criticReviewCount": 69,
+      "source": "https://www.metacritic.com/game/helldivers-2/critic-reviews/?platform=playstation-5"
+    }
   },
   "mh-stories-3": {
     "officialIntro": "以两只被视为不祥之兆的火龙为故事开端。玩家扮演阿兹拉王国的继承者，与怪物建立羁绊、培养随行兽，并在旅途中设法阻止战争。",
@@ -643,7 +811,14 @@
         "label": "Steam 中文商店",
         "url": "https://store.steampowered.com/app/2852190/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/monster-hunter-stories-3-twisted-reflection/",
+    "score": {
+      "value": 86,
+      "platform": "PS5",
+      "criticReviewCount": 63,
+      "source": "https://www.metacritic.com/game/monster-hunter-stories-3-twisted-reflection/critic-reviews/?platform=playstation-5"
+    }
   },
   "dressmaker": {
     "storeIntro": "从客人的委托开始，选择布料，裁剪、缝制并装饰裙装。这款模拟游戏以服装制作工艺为灵感，玩家可以自由搭配版型和细节。",
@@ -652,7 +827,14 @@
         "label": "Steam 中文商店",
         "url": "https://store.steampowered.com/app/4019220/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/dressmaker/",
+    "score": {
+      "value": 86,
+      "platform": "PC",
+      "criticReviewCount": 8,
+      "source": "https://www.metacritic.com/game/dressmaker/critic-reviews/?platform=pc"
+    }
   },
   "star-wars-galactic-racer": {
     "storeIntro": "在法外之地外环星域参加银河联赛，驾驶飞车或舱车穿过复杂赛道。不同车辆需要不同的操控方式，既可以单人竞速，也可以在线和其他车手较量。",
@@ -661,7 +843,14 @@
         "label": "Steam 中文商店",
         "url": "https://store.steampowered.com/app/4078430/?l=schinese"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/star-wars-galactic-racer/",
+    "score": {
+      "value": 88,
+      "platform": "PS5",
+      "criticReviewCount": 83,
+      "source": "https://www.metacritic.com/game/star-wars-galactic-racer/critic-reviews/?platform=playstation-5"
+    }
   },
   "fire-emblem": {
     "links": [
@@ -669,6 +858,254 @@
         "label": "任天堂中文资料",
         "url": "https://www.nintendo.com/tw/topics/article/6TmiV6zUXU8YEQzNj5NvgQ"
       }
-    ]
+    ],
+    "metacritic": "https://www.metacritic.com/game/fire-emblem-fortunes-weave/",
+    "score": {
+      "value": 89,
+      "platform": "Switch 2",
+      "criticReviewCount": 115,
+      "source": "https://www.metacritic.com/game/fire-emblem-fortunes-weave/critic-reviews/?platform=nintendo-switch-2"
+    }
+  },
+  "arc-raiders": {
+    "metacritic": "https://www.metacritic.com/game/arc-raiders/",
+    "score": {
+      "value": 86,
+      "platform": "PC",
+      "criticReviewCount": 65,
+      "source": "https://www.metacritic.com/game/arc-raiders/critic-reviews/?platform=pc"
+    }
+  },
+  "ff14": {
+    "metacritic": "https://www.metacritic.com/game/final-fantasy-xiv-online-a-realm-reborn/",
+    "score": {
+      "value": 86,
+      "platform": "PS4",
+      "criticReviewCount": 35,
+      "source": "https://www.metacritic.com/game/final-fantasy-xiv-online-a-realm-reborn/critic-reviews/?platform=playstation-4"
+    }
+  },
+  "fortnite": {
+    "metacritic": "https://www.metacritic.com/game/fortnite/",
+    "score": {
+      "value": 78,
+      "platform": "PS4",
+      "criticReviewCount": 18,
+      "source": "https://www.metacritic.com/game/fortnite/critic-reviews/?platform=playstation-4"
+    }
+  },
+  "witcher3": {
+    "metacritic": "https://www.metacritic.com/game/the-witcher-3-wild-hunt/",
+    "score": {
+      "value": 92,
+      "platform": "PS4",
+      "criticReviewCount": 80,
+      "source": "https://www.metacritic.com/game/the-witcher-3-wild-hunt/critic-reviews/?platform=playstation-4"
+    }
+  },
+  "crimson-desert": {
+    "metacritic": "https://www.metacritic.com/game/crimson-desert/",
+    "score": {
+      "value": 77,
+      "platform": "PC",
+      "criticReviewCount": 119,
+      "source": "https://www.metacritic.com/game/crimson-desert/critic-reviews/?platform=pc"
+    }
+  },
+  "orbitals": {
+    "metacritic": "https://www.metacritic.com/game/orbitals/",
+    "score": {
+      "value": 81,
+      "platform": "Switch 2",
+      "criticReviewCount": 88,
+      "source": "https://www.metacritic.com/game/orbitals/critic-reviews/?platform=nintendo-switch-2"
+    }
+  },
+  "arknights-endfield": {
+    "metacritic": "https://www.metacritic.com/game/arknights-endfield/",
+    "score": {
+      "value": 78,
+      "platform": "PC",
+      "criticReviewCount": 24,
+      "source": "https://www.metacritic.com/game/arknights-endfield/critic-reviews/?platform=pc"
+    }
+  },
+  "mh-outlanders": {
+    "metacritic": "https://www.metacritic.com/game/monster-hunter-outlanders/",
+    "metacriticPending": true
+  },
+  "nte": {
+    "metacritic": "https://www.metacritic.com/game/nte-neverness-to-everness/",
+    "score": {
+      "value": 73,
+      "platform": "PS5",
+      "criticReviewCount": 12,
+      "source": "https://www.metacritic.com/game/nte-neverness-to-everness/critic-reviews/?platform=playstation-5"
+    }
+  },
+  "pokemon-champions": {
+    "metacritic": "https://www.metacritic.com/game/pokemon-champions/",
+    "score": {
+      "value": 67,
+      "platform": "Switch",
+      "criticReviewCount": 33,
+      "source": "https://www.metacritic.com/game/pokemon-champions/critic-reviews/?platform=nintendo-switch"
+    }
+  },
+  "where-winds-meet": {
+    "metacritic": "https://www.metacritic.com/game/where-winds-meet/",
+    "score": {
+      "value": 72,
+      "platform": "PC",
+      "criticReviewCount": 24,
+      "source": "https://www.metacritic.com/game/where-winds-meet/critic-reviews/?platform=pc"
+    }
+  },
+  "tmnt-empire-city": {
+    "metacritic": "https://www.metacritic.com/game/teenage-mutant-ninja-turtles-empire-city/",
+    "score": {
+      "value": 64,
+      "platform": "Meta Quest",
+      "criticReviewCount": 5,
+      "source": "https://www.metacritic.com/game/teenage-mutant-ninja-turtles-empire-city/critic-reviews/?platform=meta-quest"
+    }
+  },
+  "saros": {
+    "metacritic": "https://www.metacritic.com/game/saros/",
+    "score": {
+      "value": 87,
+      "platform": "PS5",
+      "criticReviewCount": 144,
+      "source": "https://www.metacritic.com/game/saros/critic-reviews/?platform=playstation-5"
+    }
+  },
+  "2xko": {
+    "metacritic": "https://www.metacritic.com/game/2xko/",
+    "score": {
+      "value": 78,
+      "platform": "PS5",
+      "criticReviewCount": 13,
+      "source": "https://www.metacritic.com/game/2xko/critic-reviews/?platform=playstation-5"
+    }
+  },
+  "mha-alls-justice": {
+    "metacritic": "https://www.metacritic.com/game/my-hero-academia-alls-justice/",
+    "score": {
+      "value": 72,
+      "platform": "PS5",
+      "criticReviewCount": 38,
+      "source": "https://www.metacritic.com/game/my-hero-academia-alls-justice/critic-reviews/?platform=playstation-5"
+    }
+  },
+  "lego-batman": {
+    "metacritic": "https://www.metacritic.com/game/lego-batman-legacy-of-the-dark-knight/",
+    "score": {
+      "value": 83,
+      "platform": "PS5",
+      "criticReviewCount": 89,
+      "source": "https://www.metacritic.com/game/lego-batman-legacy-of-the-dark-knight/critic-reviews/?platform=playstation-5"
+    }
+  },
+  "switch-sports-resort": {
+    "metacritic": "https://www.metacritic.com/game/nintendo-switch-sports-resort/",
+    "score": {
+      "value": 79,
+      "platform": "Switch 2",
+      "criticReviewCount": 94,
+      "source": "https://www.metacritic.com/game/nintendo-switch-sports-resort/critic-reviews/?platform=nintendo-switch-2"
+    }
+  },
+  "pokemon-pokopia": {
+    "metacritic": "https://www.metacritic.com/game/pokemon-pokopia/",
+    "score": {
+      "value": 89,
+      "platform": "Switch 2",
+      "criticReviewCount": 121,
+      "source": "https://www.metacritic.com/game/pokemon-pokopia/critic-reviews/?platform=nintendo-switch-2"
+    }
+  },
+  "yoshi-mysterious-book": {
+    "metacritic": "https://www.metacritic.com/game/yoshi-and-the-mysterious-book/",
+    "score": {
+      "value": 80,
+      "platform": "Switch 2",
+      "criticReviewCount": 126,
+      "source": "https://www.metacritic.com/game/yoshi-and-the-mysterious-book/critic-reviews/?platform=nintendo-switch-2"
+    }
+  },
+  "star-wars-zero-company": {
+    "metacritic": "https://www.metacritic.com/game/star-wars-zero-company/",
+    "score": {
+      "value": 84,
+      "platform": "PC",
+      "criticReviewCount": 74,
+      "source": "https://www.metacritic.com/game/star-wars-zero-company/critic-reviews/?platform=pc"
+    }
+  },
+  "ea-fc-27": {
+    "metacritic": "https://www.metacritic.com/game/ea-sports-fc-27/",
+    "score": {
+      "value": 74,
+      "platform": "PS5",
+      "criticReviewCount": 71,
+      "source": "https://www.metacritic.com/game/ea-sports-fc-27/critic-reviews/?platform=playstation-5"
+    }
+  },
+  "screamer": {
+    "metacritic": "https://www.metacritic.com/game/screamer/",
+    "score": {
+      "value": 76,
+      "platform": "PS5",
+      "criticReviewCount": 55,
+      "source": "https://www.metacritic.com/game/screamer/critic-reviews/?platform=playstation-5"
+    }
+  },
+  "gow-laufey": {
+    "metacritic": "https://www.metacritic.com/game/god-of-war-laufey/",
+    "metacriticPending": true
+  },
+  "witcher-4": {
+    "metacritic": "https://www.metacritic.com/game/the-witcher-4/",
+    "metacriticPending": true
+  },
+  "marvels-wolverine": {
+    "metacritic": "https://www.metacritic.com/game/marvels-wolverine/",
+    "score": {
+      "value": 75,
+      "platform": "PS5",
+      "criticReviewCount": 153,
+      "source": "https://www.metacritic.com/game/marvels-wolverine/critic-reviews/?platform=playstation-5"
+    }
+  },
+  "rhythm-heaven-groove": {
+    "metacritic": "https://www.metacritic.com/game/rhythm-heaven-groove/",
+    "score": {
+      "value": 82,
+      "platform": "Switch",
+      "criticReviewCount": 104,
+      "source": "https://www.metacritic.com/game/rhythm-heaven-groove/critic-reviews/?platform=nintendo-switch"
+    }
+  },
+  "lol": {
+    "metacritic": "https://www.metacritic.com/game/league-of-legends/",
+    "score": {
+      "value": 78,
+      "platform": "PC",
+      "criticReviewCount": 37,
+      "source": "https://www.metacritic.com/game/league-of-legends/critic-reviews/?platform=pc"
+    }
+  },
+  "mlbb": {
+    "metacritic": "https://www.metacritic.com/game/mobile-legends-bang-bang/",
+    "metacriticPending": true
+  },
+  "valorant": {
+    "metacritic": "https://www.metacritic.com/game/valorant/",
+    "score": {
+      "value": 80,
+      "platform": "PC",
+      "criticReviewCount": 45,
+      "source": "https://www.metacritic.com/game/valorant/critic-reviews/?platform=pc"
+    }
   }
 }

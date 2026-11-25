@@ -1,6 +1,10 @@
 (() => {
   const $ = (sel) => document.querySelector(sel);
   const gridEl = $('#categoryGrid');
+  const coverMotionToggle = $('#coverMotionToggle');
+  const coverMotionPreference = matchMedia('(prefers-reduced-motion: reduce)');
+  let coverRotationPaused = false;
+  let coverRotationStep = 0;
   const heroAward = $('#hero-award');
   const heroVote = $('#hero-vote');
   const heroList = $('#hero-nominee-list');
@@ -72,16 +76,13 @@
     const list = ui.data.categories.filter((c) => ui.activeTab === 'all' || c.tab === ui.activeTab);
     gridEl.innerHTML = list.map((c) => {
       const myVote = ui.data.myVotes[c.id];
-      const pictured = c.nominees.filter((nominee) => nominee.cover);
-      const covers = pictured.length > 3
-        ? [pictured[0], pictured[Math.floor(pictured.length / 2)], pictured.at(-1)]
-        : pictured;
+      const covers = c.nominees.filter((nominee) => nominee.cover);
       const status = myVote
         ? '<span class="cat-count">已投票</span>你的选择：' + nomineeName(c, myVote)
         : c.nominees.length + ' 个提名 · ' + fmt(categoryTotal(c)) + ' 票';
       return `
         <article class="cat-card" data-id="${c.id}">
-          <div class="cat-cover-strip" aria-hidden="true">${covers.map((nominee) => coverCell(nominee, 'cat-cover')).join('')}</div>
+          <div class="cat-cover-stage" data-cover-index="0" aria-hidden="true">${covers.map((nominee) => coverCell(nominee, 'cat-cover')).join('')}</div>
           <div class="cat-top">
             <p class="cat-en" lang="en">${c.en}</p>
             <h3 class="cat-cn">${c.cn}</h3>
@@ -93,7 +94,42 @@
           </button>
         </article>`;
     }).join('');
+    gridEl.querySelectorAll('.cat-cover-stage').forEach((stage) => showAwardCover(stage, 0));
   }
+
+  function showAwardCover(stage, index) {
+    const tiles = [...stage.children];
+    stage.dataset.coverIndex = index;
+    tiles.forEach((tile, position) => {
+      const distance = (position - index + tiles.length) % tiles.length;
+      tile.dataset.coverDepth = distance > tiles.length / 2 ? distance - tiles.length : distance;
+    });
+  }
+
+  function rotateAwardCovers() {
+    if (document.hidden || modal.open || coverRotationPaused || coverMotionPreference.matches) return;
+    const group = coverRotationStep++ % 3;
+    gridEl.querySelectorAll('.cat-cover-stage').forEach((stage, row) => {
+      const card = stage.closest('.cat-card');
+      if (row % 3 !== group || stage.childElementCount < 2 || card.matches(':hover, :focus-within')) return;
+      const box = stage.getBoundingClientRect();
+      if (box.top >= innerHeight || box.bottom <= 0) return;
+      showAwardCover(stage, (Number(stage.dataset.coverIndex) + 1) % stage.childElementCount);
+    });
+  }
+
+  function updateCoverMotionToggle() {
+    coverMotionToggle.hidden = coverMotionPreference.matches;
+    coverMotionToggle.textContent = coverRotationPaused ? '继续封面轮换' : '暂停封面轮换';
+  }
+
+  coverMotionToggle.addEventListener('click', () => {
+    coverRotationPaused = !coverRotationPaused;
+    updateCoverMotionToggle();
+  });
+  coverMotionPreference.addEventListener('change', updateCoverMotionToggle);
+  updateCoverMotionToggle();
+  setInterval(rotateAwardCovers, 1600);
 
   function renderFeaturedNominees() {
     const category = findCategory('goty');
@@ -257,6 +293,8 @@
       attribution.append(brand, element('small', 'score-platform', score.platform));
       badge.append(value, attribution);
       identity.append(badge);
+    } else if (isGame && info.metacriticPending) {
+      identity.append(element('span', 'score-pending', 'Metacritic 暂无媒体分'));
     }
     content.append(identity);
     const introLabel = info.officialIntro ? '官方介绍摘要' : type ? '候选简介' : '游戏简介';
