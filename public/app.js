@@ -20,6 +20,7 @@
     activeTab: 'all',
     openCategory: null,
     selectedNominee: null,
+    confirmingVote: false,
     modalTrigger: null,
     busy: false
   };
@@ -218,13 +219,27 @@
     if (links.childElementCount) content.append(links);
 
     const actions = element('div', 'ballot-actions');
-    const voteButton = element('button', 'vote-btn' + (chosen ? ' voted-btn' : ''),
-      chosen ? '已投此作' : myVote ? '本奖项已投票' : ui.busy ? '提交中…' : '投给此作');
-    voteButton.type = 'button';
-    voteButton.dataset.vote = nominee.id;
-    voteButton.disabled = Boolean(myVote) || ui.busy;
-    actions.append(voteButton, element('span', 'ballot-tally',
-      `${fmt(votes)} 票 · ${total ? (votes / total * 100).toFixed(1) : '0'}%`));
+    if (ui.confirmingVote && !myVote && !ui.busy) {
+      const confirmation = element('div', 'vote-confirmation');
+      const title = element('p', null, `确认将「${category.cn}」投给「${nominee.name}」？`);
+      const hint = element('p', 'ballot-tally', '提交后不可更改。');
+      const cancel = element('button', 'vote-cancel', '返回');
+      cancel.type = 'button';
+      cancel.dataset.cancelVote = '';
+      const confirm = element('button', 'vote-btn', '确认投票');
+      confirm.type = 'button';
+      confirm.dataset.confirmVote = nominee.id;
+      confirmation.append(title, hint, cancel, confirm);
+      actions.append(confirmation);
+    } else {
+      const voteButton = element('button', 'vote-btn' + (chosen ? ' voted-btn' : ''),
+        chosen ? '已投此作' : myVote ? '本奖项已投票' : ui.busy ? '提交中…' : '投给此作');
+      voteButton.type = 'button';
+      voteButton.dataset.vote = nominee.id;
+      voteButton.disabled = Boolean(myVote) || ui.busy;
+      actions.append(voteButton, element('span', 'ballot-tally',
+        `${fmt(votes)} 票 · ${total ? (votes / total * 100).toFixed(1) : '0'}%`));
+    }
     content.append(actions);
     panel.append(content);
     modalBody.replaceChildren(panel);
@@ -232,6 +247,7 @@
 
   function selectNominee(nomineeId) {
     ui.selectedNominee = nomineeId;
+    ui.confirmingVote = false;
     modalNotice.textContent = '';
     renderModal(ui.openCategory);
     modalBody.scrollTop = 0;
@@ -257,6 +273,7 @@
   modal.addEventListener('close', () => {
     ui.openCategory = null;
     ui.selectedNominee = null;
+    ui.confirmingVote = false;
     document.body.style.overflow = '';
     ui.modalTrigger?.focus({ preventScroll: true });
     ui.modalTrigger = null;
@@ -374,8 +391,34 @@
       selectNominee(thumbnail.dataset.selectNominee);
       return;
     }
-    const button = event.target.closest('[data-vote]');
-    if (button && ui.openCategory) vote(ui.openCategory, button.dataset.vote, button);
+    if (event.target.closest('[data-cancel-vote]')) {
+      cancelConfirmation();
+      return;
+    }
+    const confirm = event.target.closest('[data-confirm-vote]');
+    if (confirm && ui.confirmingVote && confirm.dataset.confirmVote === ui.selectedNominee) {
+      ui.confirmingVote = false;
+      vote(ui.openCategory, ui.selectedNominee, confirm);
+      return;
+    }
+    const button = event.target.closest('[data-vote]:not(:disabled)');
+    if (button && ui.openCategory && !ui.busy) {
+      ui.confirmingVote = true;
+      renderModal(ui.openCategory);
+      modalBody.querySelector('[data-cancel-vote]')?.focus();
+    }
+  });
+
+  function cancelConfirmation() {
+    ui.confirmingVote = false;
+    renderModal(ui.openCategory);
+    modalBody.querySelector('[data-vote]')?.focus();
+  }
+
+  modal.addEventListener('cancel', (event) => {
+    if (!ui.confirmingVote) return;
+    event.preventDefault();
+    cancelConfirmation();
   });
 
   /* ---------------- 初始化 ---------------- */
