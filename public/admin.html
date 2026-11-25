@@ -2,158 +2,197 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>组织者后台 · 溯游工作室</title>
   <link rel="stylesheet" href="/styles.css" />
   <style>
-    .admin-wrap { max-width: 1080px; margin: 0 auto; padding: 40px 24px 80px; }
-    .admin-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 28px; }
-    .admin-top h1 { font-size: 24px; letter-spacing: -0.01em; }
-    .admin-top p { font-size: 12px; color: var(--dim); margin-top: 2px; }
-    .admin-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-    .btn {
-      font-size: 13px; font-weight: 600; padding: 9px 16px; border-radius: 10px;
-      border: 1px solid var(--line-strong); background: rgba(255,255,255,.04); color: var(--text);
-      transition: all .2s;
-    }
-    .btn:hover { background: rgba(255,255,255,.08); border-color: rgba(245,197,66,.45); }
-    .btn.primary { background: var(--accent); color: var(--action-ink); border: 0; }
-    .btn.primary:hover { filter: brightness(1.07); }
-    .btn.danger { border-color: rgba(255, 92, 92, .4); color: #ff8f8f; }
-    .btn.danger:hover { background: rgba(255, 92, 92, .12); }
-    .btn[disabled] { opacity: .5; cursor: default; }
-
-    .login-shell { min-height: 68vh; display: flex; align-items: center; justify-content: center; }
-    .login-card {
-      width: min(400px, 100%); background: linear-gradient(180deg, var(--panel-2), var(--bg-soft));
-      border: 1px solid var(--line-strong); border-radius: 20px; padding: 34px 30px;
-      box-shadow: var(--shadow);
-    }
-    .login-card h2 { font-size: 20px; margin-bottom: 6px; }
-    .login-card p { font-size: 13px; color: var(--dim); margin-bottom: 22px; }
-    .login-card input {
-      width: 100%; padding: 12px 14px; border-radius: 10px; font-size: 14px;
-      background: rgba(255,255,255,.05); border: 1px solid var(--line-strong); color: var(--text);
-      outline: none; transition: border-color .2s;
-    }
-    .login-card input:focus { border-color: rgba(245,197,66,.6); }
-    .login-card .btn { width: 100%; margin-top: 14px; padding: 12px; }
-    .login-err { min-height: 18px; margin-top: 10px; font-size: 12px; color: #ff8f8f; }
-
-    .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 14px; margin-bottom: 26px; }
-    .stat-card {
-      background: linear-gradient(180deg, rgba(21,25,34,.9), rgba(14,16,22,.9));
-      border: 1px solid var(--line); border-radius: 16px; padding: 18px 20px;
-    }
-    .stat-card .k { font-size: 12px; color: var(--dim); letter-spacing: .08em; }
-    .stat-card .v { font-size: 28px; font-weight: 800; margin-top: 6px; font-variant-numeric: tabular-nums; }
-    .stat-card .v small { font-size: 13px; color: var(--dim); font-weight: 500; }
-    .live-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #46d27f; margin-right: 7px; box-shadow: 0 0 8px #46d27f; }
-
-    .cat-block {
-      background: rgba(18, 21, 29, .75); border: 1px solid var(--line); border-radius: 16px;
-      margin-bottom: 12px; overflow: hidden;
-    }
-    .cat-block-head {
-      display: flex; align-items: center; gap: 12px; padding: 15px 20px; cursor: pointer;
-      user-select: none; transition: background .2s;
-    }
-    .cat-block-head:hover { background: rgba(255,255,255,.03); }
-    .cat-block-head .tag {
-      font-size: 10px; padding: 2px 8px; border-radius: 99px; border: 1px solid var(--line);
-      color: var(--dim); flex-shrink: 0;
-    }
-    .cat-block-head .cn { font-size: 15px; font-weight: 700; }
-    .cat-block-head .en { font-size: 11px; color: var(--dim); letter-spacing: .06em; }
-    .cat-block-head .total { margin-left: auto; font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
-    .cat-block-head .caret { color: var(--dim); font-size: 11px; transition: transform .2s; }
-    .cat-block.open .caret { transform: rotate(180deg); }
-    .cat-block-body { display: none; padding: 4px 20px 18px; border-top: 1px solid var(--line); }
-    .cat-block.open .cat-block-body { display: block; }
-    .res-row { margin-top: 12px; }
-    .res-line { display: flex; align-items: center; gap: 10px; font-size: 13px; }
-    .res-line .name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .res-line .num { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12px; }
-    .res-line .pct { font-weight: 700; width: 52px; text-align: right; font-variant-numeric: tabular-nums; }
-    .res-bar { height: 5px; background: rgba(255,255,255,.06); border-radius: 99px; margin-top: 6px; overflow: hidden; }
-    .res-bar i { display: block; height: 100%; background: linear-gradient(90deg,#6943aa,var(--highlight)); border-radius: 99px; }
-    .res-row.top .res-bar i { background: linear-gradient(90deg,var(--highlight),var(--mint)); }
-
-    .recent { margin-top: 26px; background: rgba(18,21,29,.75); border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
-    .recent h3 { font-size: 15px; margin-bottom: 12px; }
-    .recent-row { display: flex; align-items: center; gap: 12px; padding: 7px 0; border-top: 1px dashed rgba(255,255,255,.06); font-size: 12px; }
-    .recent-row:first-of-type { border-top: 0; }
-    .recent-row .t { color: var(--dim); flex-shrink: 0; font-variant-numeric: tabular-nums; }
-    .recent-row .c { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .recent-row .n { margin-left: auto; color: var(--highlight); font-weight: 600; flex-shrink: 0; }
-    .empty { color: var(--dim); font-size: 13px; padding: 10px 0; }
+    .admin-wrap { max-width: 1120px; margin: auto; padding: clamp(20px, 4vw, 44px) var(--gutter) 55px; }
+    .admin-body .topbar { background: var(--paper) url("/brand/suyou-editorial.webp") right 43% / auto 270% no-repeat; }
+    .admin-body .topnav a { padding-inline: 10px; background: var(--paper); }
+    .admin-body .brand { width: fit-content; max-width: 100%; background: var(--paper); }
     .hidden { display: none !important; }
+
+    .admin-masthead {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px 20px;
+      padding: 17px clamp(14px, 3vw, 27px);
+      background: var(--paper);
+      color: var(--ink);
+    }
+    .admin-masthead h1 { font-size: clamp(24px, 4vw, 43px); line-height: 1.14; letter-spacing: -.025em; }
+    .admin-masthead p { color: #593d73; font-size: 13px; font-variant-numeric: tabular-nums; }
+    .admin-actions { display: flex; flex-wrap: wrap; gap: 8px; padding-block: 12px; border-bottom: 1px solid var(--line); }
+    .admin-actions .btn:last-child { margin-inline-start: auto; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 6px 13px;
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      background: transparent;
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .btn:hover:not(:disabled) { border-color: var(--highlight); background: var(--panel); }
+    .btn[disabled] { opacity: .55; }
+    .btn.danger { border-color: #ff6b7366; color: #ffb2b8; }
+    .btn.danger:hover:not(:disabled) { border-color: #ffb2b8; background: #ff6b731c; }
+
+    .login-shell { display: grid; place-items: center; min-height: min(68dvh, 560px); padding: 25px 0; }
+    .login-card { width: min(100%, 400px); }
+    .login-card h1 { font-size: clamp(33px, 6vw, 52px); line-height: 1.13; letter-spacing: -.035em; }
+    .login-card > p { margin: 9px 0 23px; color: var(--muted); font-size: 14px; }
+    .login-card label { display: block; margin-bottom: 7px; color: var(--highlight); font-size: 14px; font-weight: 700; }
+    .login-card input {
+      width: 100%;
+      min-height: 46px;
+      padding: 8px 12px;
+      border: 1px solid transparent;
+      border-radius: 2px;
+      background: var(--paper);
+      color: var(--ink);
+    }
+    .login-card .button-primary { width: 100%; margin-top: 13px; }
+    .login-err, .dashboard-notice { color: #ffb2b8; font-size: 13px; }
+    .login-err:not(:empty), .dashboard-notice:not(:empty) { margin-top: 10px; }
+    .dashboard-notice[data-state="success"] { color: var(--mint); }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-block: 20px 27px;
+      padding-block: 16px;
+      background: var(--panel);
+    }
+    .stat-card { min-width: 0; padding-inline: clamp(9px, 3vw, 25px); }
+    .stat-card + .stat-card { border-inline-start: 1px solid var(--line); }
+    .stat-card .k { color: var(--muted); font-size: 13px; line-height: 1.25; }
+    .stat-card .v { margin-top: 7px; color: var(--mint); font: 800 clamp(30px, 5vw, 46px)/.95 var(--display); font-variant-numeric: tabular-nums; }
+    .stat-card .v small { color: var(--muted); font-size: .48em; }
+    .admin-section { margin-top: 30px; }
+    .admin-section h2 { margin-bottom: 9px; padding-bottom: 9px; border-bottom: 1px solid var(--line); font-size: clamp(18px, 2.7vw, 26px); }
+
+    .cat-block { border-bottom: 1px solid var(--line); }
+    .cat-block-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto 20px;
+      align-items: center;
+      gap: 10px;
+      min-height: 52px;
+      padding: 7px 9px;
+      list-style: none;
+      cursor: pointer;
+    }
+    .cat-block-head::-webkit-details-marker { display: none; }
+    .cat-block-head:hover, .cat-block[open] > .cat-block-head { background: var(--panel); }
+    .cat-block-head :is(.cn, .en) { display: block; overflow-wrap: anywhere; }
+    .cat-block-head .cn { font-size: 15px; font-weight: 750; }
+    .cat-block-head .en { color: var(--muted); font-size: 11px; }
+    .cat-block-head .total { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .cat-block-head .caret { transform: rotate(90deg); transition: transform 160ms ease; }
+    .cat-block[open] .caret { transform: rotate(-90deg); }
+    .cat-block-body { padding: 0 9px 14px; }
+    .res-row { margin-top: 11px; }
+    .res-line { display: flex; align-items: center; gap: 9px; font-size: 13px; font-variant-numeric: tabular-nums; }
+    .res-line .name { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+    .res-line .name span, .res-line .num { color: var(--muted); }
+    .res-line .num, .res-line .pct { flex: none; }
+    .res-line .pct { min-width: 39px; text-align: right; }
+    .res-bar { height: 4px; margin-top: 4px; background: var(--line); }
+    .res-bar i { display: block; height: 100%; background: var(--highlight); }
+    .res-row.top .res-bar i { background: var(--mint); }
+
+    .recent-row { display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr); gap: 7px 16px; padding: 9px; border-bottom: 1px solid var(--line); font-size: 13px; }
+    .recent-row .t, .recent-row .c { color: var(--muted); }
+    .recent-row .n { overflow-wrap: anywhere; font-weight: 650; }
+    .empty { padding: 10px 9px; color: var(--muted); font-size: 13px; }
+    .admin-maintenance { display: flex; justify-content: flex-end; margin-top: 28px; padding-top: 11px; border-top: 1px solid var(--line); }
+
+    @media (max-width: 500px) {
+      .admin-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .admin-actions .btn:last-child { margin-inline-start: 0; }
+      .stat-row { padding-block: 13px; }
+      .stat-card .k { font-size: 11px; }
+      .recent-row { gap: 5px 8px; padding-inline: 5px; font-size: 12px; }
+      .recent-row .c { overflow-wrap: anywhere; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .cat-block-head .caret { transition: none; }
+    }
   </style>
 </head>
-<body>
-  <div class="ambient" aria-hidden="true"></div>
-
+<body class="admin-body">
   <header class="topbar">
     <div class="topbar-inner">
       <a class="brand" href="/">
         <span class="brand-mark">溯游工作室</span>
-        <span class="brand-text">2026 后台</span>
+        <span class="brand-text" lang="en">SUYO STUDIO</span>
       </a>
-      <nav class="topnav">
-        <a href="/">返回投票页</a>
+      <nav class="topnav" aria-label="后台导航">
+        <a href="/">返回票选</a>
       </nav>
     </div>
   </header>
 
-  <div class="admin-wrap">
-    <!-- 登录 -->
-    <div class="login-shell" id="loginView">
+  <main class="admin-wrap">
+    <section class="login-shell" id="loginView" aria-labelledby="loginTitle">
       <form class="login-card" id="loginForm">
-        <h2>管理员登录</h2>
-        <p>输入后台密码查看实时投票数据。</p>
-        <input type="password" id="passwordInput" placeholder="请输入后台密码" autocomplete="current-password" required />
-        <button class="btn primary" type="submit" id="loginBtn">进入后台</button>
-        <div class="login-err" id="loginErr"></div>
+        <h1 id="loginTitle">后台登录</h1>
+        <p>查看本次社团票选的实时统计。</p>
+        <label for="passwordInput">管理密码</label>
+        <input type="password" id="passwordInput" autocomplete="current-password" required />
+        <button class="button-primary" type="submit" id="loginBtn">进入后台</button>
+        <p class="login-err" id="loginErr" role="status"></p>
       </form>
-    </div>
+    </section>
 
-    <!-- 数据面板 -->
-    <div id="dashView" class="hidden">
-      <div class="admin-top">
-        <div>
-          <h1>实时投票数据</h1>
-          <p><span class="live-dot"></span><span id="lastUpdated">加载中…</span></p>
-        </div>
-        <div class="admin-actions">
-          <button class="btn" id="refreshBtn">刷新</button>
-          <button class="btn" id="autoBtn">自动刷新：开</button>
-          <button class="btn" id="exportBtn">导出 CSV</button>
-          <button class="btn danger" id="resetBtn">清空数据</button>
-          <button class="btn" id="logoutBtn">退出登录</button>
-        </div>
+    <section id="dashView" class="hidden" aria-labelledby="statsTitle">
+      <div class="admin-masthead">
+        <h1 id="statsTitle" tabindex="-1">投票统计</h1>
+        <p id="lastUpdated">加载中…</p>
       </div>
+      <div class="admin-actions">
+        <button class="btn" type="button" id="refreshBtn">刷新</button>
+        <button class="btn" type="button" id="autoBtn" aria-pressed="true">自动刷新：开</button>
+        <button class="btn" type="button" id="exportBtn">导出 CSV</button>
+        <button class="btn" type="button" id="logoutBtn">退出登录</button>
+      </div>
+      <p class="dashboard-notice" id="dashboardNotice" role="status"></p>
 
       <div class="stat-row">
         <div class="stat-card"><div class="k">累计票数</div><div class="v" id="dTotalVotes">--</div></div>
         <div class="stat-card"><div class="k">参与人数</div><div class="v" id="dVoters">--</div></div>
-        <div class="stat-card"><div class="k">已有票数的奖项</div><div class="v" id="dCatVoted">-- <small>/ 30</small></div></div>
-        <div class="stat-card"><div class="k">数据文件</div><div class="v" style="font-size:14px;font-weight:600;line-height:1.8">storage/votes.json</div></div>
+        <div class="stat-card"><div class="k">已有票数的奖项</div><div class="v" id="dCatVoted">--</div></div>
       </div>
 
-      <div id="catList"></div>
-
-      <div class="recent">
-        <h3>最近投票</h3>
+      <section class="admin-section" aria-labelledby="awardStatsTitle">
+        <h2 id="awardStatsTitle">奖项统计</h2>
+        <div id="catList"></div>
+      </section>
+      <section class="admin-section" aria-labelledby="recentTitle">
+        <h2 id="recentTitle">最近投票</h2>
         <div id="recentList"><div class="empty">暂无投票记录</div></div>
+      </section>
+      <div class="admin-maintenance">
+        <button class="btn danger" type="button" id="resetBtn">清空数据</button>
       </div>
-    </div>
-  </div>
+    </section>
+  </main>
+
 
   <script>
     (() => {
       const $ = (s) => document.querySelector(s);
       const loginView = $('#loginView');
       const dashView = $('#dashView');
+      const notice = $('#dashboardNotice');
+      const catList = $('#catList');
       let statsData = null;
       let autoTimer = null;
       let autoOn = true;
@@ -162,16 +201,18 @@
       const TAB_NAMES = { game: '游戏类', esports: '电竞类', production: '制作类' };
 
       async function api(url, options = {}) {
-        const res = await fetch(url, {
-          headers: { 'Content-Type': 'application/json' },
-          ...options
-        });
-        let data = null;
-        try { data = await res.json(); } catch (e) { data = {}; }
-        return { ok: res.ok, status: res.status, data };
+        try {
+          const res = await fetch(url, { headers: { 'Content-Type': 'application/json' }, ...options });
+          const data = await res.json().catch(() => ({}));
+          return { ok: res.ok, status: res.status, data };
+        } catch {
+          return { ok: false, status: 0, data: { error: '网络异常，请重试。' } };
+        }
       }
 
       function showLogin() {
+        statsData = null;
+        notice.textContent = '';
         loginView.classList.remove('hidden');
         dashView.classList.add('hidden');
         stopAuto();
@@ -190,11 +231,17 @@
             showLogin();
             return;
           }
-          if (!silent) alert('加载失败：' + (data.error || '未知错误'));
+          if (!silent) report('统计加载失败：' + (data.error || '请重试。'));
           return;
         }
         statsData = data;
         render();
+        if (dashView.classList.contains('hidden')) showDash();
+      }
+
+      function report(message, state = 'error') {
+        notice.dataset.state = state;
+        notice.textContent = message;
       }
 
       function render() {
@@ -205,13 +252,15 @@
         $('#dCatVoted').innerHTML = `${votedCats} <small>/ ${d.categories.length}</small>`;
         $('#lastUpdated').textContent = '最后更新 ' + new Date().toLocaleTimeString('zh-CN');
 
-        $('#catList').innerHTML = d.categories
-          .map((c, idx) => {
+        const expandedIds = new Set([...catList.querySelectorAll('details[open]')].map((node) => node.dataset.id));
+        const focusedId = document.activeElement.closest('.cat-block-head')?.parentElement.dataset.id;
+        catList.innerHTML = d.categories
+          .map((c) => {
             const rows = c.nominees
               .map((n, i) => `
                 <div class="res-row ${i === 0 && n.votes > 0 ? 'top' : ''}">
                   <div class="res-line">
-                    <span class="name"><strong>${n.name}</strong> <span style="color:var(--dim)">${n.en || ''}</span></span>
+                    <span class="name"><strong>${n.name}</strong> <span lang="en">${n.en || ''}</span></span>
                     <span class="num">${fmt(n.votes)} 票</span>
                     <span class="pct">${n.votes > 0 ? n.pct + '%' : '-'}</span>
                   </div>
@@ -219,20 +268,20 @@
                 </div>`)
               .join('');
             return `
-              <div class="cat-block" data-id="${c.id}">
-                <div class="cat-block-head">
-                  <span class="tag">${String(idx + 1).padStart(2, '0')}</span>
-                  <div>
-                    <div class="cn">${c.cn}</div>
-                    <div class="en">${c.en}</div>
-                  </div>
-                  <span class="total">${c.total > 0 ? fmt(c.total) + ' 票' : '暂无投票'}</span>
-                  <span class="caret">▼</span>
-                </div>
+              <details class="cat-block" data-id="${c.id}"${expandedIds.has(c.id) ? ' open' : ''}>
+                <summary class="cat-block-head">
+                  <span>
+                    <span class="cn">${c.cn}</span>
+                    <span class="en" lang="en">${c.en}</span>
+                  </span>
+                  <span class="total">${fmt(c.total)} 票</span>
+                  <img class="caret ui-icon" src="/icons/chevron-right.svg" width="18" height="18" alt="" />
+                </summary>
                 <div class="cat-block-body">${rows || '<div class="empty">暂无提名</div>'}</div>
-              </div>`;
+              </details>`;
           })
           .join('');
+        if (focusedId) catList.querySelector('[data-id="' + CSS.escape(focusedId) + '"] summary')?.focus({ preventScroll: true });
 
         const recentEl = $('#recentList');
         if (d.recent.length === 0) {
@@ -252,12 +301,14 @@
         stopAuto();
         autoTimer = setInterval(() => loadStats(true), 15000);
         $('#autoBtn').textContent = '自动刷新：开';
+        $('#autoBtn').setAttribute('aria-pressed', 'true');
       }
 
       function stopAuto() {
         if (autoTimer) clearInterval(autoTimer);
         autoTimer = null;
         $('#autoBtn').textContent = '自动刷新：关';
+        $('#autoBtn').setAttribute('aria-pressed', 'false');
       }
 
       /* 登录 */
@@ -277,6 +328,7 @@
         if (ok) {
           $('#passwordInput').value = '';
           showDash();
+          $('#statsTitle').focus({ preventScroll: true });
           await loadStats();
         } else {
           errEl.textContent = data.error || '登录失败';
@@ -284,12 +336,19 @@
       });
 
       $('#logoutBtn').addEventListener('click', async () => {
-        await api('/api/admin/logout', { method: 'POST' });
-        statsData = null;
-        showLogin();
+        const { ok, data } = await api('/api/admin/logout', { method: 'POST' });
+        if (ok) {
+          showLogin();
+          $('#passwordInput').focus();
+        } else {
+          report(data.error || '退出失败，请重试。');
+        }
       });
 
-      $('#refreshBtn').addEventListener('click', () => loadStats());
+      $('#refreshBtn').addEventListener('click', () => {
+        notice.textContent = '';
+        loadStats();
+      });
 
       $('#autoBtn').addEventListener('click', () => {
         autoOn = !autoOn;
@@ -318,29 +377,13 @@
         const { ok } = await api('/api/admin/reset', { method: 'POST', body: '{}' });
         if (ok) {
           await loadStats();
-          alert('已清空全部投票数据');
+          report('已清空全部投票数据。', 'success');
         } else {
-          alert('清空失败，请重新登录后再试');
+          report('清空失败，请重新登录后再试。');
         }
       });
 
-      $('#catList').addEventListener('click', (e) => {
-        const head = e.target.closest('.cat-block-head');
-        if (!head) return;
-        head.parentElement.classList.toggle('open');
-      });
-
-      /* 初始化 */
-      (async () => {
-        const { ok, status } = await api('/api/admin/stats');
-        if (ok) {
-          await loadStats();
-          showDash();
-        } else {
-          showLogin();
-          // 首次访问时自动展开第一个请求已消耗，无需处理
-        }
-      })();
+      loadStats();
     })();
   </script>
 </body>
