@@ -10,7 +10,7 @@
   const coverSlideDuration = 500;
   const coverDeadlines = new Map();
   let nextCoverSlot = 0;
-  let coverRotationPaused = false;
+  let coverRotationEnabled = false;
   const heroAward = $('#hero-award');
   const heroVote = $('#hero-vote');
   const heroList = $('#hero-nominee-list');
@@ -100,6 +100,7 @@
             <p class="cat-en" lang="en">${c.en}</p>
             <h3 class="cat-cn">${c.cn}</h3>
             <p class="cat-status">${status}</p>
+            <p class="cat-cover-caption"></p>
           </div>
           <button class="ghost-btn" type="button" data-open="${c.id}" aria-haspopup="dialog">
             ${myVote ? '查看结果' : '去投票'}
@@ -118,6 +119,10 @@
       const distance = (position - index + tiles.length) % tiles.length;
       tile.dataset.coverDepth = distance > tiles.length / 2 ? distance - tiles.length : distance;
     });
+    const card = stage.closest('.cat-card');
+    const category = findCategory(card.dataset.id);
+    const activeId = tiles[index]?.dataset.coverNominee;
+    card.querySelector('.cat-cover-caption').textContent = nomineeName(category, activeId);
   }
 
   function coverDeadline(now) {
@@ -135,7 +140,7 @@
   }
 
   function rotateAwardCovers() {
-    if (document.hidden || modal.open || coverRotationPaused || coverMotionPreference.matches) {
+    if (document.hidden || modal.open || !coverRotationEnabled || coverMotionPreference.matches) {
       coverDeadlines.clear();
       return;
     }
@@ -168,14 +173,22 @@
   function updateCoverMotionToggle() {
     coverDeadlines.clear();
     coverMotionToggle.hidden = coverMotionPreference.matches;
-    coverMotionToggle.textContent = coverRotationPaused ? '继续封面轮换' : '暂停封面轮换';
+    coverMotionToggle.textContent = coverRotationEnabled ? '暂停自动轮换' : '开启自动轮换';
   }
 
   coverMotionToggle.addEventListener('click', () => {
-    coverRotationPaused = !coverRotationPaused;
+    coverRotationEnabled = !coverRotationEnabled;
     updateCoverMotionToggle();
   });
-  coverMotionPreference.addEventListener('change', updateCoverMotionToggle);
+  coverMotionPreference.addEventListener('change', () => {
+    if (coverMotionPreference.matches) coverRotationEnabled = false;
+    updateCoverMotionToggle();
+  });
+  gridEl.addEventListener('focusin', (event) => {
+    if (!coverRotationEnabled || !event.target.matches(':focus-visible')) return;
+    coverRotationEnabled = false;
+    updateCoverMotionToggle();
+  });
   document.addEventListener('visibilitychange', () => coverDeadlines.clear());
   updateCoverMotionToggle();
   setInterval(rotateAwardCovers, 125);
@@ -587,7 +600,10 @@
       return;
     }
     const activeCover = card.querySelector('.cat-cover[data-cover-depth="0"]');
-    openModal(card.dataset.id, activeCover?.dataset.coverNominee);
+    const clickedCover = e.target.closest('[data-cover-nominee]');
+    // 换场中以指针下仍处于前层的图片为准。
+    const frontArtwork = clickedCover && Number(getComputedStyle(clickedCover).zIndex) > 1;
+    openModal(card.dataset.id, (frontArtwork ? clickedCover : activeCover)?.dataset.coverNominee);
   });
 
   picker.addEventListener('keydown', (event) => {

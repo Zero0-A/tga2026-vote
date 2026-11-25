@@ -351,6 +351,8 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
 .cat-en { color: var(--dim); font-size: 12px; line-height: 1.22; }
 .cat-cn { margin-top: 2px; overflow-wrap: anywhere; font-size: clamp(17px, 2vw, 25px); font-weight: 800; line-height: 1.22; }
 .cat-status { margin-top: 5px; overflow-wrap: anywhere; color: var(--muted); font-size: 12px; }
+.cat-cover-caption { margin-top: 2px; overflow: hidden; color: var(--dim); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.cat-cover-caption:empty { display: none; }
 .cat-count { margin-right: 5px; color: var(--mint); font-weight: 750; }
 .ghost-btn .ui-icon { width: 19px; height: 19px; }
 
