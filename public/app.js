@@ -548,6 +548,13 @@
   });
 
   recruitOpen.addEventListener('click', () => {
+    const posters = recruitDialog.querySelector('.recruit-posters');
+    if (posters.childElementCount === 1) {
+      const set = posters.firstElementChild;
+      for (const image of set.children) image.loading = 'eager';
+      // 四组等高的海报让轨道平移一组时，斜切视窗仍铺满同一图案。
+      posters.append(set.cloneNode(true), set.cloneNode(true), set.cloneNode(true));
+    }
     recruitStatus.textContent = '';
     recruitDialog.showModal();
   });
