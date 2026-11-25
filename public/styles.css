@@ -466,8 +466,8 @@ body:has(#about:target) .site-nav-sections a[href="#about"]::after { opacity: 1;
 .about { padding-bottom: 46px; scroll-margin-top: calc(var(--bar) + env(safe-area-inset-top) + 12px); }
 .about-card { padding-block: 20px 8px; border-top: 1px solid var(--line); }
 .about h2 { font-size: clamp(20px, 2.6vw, 29px); }
-.about-card p, .about-card ul { max-width: 66ch; margin-top: 11px; color: var(--muted); font-size: 14px; }
-.about-card ul { display: grid; gap: 6px; padding-left: 1.25em; }
+.about-card p, .about-card ul { margin-top: 11px; color: var(--muted); font-size: 14px; }
+.about-card ul { display: grid; gap: 6px; max-width: 66ch; padding-left: 1.25em; }
 .about-source { text-decoration: underline; text-underline-offset: 3px; }
 .footer { border-top: 1px solid var(--line); }
 .footer-inner { padding-block: 20px max(22px, env(safe-area-inset-bottom)); font-size: 13px; font-weight: 650; }
