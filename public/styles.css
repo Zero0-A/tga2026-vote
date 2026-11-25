@@ -480,8 +480,31 @@ body:has(#about:target) .site-nav-sections a[href="#about"]::after { opacity: 1;
 .about-card p, .about-card ul { margin-top: 11px; color: var(--muted); font-size: 14px; }
 .about-card ul { display: grid; gap: 6px; max-width: 66ch; padding-left: 1.25em; }
 .about-source { text-decoration: underline; text-underline-offset: 3px; }
-.footer { border-top: 1px solid var(--line); }
-.footer-inner { padding-block: 20px max(22px, env(safe-area-inset-bottom)); font-size: 13px; font-weight: 650; }
+.footer { border-top: 1px solid var(--line); background: #140a23; }
+.footer-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 32px;
+  padding-block: clamp(20px, 3vw, 32px) max(clamp(24px, 3vw, 34px), env(safe-area-inset-bottom));
+}
+.footer-studio { font-size: clamp(18px, 2vw, 22px); font-weight: 800; line-height: 1.25; }
+.footer-event { margin-top: 5px; color: var(--dim); font-size: 13px; }
+.footer-invite { color: var(--muted); font-size: 14px; }
+.footer-recruit {
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--mint);
+  font-weight: 750;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  white-space: nowrap;
+}
+.footer-recruit:hover { color: var(--mint-hover); }
 
 @media (max-width: 940px) {
   .grid { grid-template-columns: minmax(0, 1fr); }

@@ -1,7 +1,6 @@
 (() => {
   const $ = (sel) => document.querySelector(sel);
   const gridEl = $('#categoryGrid');
-  const recruitOpen = $('#recruitOpen');
   const recruitDialog = $('#recruitDialog');
   const recruitNumber = $('#recruitNumber');
   const recruitStatus = $('#recruitStatus');
@@ -553,7 +552,7 @@
     tabs[next].focus();
   });
 
-  recruitOpen.addEventListener('click', () => {
+  function openRecruitDialog() {
     const posters = recruitDialog.querySelector('.recruit-posters');
     if (posters.childElementCount === 1) {
       const set = posters.firstElementChild;
@@ -563,7 +562,11 @@
     }
     recruitStatus.textContent = '';
     recruitDialog.showModal();
-  });
+  }
+
+  for (const trigger of document.querySelectorAll('button[aria-controls="recruitDialog"]')) {
+    trigger.addEventListener('click', openRecruitDialog);
+  }
 
   $('#recruitCopy').addEventListener('click', async () => {
     try {
