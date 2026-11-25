@@ -1,5 +1,4 @@
-const DAY_MS = 24 * 60 * 60 * 1000;
-const BEIJING_OFFSET = 8 * 60 * 60 * 1000;
+const { DAY_MS, dayKey, ballotHistory } = require('./ballots');
 const DEVICES = ['mobile', 'desktop', 'tablet', 'unknown'];
 
 function deviceFromHeaders(headers) {
@@ -10,10 +9,6 @@ function deviceFromHeaders(headers) {
   if (/Android/i.test(agent)) return 'tablet';
   if (/Windows NT|Macintosh|X11|CrOS|Linux/i.test(agent)) return 'desktop';
   return 'unknown';
-}
-
-function dayKey(timestamp) {
-  return new Date(timestamp + BEIJING_OFFSET).toISOString().slice(0, 10);
 }
 
 function emptyAnalytics() {
@@ -72,15 +67,17 @@ function reportAnalytics(analytics, votes, now = Date.now()) {
 
   let legacyVotes = 0;
   for (const category of Object.values(votes)) {
-    for (const [voterId, vote] of Object.entries(category || {})) {
-      if (!DEVICES.includes(vote?.device) || !Number.isFinite(vote.ts)) {
-        legacyVotes++;
-        continue;
-      }
-      const day = days(dayKey(vote.ts));
-      for (const bucket of [total.all, total[vote.device], day.all, day[vote.device]]) {
-        bucket.votes++;
-        bucket.voters.add(voterId);
+    for (const [voterId, history] of Object.entries(category || {})) {
+      for (const vote of ballotHistory(history)) {
+        if (!DEVICES.includes(vote?.device) || !Number.isFinite(vote.ts)) {
+          legacyVotes++;
+          continue;
+        }
+        const day = days(dayKey(vote.ts));
+        for (const bucket of [total.all, total[vote.device], day.all, day[vote.device]]) {
+          bucket.votes++;
+          bucket.voters.add(voterId);
+        }
       }
     }
   }

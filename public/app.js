@@ -37,6 +37,7 @@
   };
 
   const fmt = (n) => Number(n || 0).toLocaleString('zh-CN');
+  const dailyVoteRule = '每人每天每个奖项限投一票';
 
   /* ---------------- 封面图 ---------------- */
   function coverCell(n, extraClass = '') {
@@ -73,7 +74,7 @@
       const myVote = ui.data.myVotes[c.id];
       const covers = c.nominees.filter((nominee) => nominee.cover);
       const status = myVote
-        ? '<span class="cat-count">已投票</span>你的选择：' + nomineeName(c, myVote)
+        ? '<span class="cat-count">今日已投</span>你的选择：' + nomineeName(c, myVote)
         : c.nominees.length + ' 个提名 · ' + fmt(c.total) + ' 票';
       return `
         <article class="cat-card" data-id="${c.id}">
@@ -91,7 +92,7 @@
             <p class="cat-cover-caption"></p>
           </div>
           <button class="ghost-btn" type="button" data-open="${c.id}" aria-haspopup="dialog">
-            ${myVote ? '查看结果' : '去投票'}
+            ${myVote ? '查看今日投票' : '去投票'}
             <img class="ui-icon" src="/icons/arrow-up-right.svg" width="19" height="19" alt="" />
           </button>
         </article>`;
@@ -254,8 +255,8 @@
 
     modalNotice.textContent = ui.voteError;
     modalTally.textContent = '本奖项累计 ' + fmt(category.total) + ' 票';
-    modalMy.textContent = myVote ? `你的选择：${nomineeName(category, myVote)}` : '';
-    modalHint.textContent = myVote ? '本奖项已完成投票' : '每人每个奖项限投一票';
+    modalMy.textContent = myVote ? `今日选择：${nomineeName(category, myVote)}` : '';
+    modalHint.textContent = myVote ? '今日已投，次日 00:00 可再投（北京时间）' : dailyVoteRule;
     const position = `提名 ${index + 1} / ${category.nominees.length}`;
     $('#nomineePosition').textContent = position;
     $('#desktopNomineePosition').textContent = position;
@@ -371,7 +372,7 @@
       ballotActions.append(confirmation);
     } else {
       const voteButton = element('button', 'vote-btn' + (chosen ? ' voted-btn' : ''),
-        chosen ? '已投给该候选' : myVote ? '本奖项已投票' : ui.busy ? '提交中…' : ui.voteError ? '重试投票' : type?.vote || '投给这款游戏');
+        chosen ? '今日已投给该候选' : myVote ? '本奖项今日已投' : ui.busy ? '提交中…' : ui.voteError ? '重试投票' : type?.vote || '投给这款游戏');
       voteButton.type = 'button';
       voteButton.dataset.vote = nominee.id;
       voteButton.disabled = Boolean(myVote) || ui.busy;
@@ -451,6 +452,7 @@
       });
       const data = await res.json();
       if (res.ok) {
+        updateVoteClock(data);
         const cat = findCategory(categoryId);
         if (cat) cat.total = data.categoryTotal;
         ui.data.myVotes[categoryId] = data.votedFor;
@@ -460,11 +462,12 @@
         renderCards();
         if (!modal.open) showToast('投票成功，感谢参与！');
       } else if (res.status === 409) {
+        updateVoteClock(data);
         ui.data.myVotes[categoryId] = data.votedFor;
         const cat = findCategory(categoryId);
         if (cat) cat.total = data.categoryTotal;
         renderCards();
-        if (!modal.open) showToast('你已经在该奖项投过票了');
+        if (!modal.open) showToast('你今天已经在该奖项投过票了');
       } else {
         error = data.error || '投票失败，请重试。';
       }
@@ -713,16 +716,80 @@
     cancelConfirmation();
   });
 
-  /* ---------------- 初始化 ---------------- */
+  /* ---------------- 每日投票状态与初始化 ---------------- */
+  let voteDayTimer;
+  let voteDayDeadline = Infinity;
+  let checkingVoteDay = false;
+
+  async function fetchVoteState(recordVisit = false) {
+    const res = await fetch('/api/state', recordVisit ? { headers: { 'X-Suyou-View': '1' } } : {});
+    if (!res.ok) throw new Error('bad status');
+    return res.json();
+  }
+
+  function scheduleVoteDay(clock) {
+    if (!Number.isFinite(clock.voteDayEndsAt) || !Number.isFinite(clock.serverNow)) return;
+    const delay = Math.max(50, clock.voteDayEndsAt - clock.serverNow + 100);
+    voteDayDeadline = performance.now() + delay;
+    clearTimeout(voteDayTimer);
+    voteDayTimer = setTimeout(refreshVoteDay, delay);
+  }
+
+  function updateVoteClock(clock) {
+    if (!Number.isFinite(clock.voteDayEndsAt)) return;
+    if (ui.data.voteDayEndsAt !== clock.voteDayEndsAt) {
+      ui.data.myVotes = {};
+      ui.data.voteDayEndsAt = clock.voteDayEndsAt;
+    }
+    scheduleVoteDay(clock);
+  }
+
+  async function refreshVoteDay() {
+    if (checkingVoteDay || document.hidden || performance.now() < voteDayDeadline) return;
+    clearTimeout(voteDayTimer);
+    if (ui.busy) {
+      voteDayTimer = setTimeout(refreshVoteDay, 1000);
+      return;
+    }
+    const previousDayEnd = ui.data.voteDayEndsAt;
+    checkingVoteDay = true;
+    try {
+      const data = await fetchVoteState();
+      if (ui.data.voteDayEndsAt !== previousDayEnd) return;
+      if (ui.busy) {
+        voteDayTimer = setTimeout(refreshVoteDay, 1000);
+        return;
+      }
+      if (data.voteDayEndsAt !== previousDayEnd) {
+        const focusAction = ballotActions.contains(document.activeElement);
+        ui.data = data;
+        ui.voteError = '';
+        renderStats();
+        renderCards();
+        if (ui.openCategory) {
+          renderModal(ui.openCategory);
+          if (focusAction) ballotActions.querySelector('button:not(:disabled)')?.focus({ preventScroll: true });
+        }
+      }
+      scheduleVoteDay(data);
+    } catch {
+      voteDayTimer = setTimeout(refreshVoteDay, 30000);
+    } finally {
+      checkingVoteDay = false;
+    }
+  }
+
+  document.addEventListener('visibilitychange', refreshVoteDay);
+  window.addEventListener('pageshow', refreshVoteDay);
+
   async function init() {
     try {
-      const res = await fetch('/api/state', { headers: { 'X-Suyou-View': '1' } });
-      if (!res.ok) throw new Error('bad status');
-      ui.data = await res.json();
+      ui.data = await fetchVoteState(true);
       renderFeaturedNominees();
       renderStats();
       renderCards();
       startCountdown(ui.data.event.ceremonyAt);
+      scheduleVoteDay(ui.data);
     } catch (err) {
       gridEl.innerHTML = '<div class="loading">加载失败，请确认服务已启动后刷新页面。</div>';
     }

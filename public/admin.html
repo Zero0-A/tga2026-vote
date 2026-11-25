@@ -275,6 +275,9 @@
       const fmt = (n) => Number(n || 0).toLocaleString('zh-CN');
       const TAB_NAMES = { game: '游戏类', esports: '电竞类', production: '制作类' };
       const DEVICE_NAMES = { all: '全部设备', mobile: '移动端', desktop: '电脑端', tablet: '平板', unknown: '未知' };
+      const formatVoteTime = new Intl.DateTimeFormat('zh-CN', {
+        timeZone: 'Asia/Shanghai', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'
+      });
 
       const fmtRate = rate => rate === null ? '—' : rate + '%';
 
@@ -410,8 +413,7 @@
         } else {
           recentEl.innerHTML = d.recent
             .map((r) => {
-              const t = new Date(r.ts);
-              const time = `${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}:${String(t.getSeconds()).padStart(2, '0')}`;
+              const time = Number.isFinite(r.ts) ? formatVoteTime.format(r.ts) : '时间未知';
               return `<div class="recent-row"><span class="t">${time}<small>${DEVICE_NAMES[r.device] || '未知'}</small></span><span class="c">${r.category}</span><span class="n">${r.nominee}</span></div>`;
             })
             .join('');

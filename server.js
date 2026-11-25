@@ -12,6 +12,7 @@ const categories = require('./data/categories');
 const nomineeDetails = require('./data/nominee-details.json');
 const nomineeVideos = require('./data/nominee-videos.json');
 const { deviceFromHeaders, emptyAnalytics, recordVisit, reportAnalytics } = require('./data/analytics');
+const { dayKey, nextDayAt, ballotHistory, ballotForDay } = require('./data/ballots');
 
 const PORT = Number(process.env.PORT) || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
@@ -126,16 +127,17 @@ function isAdmin(req) {
 function countsForCategory(category) {
   const votes = state.votes[category.id] || {};
   const map = new Map();
-  Object.values(votes).forEach((v) => {
-    const nomineeId = typeof v === 'string' ? v : v && v.nomineeId;
-    if (!nomineeId) return;
-    map.set(nomineeId, (map.get(nomineeId) || 0) + 1);
-  });
+  for (const history of Object.values(votes)) {
+    for (const vote of ballotHistory(history)) {
+      const nomineeId = typeof vote === 'string' ? vote : vote?.nomineeId;
+      if (nomineeId) map.set(nomineeId, (map.get(nomineeId) || 0) + 1);
+    }
+  }
   return category.nominees.map((n) => ({ id: n.id, votes: map.get(n.id) || 0 }));
 }
 
 function categoryTotal(categoryId) {
-  return Object.keys(state.votes[categoryId] || {}).length;
+  return Object.values(state.votes[categoryId] || {}).reduce((sum, history) => sum + ballotHistory(history).length, 0);
 }
 
 function uniqueVoters() {
@@ -147,7 +149,7 @@ function uniqueVoters() {
 }
 
 function totalVotes() {
-  return Object.values(state.votes).reduce((sum, catVotes) => sum + Object.keys(catVotes || {}).length, 0);
+  return Object.keys(state.votes).reduce((sum, categoryId) => sum + categoryTotal(categoryId), 0);
 }
 
 function hasCoverFile(id) {
@@ -158,12 +160,13 @@ function hasCoverFile(id) {
   }
 }
 
-function publicState(voterId) {
+function publicState(voterId, serverNow) {
   const myVotes = {};
   const catVotes = state.votes;
+  const today = dayKey(serverNow);
   categories.forEach((c) => {
-    const v = catVotes[c.id] && catVotes[c.id][voterId];
-    if (v) myVotes[c.id] = typeof v === 'string' ? v : v.nomineeId;
+    const vote = ballotForDay(catVotes[c.id]?.[voterId], today);
+    if (vote) myVotes[c.id] = vote.nomineeId;
   });
   return {
     event: {
@@ -174,6 +177,8 @@ function publicState(voterId) {
       categoryCount: categories.length
     },
     myVotes,
+    serverNow,
+    voteDayEndsAt: nextDayAt(serverNow),
     categories: categories.map((c) => ({
       id: c.id,
       en: c.en,
@@ -282,11 +287,12 @@ async function handleApi(req, res, pathname) {
   // 公共：获取票选数据
   if (req.method === 'GET' && pathname === '/api/state') {
     const voterId = ensureVoter(req, res);
+    const serverNow = Date.now();
     if (req.headers['x-suyou-view'] === '1') {
-      recordVisit(state.analytics, voterId, deviceFromHeaders(req.headers), Date.now());
+      recordVisit(state.analytics, voterId, deviceFromHeaders(req.headers), serverNow);
       saveState();
     }
-    return sendJson(res, 200, publicState(voterId));
+    return sendJson(res, 200, publicState(voterId, serverNow));
   }
 
   // 公共：投票
@@ -303,20 +309,22 @@ async function handleApi(req, res, pathname) {
     if (!category || !validCategory.get(categoryId).has(nomineeId)) {
       return sendJson(res, 400, { error: '无效的奖项或提名' });
     }
-    state.votes[categoryId] = state.votes[categoryId] || {};
-    const existing = state.votes[categoryId][voterId];
+    const ts = Date.now();
+    const voteClock = { serverNow: ts, voteDayEndsAt: nextDayAt(ts) };
+    const votes = state.votes[categoryId] ??= {};
+    const history = ballotHistory(votes[voterId]);
+    const existing = ballotForDay(history, dayKey(ts));
     if (existing) {
-      const existingId = typeof existing === 'string' ? existing : existing.nomineeId;
       return sendJson(res, 409, {
-        error: '你已经在该奖项投过票了',
-        votedFor: existingId,
-        categoryTotal: categoryTotal(categoryId)
+        error: '你今天已经在该奖项投过票了',
+        votedFor: existing.nomineeId,
+        categoryTotal: categoryTotal(categoryId),
+        ...voteClock
       });
     }
-    const ts = Date.now();
     const device = deviceFromHeaders(req.headers);
     state.analytics.startedAt ??= ts;
-    state.votes[categoryId][voterId] = { nomineeId, ts, device };
+    votes[voterId] = [...history, { nomineeId, ts, device }];
     state.log.push({ categoryId, nomineeId, ts, device });
     if (state.log.length > 2000) state.log = state.log.slice(-2000);
     saveState();
@@ -325,7 +333,8 @@ async function handleApi(req, res, pathname) {
       votedFor: nomineeId,
       categoryTotal: categoryTotal(categoryId),
       totalVotes: totalVotes(),
-      voters: uniqueVoters()
+      voters: uniqueVoters(),
+      ...voteClock
     });
   }
 
