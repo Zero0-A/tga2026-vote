@@ -209,35 +209,19 @@
     }));
   }
 
-  function renderCriticReviews(info) {
-    if (!info.score?.criticReviewCount) return null;
-    const reviews = element('details', 'ballot-media');
+  function renderCriticQuote(critic) {
+    const media = element('details', 'ballot-media');
     const toggle = element('summary', 'ballot-media-toggle');
-    toggle.append(icon('chevron-right'), element('span', null, '媒体评测'),
-      element('small', 'ballot-media-count', fmt(info.score.criticReviewCount) + ' 篇'));
-    reviews.append(toggle);
-    if (info.criticReviews?.length) {
-      const list = element('ul', 'ballot-review-list');
-      for (const review of info.criticReviews) {
-        const item = element('li', 'ballot-review');
-        item.append(externalLink(review.outlet, review.quote?.source || review.source),
-          element('span', 'ballot-review-score', review.score + ' / 100'));
-        if (review.quote) {
-          const quote = element('q', null, review.quote.text);
-          quote.lang = review.quote.language || 'en';
-          quote.cite = review.quote.source;
-          const line = element('p', 'ballot-review-quote');
-          line.append(quote);
-          item.append(line);
-        }
-        list.append(item);
-      }
-      reviews.append(list);
-    }
-    const source = externalLink('在 Metacritic 查看全部评测', info.score.source);
+    toggle.append(icon('chevron-right'), element('span', null, '媒体短评'));
+    const line = element('p', 'ballot-review-quote');
+    const quote = element('q', null, critic.text);
+    quote.lang = 'en';
+    quote.cite = critic.source;
+    const source = externalLink(critic.outlet, critic.source);
     source.classList.add('ballot-media-source');
-    reviews.append(source);
-    return reviews;
+    line.append(quote, document.createTextNode(' '), source);
+    media.append(toggle, line);
+    return media;
   }
 
   function renderModal(categoryId, animate = false) {
@@ -338,11 +322,11 @@
       }
     }
     if (links.childElementCount) content.append(links);
-    const reviews = isGame && renderCriticReviews(info);
-    if (reviews) {
+    if (isGame && info.criticQuote) {
+      const media = renderCriticQuote(info.criticQuote);
       const previous = modalBody.firstElementChild;
-      reviews.open = modal.open && previous?.dataset.nid === nominee.id && Boolean(previous.querySelector('.ballot-media[open]'));
-      content.append(reviews);
+      media.open = modal.open && previous?.dataset.nid === nominee.id && Boolean(previous.querySelector('.ballot-media[open]'));
+      content.append(media);
     }
 
     ballotActions.replaceChildren();
@@ -581,6 +565,10 @@
     selectNominee(next.dataset.selectNominee);
     next.focus({ preventScroll: true });
   });
+
+  modal.addEventListener('wheel', (event) => {
+    if (event.deltaY !== 0 && !event.ctrlKey) event.preventDefault();
+  }, { passive: false });
 
   modal.addEventListener('click', (event) => {
     if (event.target.closest('[data-close]')) {
