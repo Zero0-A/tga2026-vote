@@ -3,8 +3,10 @@
   const gridEl = $('#categoryGrid');
   const coverMotionToggle = $('#coverMotionToggle');
   const coverMotionPreference = matchMedia('(prefers-reduced-motion: reduce)');
+  const coverHoverPreference = matchMedia('(any-hover: hover)');
+  const coverDelay = 5000;
+  const coverDeadlines = new WeakMap();
   let coverRotationPaused = false;
-  let coverRotationStep = 0;
   const heroAward = $('#hero-award');
   const heroVote = $('#hero-vote');
   const heroList = $('#hero-nominee-list');
@@ -82,7 +84,13 @@
         : c.nominees.length + ' 个提名 · ' + fmt(categoryTotal(c)) + ' 票';
       return `
         <article class="cat-card" data-id="${c.id}">
-          <div class="cat-cover-stage" data-cover-index="0" aria-hidden="true">${covers.map((nominee) => coverCell(nominee, 'cat-cover')).join('')}</div>
+          <div class="cat-cover-slider" role="group" aria-label="${c.cn}候选封面">
+            ${covers.length > 1 ? `
+              <button class="cat-cover-hit cat-cover-prev" type="button" data-cover-step="-1" aria-label="上一张封面"></button>
+              <button class="cat-cover-hit cat-cover-next" type="button" data-cover-step="1" aria-label="下一张封面"></button>
+              <span class="cat-cover-announcement" role="status"></span>` : ''}
+            <div class="cat-cover-stage" data-cover-index="0" aria-hidden="true">${covers.map((nominee) => coverCell(nominee, 'cat-cover')).join('')}</div>
+          </div>
           <div class="cat-top">
             <p class="cat-en" lang="en">${c.en}</p>
             <h3 class="cat-cn">${c.cn}</h3>
@@ -94,7 +102,11 @@
           </button>
         </article>`;
     }).join('');
-    gridEl.querySelectorAll('.cat-cover-stage').forEach((stage) => showAwardCover(stage, 0));
+    const now = performance.now();
+    gridEl.querySelectorAll('.cat-cover-stage').forEach((stage, row) => {
+      showAwardCover(stage, 0);
+      coverDeadlines.set(stage, now + coverDelay + (row % 5) * 350);
+    });
   }
 
   function showAwardCover(stage, index) {
@@ -106,15 +118,27 @@
     });
   }
 
+  function stepAwardCover(stage, step) {
+    const count = stage.childElementCount;
+    const index = (Number(stage.dataset.coverIndex) + step + count) % count;
+    coverDeadlines.set(stage, performance.now() + coverDelay);
+    showAwardCover(stage, index);
+    return index;
+  }
+
   function rotateAwardCovers() {
     if (document.hidden || modal.open || coverRotationPaused || coverMotionPreference.matches) return;
-    const group = coverRotationStep++ % 3;
-    gridEl.querySelectorAll('.cat-cover-stage').forEach((stage, row) => {
+    const now = performance.now();
+    gridEl.querySelectorAll('.cat-cover-stage').forEach((stage) => {
+      if (stage.childElementCount < 2) return;
       const card = stage.closest('.cat-card');
-      if (row % 3 !== group || stage.childElementCount < 2 || card.matches(':hover, :focus-within')) return;
+      if ((coverHoverPreference.matches && card.matches(':hover')) || card.querySelector(':focus-visible')) {
+        coverDeadlines.set(stage, now + coverDelay);
+        return;
+      }
+      if (now < coverDeadlines.get(stage)) return;
       const box = stage.getBoundingClientRect();
-      if (box.top >= innerHeight || box.bottom <= 0) return;
-      showAwardCover(stage, (Number(stage.dataset.coverIndex) + 1) % stage.childElementCount);
+      if (box.top < innerHeight && box.bottom > 0) stepAwardCover(stage, 1);
     });
   }
 
@@ -129,7 +153,7 @@
   });
   coverMotionPreference.addEventListener('change', updateCoverMotionToggle);
   updateCoverMotionToggle();
-  setInterval(rotateAwardCovers, 1600);
+  setInterval(rotateAwardCovers, 250);
 
   function renderFeaturedNominees() {
     const category = findCategory('goty');
@@ -527,6 +551,16 @@
   gridEl.addEventListener('click', (e) => {
     const card = e.target.closest('.cat-card');
     if (!card) return;
+    const sideCover = e.target.closest('[data-cover-step]');
+    if (sideCover) {
+      const slider = sideCover.closest('.cat-cover-slider');
+      const stage = slider.querySelector('.cat-cover-stage');
+      const index = stepAwardCover(stage, Number(sideCover.dataset.coverStep));
+      const label = stage.children[index].querySelector('img')?.alt;
+      slider.querySelector('.cat-cover-announcement').textContent =
+        '第 ' + (index + 1) + ' 张，共 ' + stage.childElementCount + ' 张' + (label ? '，' + label : '');
+      return;
+    }
     openModal(card.dataset.id);
   });
 
