@@ -103,30 +103,51 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
   padding-inline: var(--gutter);
 }
 .hero { padding-top: clamp(18px, 3vw, 36px); }
-.hero-stage { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); }
-.hero-grid { align-self: center; min-width: 0; padding: 18px clamp(12px, 2vw, 24px) 22px 0; }
+.hero-stage {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  align-items: center;
+  min-height: clamp(282px, 30vw, 410px);
+  overflow: hidden;
+  background: #14091f;
+}
+.hero-grid {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  padding: 30px clamp(22px, 4.5vw, 58px);
+}
+.hero-year {
+  display: block;
+  color: var(--highlight);
+  font: 800 clamp(40px, 5.5vw, 75px)/.93 var(--display);
+  letter-spacing: .035em;
+}
+.hero-title { display: block; margin-top: 6px; }
 .hero-nominees-head h2 span, .cat-en {
   font-family: var(--display);
   font-weight: 800;
   letter-spacing: .11em;
   text-transform: uppercase;
 }
-.hero h1 { font-size: clamp(36px, 5.4vw, 76px); font-weight: 900; line-height: 1.05; letter-spacing: -.045em; }
-.hero-sub { max-width: 32em; margin-top: 13px; color: var(--muted); font-size: 15px; }
+.hero h1 { font-size: clamp(36px, 5.2vw, 69px); font-weight: 900; line-height: 1.06; letter-spacing: -.045em; }
+.hero-sub { max-width: 32em; margin-top: 13px; color: var(--muted); font-size: 15px; text-wrap: balance; }
 .hero-art {
-  display: block;
-  align-self: stretch;
-  width: 100%;
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: auto;
+  max-width: 100%;
   height: 100%;
-  max-height: 225px;
-  aspect-ratio: 2.65;
-  object-fit: cover;
-  object-position: 100% 48%;
+  object-fit: contain;
+  object-position: right center;
+  mask-image: linear-gradient(to right, transparent, #000 22%);
+  pointer-events: none;
 }
 .hero-meta {
-  grid-column: 1 / -1;
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
   align-items: center;
   gap: 12px clamp(14px, 3vw, 34px);
   min-height: 78px;
@@ -164,7 +185,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
 }
 .button-primary:hover:not(:disabled) { background: var(--mint-hover); }
 .button-primary:disabled { opacity: .55; }
-.hero-cta { margin-inline-start: auto; }
+.hero-cta { margin-top: 21px; }
 
 .hero-nominees { margin-top: clamp(23px, 4vw, 40px); }
 .hero-nominees-head {
@@ -366,7 +387,6 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
 @media (max-width: 940px) {
   .grid { grid-template-columns: minmax(0, 1fr); }
   .hero-meta { gap: 11px 22px; }
-  .hero-cta { margin-inline-start: 0; }
   .countdown { gap: 7px; }
   .countdown-boxes { gap: 6px; }
 }
@@ -375,18 +395,30 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
   .topnav a { font-size: 12px; }
   .brand-text { font-size: 9px; }
   .hero { padding-top: 16px; }
-  .hero-stage { grid-template-columns: minmax(0, 1fr); }
-  .hero-grid { padding: 12px 0 14px; }
-  .hero-art { grid-row: 1; height: clamp(48px, 14vw, 82px); aspect-ratio: auto; object-position: 100% 46%; }
-  .hero h1 { font-size: clamp(30px, 9vw, 52px); }
+  .hero-stage { min-height: 0; }
+  .hero-grid { position: static; padding: 0 clamp(14px, 4.5vw, 30px) 19px; }
+  .hero-art {
+    position: static;
+    grid-row: 1;
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 280px;
+    aspect-ratio: 1.69;
+    object-fit: contain;
+    mask-image: linear-gradient(to bottom, #000 95%, transparent);
+  }
+  .hero h1 { font-size: clamp(28px, 9vw, 51px); }
+  .hero-year { position: absolute; top: clamp(54px, 15vw, 107px); font-size: clamp(45px, 14vw, 80px); }
+  .hero-title { margin-top: 0; }
   .hero-sub { margin-top: 8px; font-size: 13px; }
-  .hero-meta { display: grid; gap: 8px; padding-block: 10px; }
+  .hero-meta { display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; padding-block: 10px; }
   .hero-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; }
   .stat + .stat { padding-inline-start: 14px; }
   .stat-value { font-size: 29px; }
   .countdown { flex-wrap: wrap; }
   .cd-box span { font-size: 22px; }
-  .hero-cta { width: 100%; }
+  .hero-cta { width: 100%; margin-top: 13px; }
   .hero-nominees-head { margin-bottom: 9px; }
   .hero-nominees-head h2 span { font-size: 11px; letter-spacing: .07em; }
   .featured-nominee .featured-cover { aspect-ratio: 1; }
