@@ -1,5 +1,6 @@
 const { DAY_MS, dayKey, ballotHistory } = require('./ballots');
 const DEVICES = ['mobile', 'desktop', 'tablet', 'unknown'];
+const CHANNELS = ['qq', 'wechat', 'bilibili', 'xiaohongshu'];
 
 function deviceFromHeaders(headers) {
   const agent = headers['user-agent'] || '';
@@ -15,13 +16,19 @@ function emptyAnalytics() {
   return { startedAt: null, views: {} };
 }
 
-function recordVisit(analytics, voterId, device, timestamp) {
+function recordVisit(analytics, voterId, device, timestamp, source) {
   analytics.startedAt ??= timestamp;
   const date = dayKey(timestamp);
   const day = analytics.views[date] ??= {};
   const group = day[device] ??= { visits: 0, visitors: {} };
   group.visits++;
   group.visitors[voterId] = true;
+
+  const channels = analytics.channels ??= {};
+  const label = source?.trim().toLowerCase();
+  const channel = channels[CHANNELS.includes(label) ? label : 'untagged'] ??= { visits: 0, visitors: {} };
+  channel.visits++;
+  channel.visitors[voterId] = true;
 }
 
 function bucketsByDevice() {
@@ -93,6 +100,10 @@ function reportAnalytics(analytics, votes, now = Date.now()) {
   return {
     since,
     legacyVotes,
+    channels: Object.fromEntries([...CHANNELS, 'untagged'].map(source => {
+      const channel = analytics.channels?.[source];
+      return [source, { visits: channel?.visits ?? 0, visitors: Object.keys(channel?.visitors ?? {}).length }];
+    })),
     summary: summarize(total),
     daily: [...daily].sort(([left], [right]) => left.localeCompare(right))
       .map(([date, groups]) => ({ date, groups: summarize(groups) }))

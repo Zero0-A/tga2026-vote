@@ -408,6 +408,12 @@
     const button = ballotActions.querySelector('.vote-btn:not(:disabled)');
     (nomineeId && button ? button : modal.querySelector('[data-close]')).focus({ preventScroll: true });
     revealThumbnail();
+    fetch('/api/award-view', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ categoryId }),
+      keepalive: true
+    }).catch(() => {});
   }
 
   function revealThumbnail() {
@@ -722,7 +728,9 @@
   let checkingVoteDay = false;
 
   async function fetchVoteState(recordVisit = false) {
-    const res = await fetch('/api/state', recordVisit ? { headers: { 'X-Suyou-View': '1' } } : {});
+    const source = recordVisit && new URLSearchParams(location.search).get('utm_source');
+    const url = source ? '/api/state?utm_source=' + encodeURIComponent(source) : '/api/state';
+    const res = await fetch(url, recordVisit ? { headers: { 'X-Suyou-View': '1' } } : {});
     if (!res.ok) throw new Error('bad status');
     return res.json();
   }

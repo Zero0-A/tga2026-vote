@@ -13,6 +13,8 @@ const nomineeDetails = require('./data/nominee-details.json');
 const nomineeVideos = require('./data/nominee-videos.json');
 const { deviceFromHeaders, emptyAnalytics, recordVisit, reportAnalytics } = require('./data/analytics');
 const { dayKey, nextDayAt, ballotHistory, ballotForDay } = require('./data/ballots');
+const { recordAwardOpen, reportAwardActivity } = require('./data/award-activity');
+const { createArchive, readArchive, listArchives, archiveCsv } = require('./data/archives');
 
 const PORT = Number(process.env.PORT) || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
@@ -21,6 +23,7 @@ const PUBLIC_DIR = path.join(__dirname, 'public');
 const COVER_DIR = path.join(PUBLIC_DIR, 'covers');
 const STORAGE_DIR = path.join(__dirname, 'storage');
 const DATA_FILE = process.env.DATA_FILE || path.join(STORAGE_DIR, 'votes.json');
+const ARCHIVE_DIR = DATA_FILE + '.archives';
 const SESSION_TTL = 12 * 60 * 60 * 1000; // 12 小时
 
 const validCategory = new Map(categories.map((c) => [c.id, new Set(c.nominees.map((n) => n.id))]));
@@ -196,8 +199,8 @@ function publicState(voterId, serverNow) {
   };
 }
 
-function adminStats() {
-  const list = categories.map((c) => {
+function resultSummary() {
+  const resultCategories = categories.map((c) => {
     const counts = countsForCategory(c);
     const total = counts.reduce((s, n) => s + n.votes, 0);
     return {
@@ -214,6 +217,10 @@ function adminStats() {
         .sort((a, b) => b.votes - a.votes)
     };
   });
+  return { totalVotes: totalVotes(), voters: uniqueVoters(), categories: resultCategories };
+}
+
+function adminStats() {
   const recent = state.log
     .slice(-30)
     .reverse()
@@ -228,9 +235,7 @@ function adminStats() {
       };
     });
   return {
-    totalVotes: totalVotes(),
-    voters: uniqueVoters(),
-    categories: list,
+    ...resultSummary(),
     recent,
     analytics: reportAnalytics(state.analytics, state.votes)
   };
@@ -283,16 +288,34 @@ function serveStatic(res, urlPath) {
 }
 
 /* ---------------- 路由 ---------------- */
-async function handleApi(req, res, pathname) {
+async function handleApi(req, res, url) {
+  const { pathname, searchParams } = url;
   // 公共：获取票选数据
   if (req.method === 'GET' && pathname === '/api/state') {
     const voterId = ensureVoter(req, res);
     const serverNow = Date.now();
     if (req.headers['x-suyou-view'] === '1') {
-      recordVisit(state.analytics, voterId, deviceFromHeaders(req.headers), serverNow);
+      recordVisit(state.analytics, voterId, deviceFromHeaders(req.headers), serverNow, searchParams.get('utm_source'));
       saveState();
     }
     return sendJson(res, 200, publicState(voterId, serverNow));
+  }
+
+  if (req.method === 'POST' && pathname === '/api/award-view') {
+    let body;
+    try {
+      body = await readBody(req);
+    } catch {
+      return sendJson(res, 400, { error: '请求格式错误' });
+    }
+    if (!validCategory.has(body?.categoryId)) {
+      return sendJson(res, 400, { error: '无效的奖项' });
+    }
+    const voterId = ensureVoter(req, res);
+    recordAwardOpen(state.analytics, body.categoryId, voterId, Date.now());
+    saveState();
+    res.writeHead(204, { 'Cache-Control': 'no-store' });
+    return res.end();
   }
 
   // 公共：投票
@@ -373,6 +396,42 @@ async function handleApi(req, res, pathname) {
     return sendJson(res, 200, adminStats());
   }
 
+  if (req.method === 'GET' && pathname === '/api/admin/award-activity') {
+    if (!isAdmin(req)) return sendJson(res, 401, { error: '未登录' });
+    const categoryId = searchParams.get('categoryId');
+    const category = categories.find(item => item.id === categoryId);
+    if (!category) return sendJson(res, 404, { error: '未找到奖项' });
+    return sendJson(res, 200, reportAwardActivity(state.analytics, category, state.votes[categoryId]));
+  }
+
+  if (pathname === '/api/admin/archives') {
+    if (!isAdmin(req)) return sendJson(res, 401, { error: '未登录' });
+    if (req.method === 'GET') return sendJson(res, 200, { archives: listArchives(ARCHIVE_DIR) });
+    if (req.method === 'POST') {
+      const archive = createArchive(ARCHIVE_DIR, resultSummary(), state);
+      return sendJson(res, 201, { archive });
+    }
+  }
+
+  const archivePath = pathname.match(/^\/api\/admin\/archives\/([^/]+)\/(results|backup)$/);
+  if (req.method === 'GET' && archivePath) {
+    if (!isAdmin(req)) return sendJson(res, 401, { error: '未登录' });
+    const [, id, format] = archivePath;
+    const archive = readArchive(ARCHIVE_DIR, id);
+    if (!archive) return sendJson(res, 404, { error: '未找到归档' });
+    if (format === 'backup') {
+      return sendJson(res, 200, archive.backup, {
+        'Content-Disposition': 'attachment; filename="suyou-backup-' + id + '.json"'
+      });
+    }
+    res.writeHead(200, {
+      'Content-Type': 'text/csv; charset=utf-8',
+      'Content-Disposition': 'attachment; filename="suyou-results-' + id + '.csv"',
+      'Cache-Control': 'no-store'
+    });
+    return res.end(archiveCsv(archive));
+  }
+
   // 后台：重置数据
   if (req.method === 'POST' && pathname === '/api/admin/reset') {
     if (!isAdmin(req)) return sendJson(res, 401, { error: '未登录' });
@@ -400,7 +459,7 @@ const server = http.createServer(async (req, res) => {
   const pathname = url.pathname;
   try {
     if (pathname.startsWith('/api/')) {
-      await handleApi(req, res, pathname);
+      await handleApi(req, res, url);
       return;
     }
     if (req.method !== 'GET' && req.method !== 'HEAD') {

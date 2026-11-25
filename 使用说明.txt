@@ -31,7 +31,9 @@
 六、数据与备份
   - 所有投票保存在 storage/votes.json（首次运行自动创建）
   - 备份：直接复制该文件
-  - 清零：在后台页面点“清空数据”，或删除 storage/votes.json 后重启
+  - 在后台点击“归档当前结果”，可下载当时的结果 CSV 和原始数据 JSON。服务端归档位于数据文件旁的 .archives 目录（默认 storage/votes.json.archives）
+  - 清零：在后台点击“清空投票数据”。已创建的归档可继续下载
+  - 渠道统计：分享首页时加上 ?utm_source=qq、wechat、bilibili 或 xiaohongshu（每条链接只使用一个值）
 
 七、常用自定义
   - 奖项与提名：data/categories.js
