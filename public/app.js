@@ -299,6 +299,9 @@
       const attribution = element('span', 'score-attribution');
       attribution.append(emblem, element('span', 'score-brand', 'Metacritic'),
         element('small', 'score-platform', score.platform));
+      if (score.criticReviewCount) {
+        attribution.append(element('small', 'score-review-count', fmt(score.criticReviewCount) + ' 篇评测'));
+      }
       badge.append(value, attribution);
       identity.append(badge);
     } else if (isGame && info.metacriticPending) {

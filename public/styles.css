@@ -715,17 +715,17 @@ body:has(#about:target) .site-nav-sections a[href="#about"]::after { opacity: 1;
   grid-template-columns: 12px auto;
   align-items: center;
   column-gap: 5px;
-  row-gap: 4px;
+  row-gap: 3px;
   line-height: 1.15;
 }
 .score-brand { font-size: 11px; font-weight: 750; white-space: nowrap; }
 .score-icon { display: block; width: 12px; height: 12px; border-radius: 50%; }
-.score-platform { grid-column: 2; color: var(--ballot-muted); font-size: 10px; white-space: nowrap; }
+.score-platform, .score-review-count { grid-column: 2; color: var(--ballot-muted); font-size: 10px; white-space: nowrap; }
+.score-review-count { font-variant-numeric: tabular-nums; }
 
 @media (max-width: 1050px) {
   .ballot-score { grid-template-columns: auto; justify-items: center; gap: 6px; }
   .score-value { width: 46px; height: 46px; font-size: 28px; }
-  .score-attribution { row-gap: 3px; }
 }
 
 .ballot-description { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--ballot-rule); }
@@ -909,7 +909,7 @@ body:has(#about:target) .site-nav-sections a[href="#about"]::after { opacity: 1;
   .ballot-entry:has(.ballot-media) .ballot-poster { max-height: 29dvh; }
   .ballot-entry[data-nid="007-first-light"]:has(.ballot-media) .ballot-poster { max-height: none; aspect-ratio: 16 / 9; }
   .ballot-name { font-size: clamp(24px, 7vw, 32px); }
-  .ballot-original, .ballot-studio, .ballot-section-label, .score-platform { color: #593d73; }
+  .ballot-original, .ballot-studio, .ballot-section-label, .score-platform, .score-review-count { color: #593d73; }
   .ballot-studio { font-size: 13px; }
   .ballot-description { margin-top: 13px; padding-top: 8px; border-color: #a68fbf; }
   .ballot-intro { font-size: 14px; }
