@@ -35,8 +35,9 @@
   }
 
   function coverCell(n, extraClass = '') {
+    const directory = extraClass === 'ballot-poster' ? '/covers/' : '/covers/previews/';
     const img = n.cover
-      ? `<img loading="lazy" alt="${n.name} 封面" src="/covers/${n.id}.jpg" onerror="this.remove()" />`
+      ? `<img loading="lazy" alt="${n.name} 封面" src="${directory}${n.id}.jpg" onerror="this.remove()" />`
       : '';
     return `<div class="cover-cell ${extraClass}"><span class="cover-fallback">${initials(n.name)}</span>${img}</div>`;
   }
