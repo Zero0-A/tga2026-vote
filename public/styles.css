@@ -77,25 +77,56 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
 .topnav a { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; font-weight: 700; white-space: nowrap; }
 .topnav a:hover { text-decoration: underline; text-underline-offset: 5px; }
 
-/* 顶部导航：TGA 官网外链按钮 */
-.tga-link {
-  gap: 5px;
-  min-height: 36px !important;
-  padding-inline: 12px;
-  border: 1px solid #8f77ac80;
-  border-radius: 999px;
-  color: var(--ink);
-  transition: border-color .18s ease, color .18s ease, background-color .18s ease;
-}
-.tga-link .ui-icon { width: 14px; height: 14px; filter: none; }
-.tga-link:hover {
-  border-color: var(--ink);
-  background-color: var(--ink);
-  color: var(--paper);
-  text-decoration: none !important;
-}
-.tga-link:hover .ui-icon { filter: invert(91%) sepia(13%) saturate(400%) hue-rotate(200deg); }
 .topbar a:focus-visible, .board-head a:focus-visible { outline-color: var(--ink); }
+
+.site-topbar {
+  background: #160b25;
+  color: var(--text);
+  box-shadow: inset 0 -1px #9c81bf56;
+}
+.site-topbar a:focus-visible { outline-color: var(--mint); }
+.site-topbar .brand { display: flex; align-items: center; gap: 11px; }
+.site-brand-emblem {
+  flex: none;
+  width: 37px;
+  height: 37px;
+  border: 1px solid #edddff44;
+  border-radius: 3px;
+  background: var(--paper) url("/brand/suyou-editorial.webp") 82% 52% / 235% auto no-repeat;
+}
+.site-brand-name { display: grid; gap: 5px; }
+.site-topbar .brand-mark { font-size: 21px; letter-spacing: .035em; }
+.site-topbar .brand-text { color: var(--muted); }
+.site-topbar .topnav { gap: clamp(14px, 2.8vw, 34px); }
+.site-nav-sections, .site-nav-tools { display: flex; align-items: center; }
+.site-nav-sections { gap: clamp(14px, 2.5vw, 30px); }
+.site-nav-tools { gap: 16px; padding-inline-start: 17px; border-inline-start: 1px solid var(--line); }
+.site-nav-sections a { position: relative; color: #e9ddf5; }
+.site-nav-sections a::after {
+  position: absolute;
+  inset: auto 0 4px;
+  height: 2px;
+  background: var(--mint);
+  opacity: 0;
+  content: "";
+}
+.site-topbar .site-nav-sections a:hover,
+body:has(#categories:target) .site-nav-sections a[href="#categories"],
+body:has(#about:target) .site-nav-sections a[href="#about"] { color: var(--mint); text-decoration: none; }
+.site-nav-sections a:hover::after,
+body:has(#categories:target) .site-nav-sections a[href="#categories"]::after,
+body:has(#about:target) .site-nav-sections a[href="#about"]::after { opacity: 1; }
+.site-topbar .tga-link {
+  gap: 6px;
+  min-height: 34px;
+  padding-inline: 11px;
+  border: 1px solid #9e82c181;
+  border-radius: 4px;
+  color: var(--highlight);
+  font-size: 13px;
+}
+.site-topbar .tga-link:hover { border-color: var(--highlight); background: var(--panel); color: var(--text); text-decoration: none; }
+.site-topbar .site-admin-link { color: var(--muted); font-size: 13px; font-weight: 650; }
 
 .hero, .board, .about, .footer-inner {
   max-width: var(--page);
@@ -394,6 +425,15 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
   :root { --bar: 54px; }
   .topnav a { font-size: 12px; }
   .brand-text { font-size: 9px; }
+  .site-topbar .topbar-inner { gap: 8px; }
+  .site-topbar .brand { gap: 7px; }
+  .site-brand-emblem { width: 30px; height: 30px; }
+  .site-brand-name { gap: 3px; }
+  .site-topbar .brand-mark { font-size: 17px; }
+  .site-topbar .topnav { gap: 11px; }
+  .site-nav-sections { gap: 11px; }
+  .site-nav-tools { gap: 8px; padding-inline-start: 9px; }
+  .site-topbar .site-admin-link { font-size: 12px; }
   .hero { padding-top: 16px; }
   .hero-stage { min-height: 0; }
   .hero-grid { position: static; padding: 0 clamp(14px, 4.5vw, 30px) 19px; }
@@ -434,13 +474,18 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
 }
 @media (max-width: 430px) {
   /* 窄屏只留外链图标，避免导航挤压换行 */
-  .tga-link { padding-inline: 9px; gap: 0; }
+  .site-topbar .tga-link { justify-content: center; width: 34px; min-height: 34px; padding-inline: 0; }
   .tga-link .tga-label { display: none; }
 }
 @media (max-width: 370px) {
   .topbar-inner { padding-inline: 12px; }
   .brand-mark { font-size: 17px; }
   .topnav { gap: 8px; }
+  .site-topbar .topnav, .site-nav-sections { gap: 7px; }
+  .site-topbar .topbar-inner, .site-nav-tools, .site-topbar .brand { gap: 6px; }
+  .site-topbar .brand-mark { font-size: 16px; }
+  .site-brand-emblem { width: 26px; height: 26px; }
+  .site-nav-tools { padding-inline-start: 0; border-inline-start: 0; }
   .tab { gap: 3px; font-size: 13px; }
   .cat-card { gap: 7px; }
   .ghost-btn { font-size: 12px; }
