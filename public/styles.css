@@ -731,6 +731,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--mint); outline-
   width: min(1080px, 100% - 48px);
   max-width: none;
   max-height: min(91dvh, 900px);
+  color-scheme: dark;
   margin: auto;
   padding: 0;
   color: var(--text);
@@ -750,6 +751,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--mint); outline-
 .modal::backdrop { background: #080410de; backdrop-filter: blur(5px); }
 
 .modal-head {
+  flex: none;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -775,6 +777,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--mint); outline-
 
 .modal-body {
   min-height: 0;
+  scrollbar-color: #795c9c transparent;
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: 22px;
@@ -785,6 +788,13 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--mint); outline-
   grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr);
   gap: clamp(14px, 3vw, 32px);
   align-items: start;
+}
+
+.ballot-enter { animation: candidate-enter .24s ease-out both; }
+
+@keyframes candidate-enter {
+  from { opacity: .72; transform: translateY(5px); }
+  to { opacity: 1; transform: none; }
 }
 
 .ballot-entry .ballot-poster {
@@ -798,7 +808,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--mint); outline-
 .ballot-poster .cover-fallback { font-size: clamp(38px, 9vw, 85px); }
 .ballot-poster:has(img) .cover-fallback { visibility: hidden; }
 .ballot-copy { min-width: 0; overflow-wrap: anywhere; }
-.ballot-name { font-size: clamp(23px, 4vw, 44px); line-height: 1.12; }
+.ballot-name { font-size: clamp(23px, 4vw, 44px); line-height: 1.15; text-wrap: balance; }
 .ballot-original { color: var(--highlight); font-size: clamp(14px, 2vw, 20px); margin-top: 5px; }
 .ballot-studio { margin-top: 8px; color: var(--muted); font-size: 13px; }
 .ballot-score {
@@ -851,7 +861,28 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--mint); outline-
 
 .ballot-tally { color: var(--dim); font-size: 12px; }
 
-.modal-foot { padding: 9px 22px 13px; border-top: 1px solid var(--line); background: #21162e; }
+.modal-foot {
+  flex: none;
+  padding: 9px 22px 13px;
+  border-top: 1px solid #6a4d86;
+  background: linear-gradient(130deg, #2b1c3d, #181020 75%);
+}
+.picker-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 4px; }
+#nomineePosition { color: var(--highlight); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.picker-nav { display: flex; gap: 4px; }
+.picker-nav button {
+  display: grid;
+  place-items: center;
+  width: 37px;
+  min-height: 32px;
+  border: 1px solid #755a92;
+  border-radius: 6px;
+  background: #251735;
+  color: var(--text);
+  font-size: 16px;
+}
+.picker-nav button:hover:not(:disabled) { border-color: var(--mint); color: var(--mint); }
+.picker-nav button:disabled { opacity: .42; cursor: default; }
 .ballot-status { display: flex; flex-wrap: wrap; gap: 2px 12px; color: var(--dim); font-size: 12px; }
 .modal-my, .modal-notice { color: var(--highlight); font-size: 12px; }
 .modal-notice:not(:empty) { margin-top: 3px; }
@@ -878,19 +909,22 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--mint); outline-
   background: #2b1e3a;
   text-align: left;
   scroll-snap-align: start;
+  transition: background-color .16s ease, border-color .16s ease, box-shadow .16s ease;
 }
 .nominee-thumb:hover { border-color: var(--highlight); }
 .nominee-thumb[aria-pressed=true] {
   color: var(--mint);
   border-color: var(--mint);
-  background: #223529;
+  background: #20352d;
+  box-shadow: inset 0 0 0 1px var(--mint);
 }
 .nominee-thumb .thumb-cover {
   aspect-ratio: 5 / 3;
   border: 0;
   border-radius: 7px 7px 0 0;
 }
-.portrait-picker .thumb-cover img { object-position: center 32%; }
+.portrait-picker .thumb-cover { aspect-ratio: 4 / 3; }
+.portrait-picker .thumb-cover img { object-position: center 24%; }
 
 .thumb-label {
   display: block;
@@ -901,6 +935,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--mint); outline-
   font-size: 12px;
   font-weight: 700;
 }
+
+.thumb-subtitle { display: block; padding: 0 8px 6px; color: var(--muted); font-size: 11px; }
 
 .thumb-mark {
   display: none;
@@ -987,6 +1023,10 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--mint); outline-
   .modal-foot { padding: 6px 10px max(8px, env(safe-area-inset-bottom)); }
   .nominee-picker { gap: 7px; }
   .nominee-thumb { flex: 0 0 104px; }
+  .picker-nav button { min-height: 44px; width: 44px; }
+  .modal-body { overscroll-behavior: contain; }
+  .ballot-links { gap: 8px 12px; }
+  .ballot-link { padding-block: 8px; }
 
 }
 
@@ -999,9 +1039,17 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--mint); outline-
 }
 
 
+@media (max-width: 720px) and (max-height: 600px) {
+  .modal-head { padding-block: 5px; }
+  .modal-foot { padding-top: 4px; }
+  .nominee-thumb { flex-basis: 91px; }
+  .nominee-thumb .thumb-cover { aspect-ratio: 2; }
+  .thumb-label { padding-block: 3px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  .hero-grid, .hero-nominee-list > li, .modal, .modal-panel, .intro { animation: none; }
-  .featured-nominee, .featured-nominee img, .cat-card, .cat-card::before, .cover-cell img, .toast { transition: none; }
+  .hero-grid, .hero-nominee-list > li, .modal, .ballot-enter { animation: none; }
+  .featured-nominee, .featured-nominee img, .cat-card, .cat-card::before, .cover-cell img, .nominee-thumb, .toast { transition: none; }
   .featured-nominee:hover, .featured-nominee:hover img, .cat-card:hover, .cat-card:hover .cover-cell img { transform: none; }
 }

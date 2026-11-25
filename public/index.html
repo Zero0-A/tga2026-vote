@@ -127,6 +127,13 @@
         <span class="modal-my" id="modalMy"></span>
       </div>
       <p id="modalNotice" class="modal-notice" role="status"></p>
+      <div class="picker-toolbar">
+        <span id="nomineePosition" aria-live="polite"></span>
+        <div class="picker-nav" role="group" aria-label="上一位或下一位提名">
+          <button type="button" data-step="-1" aria-label="上一位提名">←</button>
+          <button type="button" data-step="1" aria-label="下一位提名">→</button>
+        </div>
+      </div>
       <div class="nominee-picker" id="nomineePicker" role="group" aria-label="切换提名"></div>
     </div>
   </dialog>

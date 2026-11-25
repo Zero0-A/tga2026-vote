@@ -58,7 +58,7 @@
 
   function nomineeName(category, id) {
     const n = category.nominees.find((x) => x.id === id);
-    return n ? n.name : '';
+    return n ? distinctName(category, n) : '';
   }
 
   /* ---------------- 顶部数据 ---------------- */
@@ -150,6 +150,12 @@
     return link;
   }
 
+  function distinctName(category, nominee) {
+    return category.nominees.some((item) => item.id !== nominee.id && item.name === nominee.name)
+      ? `${nominee.name}（${nominee.en}）`
+      : nominee.name;
+  }
+
   function renderPicker(category) {
     picker.classList.toggle('portrait-picker', Boolean(nomineeTypes[category.id]?.portrait));
     picker.replaceChildren(...category.nominees.map((nominee) => {
@@ -160,15 +166,20 @@
       button.firstElementChild.setAttribute('aria-hidden', 'true');
       const mark = element('span', 'thumb-mark', '✓');
       mark.setAttribute('aria-hidden', 'true');
-      button.append(element('span', 'thumb-label', nominee.name), mark);
+      button.append(element('span', 'thumb-label', nominee.name));
+      if (distinctName(category, nominee) !== nominee.name) {
+        button.append(element('span', 'thumb-subtitle', nominee.en));
+      }
+      button.append(mark);
       return button;
     }));
   }
 
-  function renderModal(categoryId) {
+  function renderModal(categoryId, animate = false) {
     if (ui.openCategory !== categoryId) return;
     const category = findCategory(categoryId);
-    const nominee = category.nominees.find((item) => item.id === ui.selectedNominee);
+    const index = category.nominees.findIndex((item) => item.id === ui.selectedNominee);
+    const nominee = category.nominees[index];
     if (!nominee) return;
     const info = nominee.details || {};
     const type = nomineeTypes[categoryId];
@@ -180,11 +191,15 @@
 
     modalMy.textContent = myVote ? `你的选择：${nomineeName(category, myVote)}` : '';
     modalHint.textContent = myVote ? '本奖项已完成投票' : '每人每个奖项限投一票';
+    $('#nomineePosition').textContent = `提名 ${index + 1} / ${category.nominees.length}`;
+    for (const button of modal.querySelectorAll('[data-step]')) {
+      button.disabled = !category.nominees[index + Number(button.dataset.step)];
+    }
     for (const button of picker.children) {
       button.setAttribute('aria-pressed', button.dataset.selectNominee === nominee.id);
     }
 
-    const panel = element('article', 'ballot-entry');
+    const panel = element('article', animate ? 'ballot-entry ballot-enter' : 'ballot-entry');
     panel.dataset.nid = nominee.id;
     panel.insertAdjacentHTML('beforeend', coverCell(nominee, 'ballot-poster'));
     panel.querySelector('img')?.removeAttribute('loading');
@@ -212,7 +227,7 @@
       badge.className = 'ballot-score';
       content.append(badge);
     }
-    const introLabel = info.officialIntro ? '官方介绍摘要' : info.officialExcerpt ? '商店介绍节选' : '提名简介';
+    const introLabel = info.officialIntro ? '官方介绍摘要' : info.officialExcerpt ? '商店介绍节选' : '候选简介';
     const intro = element('p', 'ballot-intro', info.officialIntro || info.officialExcerpt || nominee.intro || '暂无简介。');
     if (info.officialExcerpt && !info.officialIntro) intro.lang = 'en';
     content.append(element('h4', 'ballot-section-label', introLabel), intro);
@@ -233,7 +248,7 @@
     const actions = element('div', 'ballot-actions');
     if (ui.confirmingVote && !myVote && !ui.busy) {
       const confirmation = element('div', 'vote-confirmation');
-      const title = element('p', null, `确认将「${category.cn}」投给「${nominee.name}」？`);
+      const title = element('p', null, `确认将「${category.cn}」投给「${distinctName(category, nominee)}」？`);
       const hint = element('p', 'ballot-tally', '提交后不可更改。');
       const cancel = element('button', 'vote-cancel', '返回');
       cancel.type = 'button';
@@ -261,8 +276,9 @@
     ui.selectedNominee = nomineeId;
     ui.confirmingVote = false;
     modalNotice.textContent = '';
-    renderModal(ui.openCategory);
+    renderModal(ui.openCategory, true);
     modalBody.scrollTop = 0;
+    if (modal.open) revealThumbnail();
   }
 
   function openModal(categoryId, nomineeId) {
@@ -279,10 +295,20 @@
     modalBody.scrollTop = 0;
     const button = modalBody.querySelector('.vote-btn:not(:disabled)');
     (nomineeId && button ? button : modal.querySelector('.icon-btn')).focus({ preventScroll: true });
-    picker.querySelector('[aria-pressed=true]')?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'instant' });
+    revealThumbnail();
+  }
+
+  function revealThumbnail() {
+    const thumb = picker.querySelector('[aria-pressed=true]');
+    if (!thumb) return;
+    const frame = picker.getBoundingClientRect();
+    const tile = thumb.getBoundingClientRect();
+    if (tile.left < frame.left) picker.scrollLeft += tile.left - frame.left - 4;
+    else if (tile.right > frame.right) picker.scrollLeft += tile.right - frame.right + 4;
   }
 
   modal.addEventListener('close', () => {
+    if (modal.open) return;
     ui.openCategory = null;
     ui.selectedNominee = null;
     ui.confirmingVote = false;
@@ -378,6 +404,10 @@
       t.setAttribute('aria-selected', String(on));
     });
     renderCards();
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      gridEl.animate([{ opacity: .65, transform: 'translateY(4px)' }, { opacity: 1, transform: 'none' }],
+        { duration: 190, easing: 'ease-out' });
+    }
   });
 
   heroAward.addEventListener('click', () => openModal('goty'));
@@ -396,6 +426,17 @@
   modal.addEventListener('click', (event) => {
     if (event.target.closest('[data-close]')) {
       modal.close();
+      return;
+    }
+    const step = event.target.closest('[data-step]');
+    if (step) {
+      const category = findCategory(ui.openCategory);
+      const current = category.nominees.findIndex((item) => item.id === ui.selectedNominee);
+      const next = category.nominees[current + Number(step.dataset.step)];
+      if (next) {
+        selectNominee(next.id);
+        if (step.disabled) picker.querySelector('[aria-pressed=true]')?.focus({ preventScroll: true });
+      }
       return;
     }
     const thumbnail = event.target.closest('[data-select-nominee]');
