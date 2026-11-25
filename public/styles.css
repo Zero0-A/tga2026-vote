@@ -858,25 +858,65 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--mint); outline-
 
 .nominee-picker {
   display: flex;
-  gap: 7px;
+  gap: 9px;
   overflow-x: auto;
-  padding: 6px 4px;
+  padding: 8px 4px 6px;
   scrollbar-width: thin;
+  scrollbar-color: #795c9c transparent;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: 4px;
 }
 
 .nominee-thumb {
-  flex: 0 0 clamp(86px, 10vw, 120px);
-  width: clamp(86px, 10vw, 120px);
-  padding: 3px;
-  border: 1px solid var(--line-strong);
-  border-radius: 5px;
-  color: var(--muted);
-  background: #160f22;
+  position: relative;
+  flex: 1 0 clamp(108px, 14vw, 134px);
+  min-width: 0;
+  padding: 0;
+  border: 1px solid #68547e;
+  border-radius: 8px;
+  color: var(--text);
+  background: #2b1e3a;
   text-align: left;
+  scroll-snap-align: start;
 }
-.nominee-thumb[aria-pressed=true] { color: var(--mint); border-color: var(--mint); }
-.nominee-thumb .thumb-cover { aspect-ratio: 2; border-radius: 3px; }
-.thumb-label { display: block; padding: 2px 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
+.nominee-thumb:hover { border-color: var(--highlight); }
+.nominee-thumb[aria-pressed=true] {
+  color: var(--mint);
+  border-color: var(--mint);
+  background: #223529;
+}
+.nominee-thumb .thumb-cover {
+  aspect-ratio: 5 / 3;
+  border: 0;
+  border-radius: 7px 7px 0 0;
+}
+.portrait-picker .thumb-cover img { object-position: center 32%; }
+
+.thumb-label {
+  display: block;
+  padding: 6px 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.thumb-mark {
+  display: none;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 21px;
+  height: 21px;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--action-ink);
+  background: var(--mint);
+  box-shadow: 0 1px 5px #100a1c;
+  font-weight: 900;
+}
+.nominee-thumb[aria-pressed=true] .thumb-mark { display: grid; }
 
 /* ---------- Toast ---------- */
 .toast {
@@ -945,6 +985,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--mint); outline-
   .ballot-entry { grid-template-columns: minmax(0, 1fr); gap: 13px; }
   .ballot-entry .ballot-poster { aspect-ratio: 16 / 10; }
   .modal-foot { padding: 6px 10px max(8px, env(safe-area-inset-bottom)); }
+  .nominee-picker { gap: 7px; }
+  .nominee-thumb { flex: 0 0 104px; }
 
 }
 

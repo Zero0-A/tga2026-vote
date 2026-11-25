@@ -126,10 +126,14 @@
   }
 
   /* ---------------- 选票 ---------------- */
-  const nonGameAwards = new Set([
-    'best-performance', 'best-adaptation', 'best-user-creation',
-    'best-esports-athlete', 'best-esports-team', 'content-creator'
-  ]);
+  const nomineeTypes = {
+    'best-performance': { vote: '投给这位演员', detail: '饰演角色', portrait: true },
+    'best-esports-athlete': { vote: '投给这位选手', detail: '参赛项目', portrait: true },
+    'best-esports-team': { vote: '投给这支战队', detail: '赛区' },
+    'content-creator': { vote: '投给这位创作者', detail: '身份', portrait: true },
+    'best-adaptation': { vote: '投给这部作品', detail: '制作公司' },
+    'best-user-creation': { vote: '投给这个创作', detail: '创作团队' }
+  };
 
   function element(tag, className, text) {
     const node = document.createElement(tag);
@@ -147,13 +151,16 @@
   }
 
   function renderPicker(category) {
+    picker.classList.toggle('portrait-picker', Boolean(nomineeTypes[category.id]?.portrait));
     picker.replaceChildren(...category.nominees.map((nominee) => {
       const button = element('button', 'nominee-thumb');
       button.type = 'button';
       button.dataset.selectNominee = nominee.id;
       button.insertAdjacentHTML('beforeend', coverCell(nominee, 'thumb-cover'));
       button.firstElementChild.setAttribute('aria-hidden', 'true');
-      button.append(element('span', 'thumb-label', nominee.name));
+      const mark = element('span', 'thumb-mark', '✓');
+      mark.setAttribute('aria-hidden', 'true');
+      button.append(element('span', 'thumb-label', nominee.name), mark);
       return button;
     }));
   }
@@ -164,14 +171,15 @@
     const nominee = category.nominees.find((item) => item.id === ui.selectedNominee);
     if (!nominee) return;
     const info = nominee.details || {};
-    const isGame = !nonGameAwards.has(categoryId);
+    const type = nomineeTypes[categoryId];
+    const isGame = !type;
     const myVote = ui.data.myVotes[categoryId];
     const votes = countOf(category)[nominee.id] || 0;
     const total = categoryTotal(category);
     const chosen = myVote === nominee.id;
 
     modalMy.textContent = myVote ? `你的选择：${nomineeName(category, myVote)}` : '';
-    modalHint.textContent = myVote ? '本奖项已完成投票' : '同一浏览器每个奖项限投一票';
+    modalHint.textContent = myVote ? '本奖项已完成投票' : '每人每个奖项限投一票';
     for (const button of picker.children) {
       button.setAttribute('aria-pressed', button.dataset.selectNominee === nominee.id);
     }
@@ -187,7 +195,10 @@
       content.append(element('p', 'ballot-original', nominee.en));
     }
     if (info.studio || nominee.sub) {
-      content.append(element('p', 'ballot-studio', `${isGame ? '制作公司' : '所属／作品'} · ${info.studio || nominee.sub}`));
+      const detail = info.studio || nominee.sub;
+      const label = type?.detail || '制作公司';
+      const value = categoryId === 'best-performance' ? detail.replace(/^饰\s*/, '') : detail;
+      content.append(element('p', 'ballot-studio', `${label} · ${value}`));
     }
 
     if (isGame) {
@@ -234,7 +245,7 @@
       actions.append(confirmation);
     } else {
       const voteButton = element('button', 'vote-btn' + (chosen ? ' voted-btn' : ''),
-        chosen ? '已投此作' : myVote ? '本奖项已投票' : ui.busy ? '提交中…' : '投给此作');
+        chosen ? '已投给该候选' : myVote ? '本奖项已投票' : ui.busy ? '提交中…' : type?.vote || '投给这款游戏');
       voteButton.type = 'button';
       voteButton.dataset.vote = nominee.id;
       voteButton.disabled = Boolean(myVote) || ui.busy;
