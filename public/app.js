@@ -5,7 +5,9 @@
   const coverMotionPreference = matchMedia('(prefers-reduced-motion: reduce)');
   const coverHoverPreference = matchMedia('(any-hover: hover)');
   const coverDelay = 5000;
-  const coverDeadlines = new WeakMap();
+  const coverSlideDuration = 500;
+  const coverDeadlines = new Map();
+  let nextCoverSlot = 0;
   let coverRotationPaused = false;
   const heroAward = $('#hero-award');
   const heroVote = $('#hero-vote');
@@ -102,11 +104,8 @@
           </button>
         </article>`;
     }).join('');
-    const now = performance.now();
-    gridEl.querySelectorAll('.cat-cover-stage').forEach((stage, row) => {
-      showAwardCover(stage, 0);
-      coverDeadlines.set(stage, now + coverDelay + (row % 5) * 350);
-    });
+    coverDeadlines.clear();
+    gridEl.querySelectorAll('.cat-cover-stage').forEach((stage) => showAwardCover(stage, 0));
   }
 
   function showAwardCover(stage, index) {
@@ -121,28 +120,46 @@
   function stepAwardCover(stage, step) {
     const count = stage.childElementCount;
     const index = (Number(stage.dataset.coverIndex) + step + count) % count;
-    coverDeadlines.set(stage, performance.now() + coverDelay);
+    const now = performance.now();
+    coverDeadlines.set(stage, now + coverDelay);
+    nextCoverSlot = now + coverSlideDuration;
     showAwardCover(stage, index);
     return index;
   }
 
   function rotateAwardCovers() {
-    if (document.hidden || modal.open || coverRotationPaused || coverMotionPreference.matches) return;
+    if (document.hidden || modal.open || coverRotationPaused || coverMotionPreference.matches) {
+      coverDeadlines.clear();
+      return;
+    }
     const now = performance.now();
-    gridEl.querySelectorAll('.cat-cover-stage').forEach((stage) => {
-      if (stage.childElementCount < 2) return;
-      const card = stage.closest('.cat-card');
-      if ((coverHoverPreference.matches && card.matches(':hover')) || card.querySelector(':focus-visible')) {
-        coverDeadlines.set(stage, now + coverDelay);
-        return;
-      }
-      if (now < coverDeadlines.get(stage)) return;
+    const visibleTop = Math.max(0, tabsEl.getBoundingClientRect().bottom);
+    let nextStage;
+    let oldestDeadline = Infinity;
+    for (const stage of gridEl.querySelectorAll('.cat-cover-stage')) {
+      if (stage.childElementCount < 2) continue;
+      const slider = stage.parentElement;
       const box = stage.getBoundingClientRect();
-      if (box.top < innerHeight && box.bottom > 0) stepAwardCover(stage, 1);
-    });
+      const visibleHeight = Math.min(box.bottom, innerHeight) - Math.max(box.top, visibleTop);
+      const hovered = coverHoverPreference.matches && slider.matches(':hover');
+      if (visibleHeight < box.height / 2 || hovered || slider.querySelector(':focus-visible')) {
+        coverDeadlines.delete(stage);
+        continue;
+      }
+      const deadline = coverDeadlines.get(stage);
+      if (deadline === undefined) {
+        coverDeadlines.set(stage, now + coverDelay);
+      } else if (deadline <= now && deadline < oldestDeadline) {
+        oldestDeadline = deadline;
+        nextStage = stage;
+      }
+    }
+    // 同一时段只让一张奖项卡片自动滑动，并优先处理等得最久的一张。
+    if (nextStage && now >= nextCoverSlot) stepAwardCover(nextStage, 1);
   }
 
   function updateCoverMotionToggle() {
+    coverDeadlines.clear();
     coverMotionToggle.hidden = coverMotionPreference.matches;
     coverMotionToggle.textContent = coverRotationPaused ? '继续封面轮换' : '暂停封面轮换';
   }
@@ -152,8 +169,9 @@
     updateCoverMotionToggle();
   });
   coverMotionPreference.addEventListener('change', updateCoverMotionToggle);
+  document.addEventListener('visibilitychange', () => coverDeadlines.clear());
   updateCoverMotionToggle();
-  setInterval(rotateAwardCovers, 250);
+  setInterval(rotateAwardCovers, 125);
 
   function renderFeaturedNominees() {
     const category = findCategory('goty');
