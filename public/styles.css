@@ -99,8 +99,8 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
   align-self: stretch;
   width: 100%;
   height: 100%;
-  max-height: 275px;
-  aspect-ratio: 2.35;
+  max-height: 225px;
+  aspect-ratio: 2.65;
   object-fit: cover;
   object-position: 100% 48%;
 }
@@ -203,17 +203,17 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
 .featured-nominee > span { margin-top: 2px; color: var(--muted); font-size: 12px; line-height: 1.3; }
 
 /* ---------- 奖项索引 ---------- */
-.board { padding-top: clamp(34px, 6vw, 72px); padding-bottom: 40px; scroll-margin-top: calc(var(--bar) + env(safe-area-inset-top)); }
+.board { padding-top: clamp(24px, 4vw, 46px); padding-bottom: 40px; scroll-margin-top: calc(var(--bar) + env(safe-area-inset-top)); }
 .board-head {
   display: grid;
   align-content: center;
-  gap: 7px;
-  min-height: 112px;
+  gap: 6px;
+  min-height: 88px;
   padding: 14px clamp(13px, 2.4vw, 28px);
+  border-inline-start: 4px solid var(--mint);
   color: var(--ink);
-  background: var(--paper) url("/brand/suyou-editorial.webp") right 38% / auto 270% no-repeat;
+  background: var(--paper);
 }
-.board-head > * { width: fit-content; max-width: 100%; background: var(--paper); }
 .board-head p { color: #593d73; font-size: 13px; }
 .tabs {
   position: sticky;
@@ -243,12 +243,12 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
 .tab:hover, .tab[aria-selected="true"] { color: var(--text); }
 .tab[aria-selected="true"] { border-bottom-color: var(--mint); }
 .tab:focus-visible { outline-offset: -3px; }
-.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(18px, 4vw, 48px); }
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: clamp(22px, 3vw, 42px); }
 .loading { grid-column: 1 / -1; padding: 40px 0; color: var(--muted); text-align: center; }
 .cat-card {
   position: relative;
   display: grid;
-  grid-template-columns: clamp(68px, 10vw, 126px) minmax(0, 1fr) auto;
+  grid-template-columns: clamp(145px, 16vw, 212px) minmax(0, 1fr) auto;
   align-items: center;
   gap: clamp(8px, 1.4vw, 17px);
   min-width: 0;
@@ -257,7 +257,8 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
   cursor: pointer;
 }
 .cat-card:hover .cat-cn { color: var(--highlight); }
-.cat-cover { width: 100%; }
+.cat-cover-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+.cat-cover { width: 100%; border-radius: 2px; }
 .cat-top { min-width: 0; }
 .cat-en { color: var(--dim); font-size: 12px; line-height: 1.22; }
 .cat-cn { margin-top: 2px; overflow-wrap: anywhere; font-size: clamp(17px, 2vw, 25px); font-weight: 800; line-height: 1.22; }
@@ -278,7 +279,8 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
 .footer { border-top: 1px solid var(--line); }
 .footer-inner { padding-block: 20px max(22px, env(safe-area-inset-bottom)); font-size: 13px; font-weight: 650; }
 
-@media (max-width: 900px) {
+@media (max-width: 940px) {
+  .grid { grid-template-columns: minmax(0, 1fr); }
   .hero-meta { gap: 11px 22px; }
   .hero-cta { margin-inline-start: 0; }
   .countdown { gap: 7px; }
@@ -291,7 +293,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
   .hero { padding-top: 16px; }
   .hero-stage { grid-template-columns: minmax(0, 1fr); }
   .hero-grid { padding: 12px 0 14px; }
-  .hero-art { grid-row: 1; height: clamp(62px, 18vw, 112px); aspect-ratio: auto; object-position: 100% 46%; }
+  .hero-art { grid-row: 1; height: clamp(48px, 14vw, 82px); aspect-ratio: auto; object-position: 100% 46%; }
   .hero h1 { font-size: clamp(30px, 9vw, 52px); }
   .hero-sub { margin-top: 8px; font-size: 13px; }
   .hero-meta { display: grid; gap: 8px; padding-block: 10px; }
@@ -307,8 +309,11 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
   .featured-nominee .featured-cover > img { object-position: center; }
   .featured-nominee strong { margin-top: 5px; font-size: clamp(11px, 3.5vw, 15px); }
   .featured-nominee > span { font-size: clamp(9px, 2.6vw, 12px); }
-  .board-head { min-height: 90px; background-position: 100% 41%; }
-  .grid { grid-template-columns: minmax(0, 1fr); }
+  .board-head { min-height: 78px; }
+  .cat-card { grid-template-columns: minmax(0, 1fr) auto; gap: 8px 12px; padding-block: 12px 14px; }
+  .cat-top { grid-area: 1 / 1; }
+  .cat-card .ghost-btn { grid-area: 1 / 2; }
+  .cat-cover-strip { grid-column: 1 / -1; width: min(100%, 266px); }
 }
 @media (max-width: 370px) {
   .topbar-inner { padding-inline: 12px; }
@@ -331,7 +336,8 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
   inset: 0;
   width: min(1220px, 100% - 40px);
   max-width: none;
-  max-height: min(93dvh, 960px);
+  height: min(93dvh, 880px);
+  max-height: none;
   margin: auto;
   padding: 0;
   color: #f8f2ff;
@@ -367,7 +373,8 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
   position: absolute;
   z-index: -1;
   inset: 0 0 0 auto;
-  width: 45%;
+  width: 32%;
+  opacity: .84;
   background: url("/brand/suyou-editorial.webp") 100% 43% / cover no-repeat;
   content: "";
 }
@@ -398,6 +405,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
 .modal-body {
   min-height: 0;
   scrollbar-color: #8e73ac transparent;
+  scrollbar-gutter: stable;
   overflow-y: auto;
   overscroll-behavior: contain;
   padding: clamp(18px, 2.5vw, 34px) clamp(20px, 3vw, 40px);
@@ -408,8 +416,9 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: clamp(20px, 3vw, 40px);
   align-items: start;
+  align-content: center;
+  min-height: 100%;
 }
-.ballot-entry:has(.cover-wide) { grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr); }
 .ballot-entry:has(.ballot-person) { grid-template-columns: minmax(0, .86fr) minmax(0, 1fr); }
 .ballot-enter { animation: ballot-reveal 160ms ease-out both; }
 
@@ -431,7 +440,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
 .ballot-poster .cover-fallback .ui-icon { width: 38px; height: 38px; }
 .cover-cell:has(> img) .cover-fallback { visibility: hidden; }
 
-.ballot-copy { min-width: 0; overflow-wrap: anywhere; }
+.ballot-copy { align-self: center; min-width: 0; overflow-wrap: anywhere; }
 .ballot-identity { display: flex; align-items: start; gap: 10px 20px; justify-content: space-between; }
 .ballot-name-block { min-width: 0; }
 .ballot-name { font-size: clamp(26px, 3.75vw, 53px); font-weight: 850; line-height: 1.14; letter-spacing: -.035em; }
@@ -603,14 +612,16 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
 .modal-head :focus-visible { outline-color: var(--ballot-ink); }
 
 @media (max-width: 767px) {
-  .modal { width: 100%; height: 100dvh; max-height: none; border-radius: 0; }
+  .modal { width: 100%; height: 100dvh; border-radius: 0; }
   .modal-head { padding: max(6px, env(safe-area-inset-top)) 13px 7px; }
-  .modal-head::before { width: 43%; }
+  .modal-head::before { width: 29%; }
   .modal-title { font-size: clamp(20px, 6vw, 27px); }
   .modal-en { font-size: 11px; }
-  .modal-body { padding: 0; background: var(--ballot-paper); }
-  .ballot-entry, .ballot-entry:has(.cover-wide), .ballot-entry:has(.ballot-person) {
+  .modal-body { padding: 0; background: var(--ballot-paper); scrollbar-gutter: auto; }
+  .ballot-entry, .ballot-entry:has(.ballot-person) {
     grid-template-columns: minmax(0, 1fr);
+    align-content: start;
+    min-height: 0;
     gap: 0;
   }
   .ballot-entry .ballot-poster { max-height: 42dvh; border-radius: 0; }

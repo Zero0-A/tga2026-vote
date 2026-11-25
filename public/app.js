@@ -37,7 +37,7 @@
       ? `<img loading="lazy" alt="${n.name} 封面" src="${directory}${n.id}.jpg" onerror="this.remove()" />`
       : '';
     const format = n.id === 'gta6' ? ' cover-wide' : '';
-    return `<div class="cover-cell ${extraClass}${format}"${extraClass === 'cat-cover' ? ' aria-hidden="true"' : ''}>${img}<span class="cover-fallback" aria-hidden="true"><img class="ui-icon" src="/icons/image-off.svg" alt="" width="24" height="24" /></span></div>`;
+    return `<div class="cover-cell ${extraClass}${format}">${img}<span class="cover-fallback" aria-hidden="true"><img class="ui-icon" src="/icons/image-off.svg" alt="" width="24" height="24" /></span></div>`;
   }
 
   function findCategory(id) {
@@ -72,13 +72,16 @@
     const list = ui.data.categories.filter((c) => ui.activeTab === 'all' || c.tab === ui.activeTab);
     gridEl.innerHTML = list.map((c) => {
       const myVote = ui.data.myVotes[c.id];
-      const cover = c.nominees.find((n) => n.cover) || c.nominees[0];
+      const pictured = c.nominees.filter((nominee) => nominee.cover);
+      const covers = pictured.length > 3
+        ? [pictured[0], pictured[Math.floor(pictured.length / 2)], pictured.at(-1)]
+        : pictured;
       const status = myVote
         ? '<span class="cat-count">已投票</span>你的选择：' + nomineeName(c, myVote)
         : c.nominees.length + ' 个提名 · ' + fmt(categoryTotal(c)) + ' 票';
       return `
         <article class="cat-card" data-id="${c.id}">
-          ${coverCell(cover, 'cat-cover')}
+          <div class="cat-cover-strip" aria-hidden="true">${covers.map((nominee) => coverCell(nominee, 'cat-cover')).join('')}</div>
           <div class="cat-top">
             <p class="cat-en" lang="en">${c.en}</p>
             <h3 class="cat-cn">${c.cn}</h3>
@@ -107,12 +110,14 @@
 
       const title = document.createElement('strong');
       title.textContent = nominee.name;
-      const subtitle = document.createElement('span');
-      subtitle.textContent = nominee.en;
-      subtitle.lang = 'en';
       button.insertAdjacentHTML('beforeend', coverCell(nominee, 'featured-cover'));
       button.querySelector('.featured-cover').setAttribute('aria-hidden', 'true');
-      button.append(title, subtitle);
+      button.append(title);
+      if (nominee.en && nominee.en !== nominee.name) {
+        const subtitle = element('span', null, nominee.en);
+        subtitle.lang = 'en';
+        button.append(subtitle);
+      }
       item.append(button);
       return item;
     }));
@@ -218,7 +223,9 @@
     const name = element('div', 'ballot-name-block');
     name.append(element('h3', 'ballot-name', nominee.name));
     if (nominee.en && nominee.en !== nominee.name) {
-      name.append(element('p', 'ballot-original', nominee.en));
+      const original = element('p', 'ballot-original', nominee.en);
+      if (isGame || categoryId === 'best-adaptation') original.lang = 'en';
+      name.append(original);
     }
     if (info.studio || nominee.sub) {
       const detail = info.studio || nominee.sub;
@@ -249,9 +256,8 @@
       identity.append(badge);
     }
     content.append(identity);
-    const introLabel = info.officialIntro ? '官方介绍摘要' : info.officialExcerpt ? '商店介绍节选' : '候选简介';
-    const intro = element('p', 'ballot-intro', info.officialIntro || info.officialExcerpt || nominee.intro || '暂无简介。');
-    if (info.officialExcerpt && !info.officialIntro) intro.lang = 'en';
+    const introLabel = info.officialIntro ? '官方介绍摘要' : type ? '候选简介' : '游戏简介';
+    const intro = element('p', 'ballot-intro', info.officialIntro || info.storeIntro || nominee.intro || '暂无中文简介。');
     const description = element('div', 'ballot-description');
     description.append(element('h4', 'ballot-section-label', introLabel), intro);
     content.append(description);
