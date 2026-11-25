@@ -1,6 +1,10 @@
 (() => {
   const $ = (sel) => document.querySelector(sel);
   const gridEl = $('#categoryGrid');
+  const recruitOpen = $('#recruitOpen');
+  const recruitDialog = $('#recruitDialog');
+  const recruitNumber = $('#recruitNumber');
+  const recruitStatus = $('#recruitStatus');
   const heroAward = $('#hero-award');
   const heroVote = $('#hero-vote');
   const heroList = $('#hero-nominee-list');
@@ -45,16 +49,6 @@
     return ui.data && ui.data.categories.find((c) => c.id === id);
   }
 
-  function countOf(category) {
-    const map = {};
-    (category.counts || []).forEach((c) => { map[c.id] = c.votes; });
-    return map;
-  }
-
-  function categoryTotal(category) {
-    return (category.counts || []).reduce((s, c) => s + c.votes, 0);
-  }
-
   function nomineeName(category, id) {
     const n = category.nominees.find((x) => x.id === id);
     return n ? distinctName(category, n) : '';
@@ -76,7 +70,7 @@
       const covers = c.nominees.filter((nominee) => nominee.cover);
       const status = myVote
         ? '<span class="cat-count">已投票</span>你的选择：' + nomineeName(c, myVote)
-        : c.nominees.length + ' 个提名 · ' + fmt(categoryTotal(c)) + ' 票';
+        : c.nominees.length + ' 个提名 · ' + fmt(c.total) + ' 票';
       return `
         <article class="cat-card" data-id="${c.id}">
           <div class="cat-cover-slider" role="group" aria-label="${c.cn}候选封面">
@@ -238,12 +232,10 @@
     const type = nomineeTypes[categoryId];
     const isGame = !type;
     const myVote = ui.data.myVotes[categoryId];
-    const votes = countOf(category)[nominee.id] || 0;
-    const total = categoryTotal(category);
     const chosen = myVote === nominee.id;
 
     modalNotice.textContent = ui.voteError;
-    modalTally.textContent = fmt(votes) + ' 票 · ' + (total ? (votes / total * 100).toFixed(1) : '0') + '%';
+    modalTally.textContent = '本奖项累计 ' + fmt(category.total) + ' 票';
     modalMy.textContent = myVote ? `你的选择：${nomineeName(category, myVote)}` : '';
     modalHint.textContent = myVote ? '本奖项已完成投票' : '每人每个奖项限投一票';
     $('#nomineePosition').textContent = `提名 ${index + 1} / ${category.nominees.length}`;
@@ -436,7 +428,7 @@
       const data = await res.json();
       if (res.ok) {
         const cat = findCategory(categoryId);
-        if (cat) cat.counts = data.counts;
+        if (cat) cat.total = data.categoryTotal;
         ui.data.myVotes[categoryId] = data.votedFor;
         ui.data.event.totalVotes = data.totalVotes;
         ui.data.event.voters = data.voters;
@@ -446,7 +438,7 @@
       } else if (res.status === 409) {
         ui.data.myVotes[categoryId] = data.votedFor;
         const cat = findCategory(categoryId);
-        if (cat && data.counts) cat.counts = data.counts;
+        if (cat) cat.total = data.categoryTotal;
         renderCards();
         if (!modal.open) showToast('你已经在该奖项投过票了');
       } else {
@@ -534,6 +526,22 @@
       : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
     selectTab(tabs[next]);
     tabs[next].focus();
+  });
+
+  recruitOpen.addEventListener('click', () => {
+    recruitStatus.textContent = '';
+    recruitDialog.showModal();
+  });
+
+  $('#recruitCopy').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(recruitNumber.value);
+      recruitStatus.textContent = '已复制群号';
+    } catch {
+      recruitNumber.focus();
+      recruitNumber.select();
+      recruitStatus.textContent = '已选中群号，可手动复制';
+    }
   });
 
   heroAward.addEventListener('click', () => openModal('goty'));

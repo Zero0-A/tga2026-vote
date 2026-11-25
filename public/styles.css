@@ -89,7 +89,18 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
   box-shadow: inset 0 -1px var(--surface-edge);
 }
 .site-topbar a:focus-visible { outline-color: var(--mint); }
-.site-topbar .brand { display: flex; align-items: center; gap: 11px; }
+.site-topbar .brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  background: transparent;
+  color: inherit;
+  text-align: start;
+}
+.site-topbar .brand:hover .brand-mark { color: var(--mint-hover); }
 .site-brand-emblem {
   flex: none;
   width: 37px;
@@ -548,6 +559,57 @@ body:has(#about:target) .site-nav-sections a[href="#about"]::after { opacity: 1;
   .cat-card { gap: 7px; }
   .ghost-btn { font-size: 12px; }
 }
+
+/* ---------- 招新 ---------- */
+body:has(.recruit-dialog[open]) { overflow: hidden; }
+.recruit-dialog {
+  width: min(388px, calc(100% - 32px));
+  max-width: none;
+  max-height: calc(100dvh - 24px);
+  padding: clamp(14px, 4vw, 22px);
+  border: 1px solid var(--surface-edge);
+  border-radius: 9px;
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: 0 22px 64px #0c061a90;
+}
+.recruit-dialog::backdrop { background: #0c0716ad; }
+.recruit-header, .recruit-group-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.recruit-header h2 { font-size: clamp(18px, 5vw, 22px); line-height: 1.25; }
+.recruit-close, .recruit-copy {
+  flex: none;
+  min-height: 44px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 750;
+}
+.recruit-close { background: transparent; color: var(--muted); }
+.recruit-close:hover { color: var(--text); }
+.recruit-qr {
+  display: block;
+  width: min(100%, 280px, 51dvh);
+  height: auto;
+  margin: 10px auto 16px;
+  border-radius: 5px;
+}
+.recruit-group { padding-top: 10px; border-top: 1px solid var(--line); }
+.recruit-group label { color: var(--muted); font-size: 13px; }
+#recruitNumber {
+  min-width: 0;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: clamp(21px, 6vw, 27px);
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+}
+.recruit-copy { background: var(--mint); color: var(--ink); }
+.recruit-copy:hover { background: var(--mint-hover); }
+.recruit-status { min-height: 1.2em; margin-top: 4px; color: var(--muted); font-size: 12px; }
 
 /* ---------- 选票 ---------- */
 .modal {

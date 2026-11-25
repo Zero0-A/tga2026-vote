@@ -11,13 +11,13 @@
 <body>
   <header class="topbar site-topbar">
     <div class="topbar-inner">
-      <a class="brand" href="/">
+      <button id="recruitOpen" class="brand" type="button" aria-haspopup="dialog" aria-controls="recruitDialog" aria-label="溯游工作室招新">
         <span class="site-brand-emblem" aria-hidden="true"></span>
         <span class="site-brand-name">
           <span class="brand-mark">溯游工作室</span>
           <span class="brand-text" lang="en">SUYO STUDIO</span>
         </span>
-      </a>
+      </button>
       <nav class="topnav" aria-label="网站导航">
         <div class="site-nav-sections">
           <a href="#categories">奖项列表</a>
@@ -122,6 +122,22 @@
   <footer class="footer">
     <p class="footer-inner">溯游工作室 · 2026 年度游戏票选</p>
   </footer>
+
+  <dialog class="recruit-dialog" id="recruitDialog" aria-labelledby="recruitTitle">
+    <div class="recruit-header">
+      <h2 id="recruitTitle">溯游工作室招新</h2>
+      <form method="dialog"><button class="recruit-close" type="submit" autofocus>返回</button></form>
+    </div>
+    <img class="recruit-qr" src="/brand/suyou-recruit-qr.png" alt="溯游工作室招新 QQ 群二维码" width="676" height="676" loading="lazy" />
+    <div class="recruit-group">
+      <label for="recruitNumber">QQ 群号</label>
+      <div class="recruit-group-row">
+        <input id="recruitNumber" type="text" value="769481120" readonly />
+        <button id="recruitCopy" type="button" class="recruit-copy">复制群号</button>
+      </div>
+      <p id="recruitStatus" class="recruit-status" role="status"></p>
+    </div>
+  </dialog>
 
   <dialog class="modal" id="modal" aria-labelledby="modalTitle">
     <div class="modal-head">

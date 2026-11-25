@@ -132,6 +132,10 @@ function countsForCategory(category) {
   return category.nominees.map((n) => ({ id: n.id, votes: map.get(n.id) || 0 }));
 }
 
+function categoryTotal(categoryId) {
+  return Object.keys(state.votes[categoryId] || {}).length;
+}
+
 function uniqueVoters() {
   const set = new Set();
   Object.values(state.votes).forEach((catVotes) => {
@@ -173,7 +177,7 @@ function publicState(voterId) {
       en: c.en,
       cn: c.cn,
       tab: c.tab,
-      counts: countsForCategory(c),
+      total: categoryTotal(c.id),
       nominees: c.nominees.map((n) => ({
         ...n,
         cover: hasCoverFile(n.id),
@@ -298,7 +302,7 @@ async function handleApi(req, res, pathname) {
       return sendJson(res, 409, {
         error: '你已经在该奖项投过票了',
         votedFor: existingId,
-        counts: countsForCategory(category)
+        categoryTotal: categoryTotal(categoryId)
       });
     }
     state.votes[categoryId][voterId] = { nomineeId, ts: Date.now() };
@@ -308,7 +312,7 @@ async function handleApi(req, res, pathname) {
     return sendJson(res, 200, {
       ok: true,
       votedFor: nomineeId,
-      counts: countsForCategory(category),
+      categoryTotal: categoryTotal(categoryId),
       totalVotes: totalVotes(),
       voters: uniqueVoters()
     });
