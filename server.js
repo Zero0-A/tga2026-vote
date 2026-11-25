@@ -10,6 +10,7 @@ const crypto = require('crypto');
 
 const categories = require('./data/categories');
 const nomineeDetails = require('./data/nominee-details.json');
+const nomineeVideos = require('./data/nominee-videos.json');
 
 const PORT = Number(process.env.PORT) || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
@@ -173,7 +174,13 @@ function publicState(voterId) {
       cn: c.cn,
       tab: c.tab,
       counts: countsForCategory(c),
-      nominees: c.nominees.map((n) => ({ ...n, cover: hasCoverFile(n.id), details: nomineeDetails[n.id] }))
+      nominees: c.nominees.map((n) => ({
+        ...n,
+        cover: hasCoverFile(n.id),
+        details: nomineeDetails[n.id] || nomineeVideos[n.id]
+          ? { ...(nomineeDetails[n.id] || {}), video: nomineeVideos[n.id] }
+          : undefined
+      }))
     }))
   };
 }

@@ -328,6 +328,13 @@
           : externalLink('搜索 Metacritic', 'https://www.metacritic.com/search/' + title + '/'));
       }
     }
+    if (info.video && info.video.bvid) {
+      const video = info.video;
+      const link = externalLink('B站 介绍视频', 'https://www.bilibili.com/video/' + video.bvid + '/');
+      link.title = `${video.owner}｜${video.title}`;
+      link.dataset.video = video.bvid;
+      links.append(link);
+    }
     if (links.childElementCount) content.append(links);
     if (isGame && info.criticQuote) content.append(renderCriticQuote(info.criticQuote));
 
