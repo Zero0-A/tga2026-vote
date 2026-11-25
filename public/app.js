@@ -297,7 +297,9 @@
       emblem.width = 14;
       emblem.height = 14;
       const attribution = element('span', 'score-attribution');
-      attribution.append(emblem, element('small', 'score-platform', score.platform));
+      const brand = element('span', 'score-brand');
+      brand.append(emblem, document.createTextNode('Metascore'));
+      attribution.append(brand, element('small', 'score-platform', score.platform));
       badge.append(value, attribution);
       identity.append(badge);
     } else if (isGame && info.metacriticPending) {
