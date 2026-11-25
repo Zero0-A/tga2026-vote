@@ -4,7 +4,9 @@
   const coverMotionToggle = $('#coverMotionToggle');
   const coverMotionPreference = matchMedia('(prefers-reduced-motion: reduce)');
   const coverHoverPreference = matchMedia('(any-hover: hover)');
-  const coverDelay = 5000;
+  const coverMinHold = 4500;
+  const coverHoldVariation = 1700;
+  const coverSpacingVariation = 180;
   const coverSlideDuration = 500;
   const coverDeadlines = new Map();
   let nextCoverSlot = 0;
@@ -45,7 +47,8 @@
       ? `<img loading="lazy" alt="${n.name} 封面" src="${directory}${n.id}.jpg" onerror="this.remove()" />`
       : '';
     const format = n.id === 'gta6' ? ' cover-wide' : '';
-    return `<div class="cover-cell ${extraClass}${format}">${img}<span class="cover-fallback" aria-hidden="true"><img class="ui-icon" src="/icons/image-off.svg" alt="" width="24" height="24" /></span></div>`;
+    const nominee = extraClass === 'cat-cover' ? ` data-cover-nominee="${n.id}"` : '';
+    return `<div class="cover-cell ${extraClass}${format}"${nominee}>${img}<span class="cover-fallback" aria-hidden="true"><img class="ui-icon" src="/icons/image-off.svg" alt="" width="24" height="24" /></span></div>`;
   }
 
   function findCategory(id) {
@@ -117,12 +120,16 @@
     });
   }
 
+  function coverDeadline(now) {
+    return now + coverMinHold + Math.random() * coverHoldVariation;
+  }
+
   function stepAwardCover(stage, step) {
     const count = stage.childElementCount;
     const index = (Number(stage.dataset.coverIndex) + step + count) % count;
     const now = performance.now();
-    coverDeadlines.set(stage, now + coverDelay);
-    nextCoverSlot = now + coverSlideDuration;
+    coverDeadlines.set(stage, coverDeadline(now));
+    nextCoverSlot = now + coverSlideDuration + Math.random() * coverSpacingVariation;
     showAwardCover(stage, index);
     return index;
   }
@@ -138,17 +145,17 @@
     let oldestDeadline = Infinity;
     for (const stage of gridEl.querySelectorAll('.cat-cover-stage')) {
       if (stage.childElementCount < 2) continue;
-      const slider = stage.parentElement;
+      const card = stage.closest('.cat-card');
       const box = stage.getBoundingClientRect();
       const visibleHeight = Math.min(box.bottom, innerHeight) - Math.max(box.top, visibleTop);
-      const hovered = coverHoverPreference.matches && slider.matches(':hover');
-      if (visibleHeight < box.height / 2 || hovered || slider.querySelector(':focus-visible')) {
+      const hovered = coverHoverPreference.matches && card.matches(':hover');
+      if (visibleHeight < box.height / 2 || hovered || card.querySelector(':focus-visible')) {
         coverDeadlines.delete(stage);
         continue;
       }
       const deadline = coverDeadlines.get(stage);
       if (deadline === undefined) {
-        coverDeadlines.set(stage, now + coverDelay);
+        coverDeadlines.set(stage, coverDeadline(now));
       } else if (deadline <= now && deadline < oldestDeadline) {
         oldestDeadline = deadline;
         nextStage = stage;
@@ -579,7 +586,8 @@
         '第 ' + (index + 1) + ' 张，共 ' + stage.childElementCount + ' 张' + (label ? '，' + label : '');
       return;
     }
-    openModal(card.dataset.id);
+    const activeCover = card.querySelector('.cat-cover[data-cover-depth="0"]');
+    openModal(card.dataset.id, activeCover?.dataset.coverNominee);
   });
 
   picker.addEventListener('keydown', (event) => {
