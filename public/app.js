@@ -264,20 +264,22 @@
     }
 
     const content = element('div', 'ballot-copy');
-    content.append(element('h3', 'ballot-name', nominee.name));
+    const identity = element('div', 'ballot-identity');
+    const titles = element('div', 'ballot-titles');
+    titles.append(element('h3', 'ballot-name', nominee.name));
     if (nominee.en && nominee.en !== nominee.name) {
       const original = element('p', 'ballot-original', nominee.en);
       if (isGame || categoryId === 'best-adaptation') original.lang = 'en';
-      content.append(original);
+      titles.append(original);
     }
-    const metadata = element('div', 'ballot-metadata');
     if (info.studio || nominee.sub) {
       const detail = info.studio || nominee.sub;
       const label = type?.detail || '制作公司';
       const value = categoryId === 'best-performance' ? detail.replace(/^饰\s*/, '') : detail;
-      metadata.append(element('p', 'ballot-studio', `${label} · ${value}`));
+      titles.append(element('p', 'ballot-studio', `${label} · ${value}`));
     }
 
+    identity.append(titles);
     if (isGame && info.score) {
       const score = info.score;
       const badge = externalLink('', score.source);
@@ -295,15 +297,13 @@
       emblem.width = 14;
       emblem.height = 14;
       const attribution = element('span', 'score-attribution');
-      const brand = element('span', 'score-brand');
-      brand.append(emblem, document.createTextNode('Metascore'));
-      attribution.append(brand, element('small', 'score-platform', score.platform));
+      attribution.append(emblem, element('small', 'score-platform', score.platform));
       badge.append(value, attribution);
-      metadata.append(badge);
+      identity.append(badge);
     } else if (isGame && info.metacriticPending) {
-      metadata.append(element('span', 'score-pending', 'Metacritic 暂无媒体分'));
+      titles.append(element('p', 'score-pending', 'Metacritic 暂无媒体分'));
     }
-    if (metadata.childElementCount) content.append(metadata);
+    content.append(identity);
     const introLabel = info.officialIntro ? '官方介绍摘要' : type ? '候选简介' : '游戏简介';
     const intro = element('p', 'ballot-intro', info.officialIntro || info.storeIntro || nominee.intro || '暂无中文简介。');
     const description = element('div', 'ballot-description');

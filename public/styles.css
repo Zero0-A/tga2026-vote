@@ -676,6 +676,8 @@ body:has(#about:target) .site-nav-sections a[href="#about"]::after { opacity: 1;
 .cover-cell:has(> img) .cover-fallback { visibility: hidden; }
 
 .ballot-copy { align-self: center; min-width: 0; overflow-wrap: anywhere; }
+.ballot-identity:has(.ballot-score) { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 0 clamp(9px, 1.1vw, 17px); }
+.ballot-titles { min-width: 0; }
 .ballot-name {
   font-size: clamp(26px, 3.45vw, 48px);
   font-weight: 850;
@@ -684,11 +686,16 @@ body:has(#about:target) .site-nav-sections a[href="#about"]::after { opacity: 1;
 }
 .ballot-name, .ballot-original { text-wrap: balance; line-break: strict; }
 .ballot-original { margin-top: 4px; color: #ece1fa; font-size: clamp(16px, 1.65vw, 22px); line-height: 1.22; }
-.ballot-metadata { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 5px 12px; margin-top: 8px; }
-.ballot-studio { flex: 1 1 9em; color: var(--ballot-muted); font-size: 14px; text-wrap: pretty; }
-.ballot-score { display: inline-flex; align-items: center; gap: 7px; flex: none; }
-.score-pending { color: var(--ballot-muted); font-size: 12px; }
-.ballot-score:hover .score-brand { text-decoration: underline; }
+.ballot-studio { margin-top: 8px; color: var(--ballot-muted); font-size: 14px; text-wrap: pretty; }
+.ballot-score {
+  display: grid;
+  max-width: 75px;
+  justify-items: end;
+  gap: 5px;
+  margin-top: 3px;
+}
+.score-pending { margin-top: 4px; color: var(--ballot-muted); font-size: 12px; }
+.ballot-score:hover .score-platform { text-decoration: underline; text-underline-offset: 3px; }
 .score-value {
   display: grid;
   place-items: center;
@@ -703,10 +710,9 @@ body:has(#about:target) .site-nav-sections a[href="#about"]::after { opacity: 1;
 }
 .score-value[data-rating=mixed] { background: #ffbd3f; }
 .score-value[data-rating=negative] { background: #ff6b73; }
-.score-attribution { display: grid; gap: 2px; }
-.score-brand { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 700; }
+.score-attribution { display: flex; align-items: center; gap: 4px; }
 .score-icon { display: block; flex: none; border-radius: 50%; }
-.score-platform { color: var(--ballot-muted); font-size: 11px; line-height: 1.2; }
+.score-platform { color: var(--ballot-muted); font-size: 11px; line-height: 1.16; text-wrap: balance; }
 
 .ballot-description { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--ballot-rule); }
 .ballot-section-label { margin-bottom: 6px; color: var(--ballot-muted); font-size: 13px; font-weight: 700; }
@@ -860,7 +866,7 @@ body:has(#about:target) .site-nav-sections a[href="#about"]::after { opacity: 1;
   .modal-body { padding-block: 12px; }
   .ballot-name { font-size: clamp(25px, 3.4vw, 45px); }
   .ballot-original { font-size: clamp(15px, 1.7vw, 20px); }
-  .ballot-metadata { margin-top: 5px; }
+  .ballot-studio { margin-top: 5px; }
   .ballot-description { margin-top: 12px; padding-top: 8px; }
   .ballot-intro { font-size: 15px; line-height: 1.6; }
   .ballot-links, .ballot-media { margin-top: 6px; }
@@ -899,7 +905,7 @@ body:has(#about:target) .site-nav-sections a[href="#about"]::after { opacity: 1;
   .ballot-link:hover { color: #633993; }
   .ballot-copy :focus-visible { outline-color: var(--ballot-ink); }
   .score-value { width: 46px; height: 46px; font-size: 27px; }
-  .score-brand { font-size: 11px; }
+  .ballot-score { max-width: 63px; gap: 4px; margin-top: 1px; }
   .score-pending { color: #593d73; }
   .ballot-footer { padding-inline: 12px; }
   .ballot-rail { padding-top: 0; }
