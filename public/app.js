@@ -211,21 +211,32 @@
 
   function renderCriticReviews(info) {
     if (!info.score?.criticReviewCount) return null;
-    const reviews = element('section', 'ballot-media');
-    const header = element('div', 'ballot-media-head');
-    const source = externalLink('查看全部 ' + fmt(info.score.criticReviewCount) + ' 篇评测', info.score.source);
-    header.append(element('h4', 'ballot-section-label', '媒体评测'), source);
-    reviews.append(header);
+    const reviews = element('details', 'ballot-media');
+    const toggle = element('summary', 'ballot-media-toggle');
+    toggle.append(icon('chevron-right'), element('span', null, '媒体评测'),
+      element('small', 'ballot-media-count', fmt(info.score.criticReviewCount) + ' 篇'));
+    reviews.append(toggle);
     if (info.criticReviews?.length) {
       const list = element('ul', 'ballot-review-list');
       for (const review of info.criticReviews) {
         const item = element('li', 'ballot-review');
-        item.append(externalLink(review.outlet, review.source), element('span', 'ballot-review-score', review.score + ' / 100'));
-        if (review.summary) item.append(element('p', 'ballot-review-summary', review.summary));
+        item.append(externalLink(review.outlet, review.quote?.source || review.source),
+          element('span', 'ballot-review-score', review.score + ' / 100'));
+        if (review.quote) {
+          const quote = element('q', null, review.quote.text);
+          quote.lang = review.quote.language || 'en';
+          quote.cite = review.quote.source;
+          const line = element('p', 'ballot-review-quote');
+          line.append(quote);
+          item.append(line);
+        }
         list.append(item);
       }
       reviews.append(list);
     }
+    const source = externalLink('在 Metacritic 查看全部评测', info.score.source);
+    source.classList.add('ballot-media-source');
+    reviews.append(source);
     return reviews;
   }
 
@@ -312,8 +323,6 @@
     const description = element('div', 'ballot-description');
     description.append(element('h4', 'ballot-section-label', introLabel), intro);
     content.append(description);
-    const reviews = isGame && renderCriticReviews(info);
-    if (reviews) content.append(reviews);
 
     const links = element('div', 'ballot-links');
     for (const link of info.links || []) links.append(externalLink(link.label, link.url));
@@ -329,6 +338,12 @@
       }
     }
     if (links.childElementCount) content.append(links);
+    const reviews = isGame && renderCriticReviews(info);
+    if (reviews) {
+      const previous = modalBody.firstElementChild;
+      reviews.open = modal.open && previous?.dataset.nid === nominee.id && Boolean(previous.querySelector('.ballot-media[open]'));
+      content.append(reviews);
+    }
 
     ballotActions.replaceChildren();
     if (ui.confirmingVote && !myVote && !ui.busy) {

@@ -21,16 +21,18 @@
     ],
     "criticReviews": [
       {
-        "outlet": "ComicBook",
+        "outlet": "VGC",
         "score": 100,
-        "source": "https://comicbook.com/gaming/review/007-first-light-thrilling-action-title-james-bond-games-new-heights-review",
-        "summary": "将《杀手》式的沙盒自由度融入邦德故事，同时保留线性动作游戏里那种紧凑的大场面。"
+        "source": "https://www.videogameschronicle.com/review/007-first-light-review/",
+        "quote": {
+          "text": "007 First Light might just be the best James Bond game ever.",
+          "source": "https://www.metacritic.com/game/007-first-light/critic-reviews/?platform=playstation-5"
+        }
       },
       {
-        "outlet": "Cultura Geek",
+        "outlet": "ComicBook",
         "score": 100,
-        "source": "https://culturageek.com.ar/review-007-first-light-james-bond-analisis/",
-        "summary": "年轻邦德的莽撞和叛逆给角色留下成长空间，开放关卡也让玩家有机会临场变通。"
+        "source": "https://comicbook.com/gaming/review/007-first-light-thrilling-action-title-james-bond-games-new-heights-review"
       }
     ]
   },
@@ -55,13 +57,15 @@
         "outlet": "VGC",
         "score": 100,
         "source": "https://www.videogameschronicle.com/review/control-resonant/",
-        "summary": "转向动作角色扮演是一次冒险。鲜明的美术方向与演员表现延续了前作的长处。"
+        "quote": {
+          "text": "Remedy is operating at a level of triple-A boldness that few others in the industry are.",
+          "source": "https://ir-cdn.inderes.com/assets/remedy/calendar-event-attachments/5e995c98-2e4a-470e-8f54-d568885dee85/q3-2026-ir.pdf"
+        }
       },
       {
         "outlet": "IGN Benelux",
         "score": 100,
-        "source": "https://nl.ign.com/control-2/167180/control-resonant-review",
-        "summary": "开放场景让探索更自由，流畅的移动和有深度的战斗能支撑玩家反复琢磨打法。"
+        "source": "https://nl.ign.com/control-2/167180/control-resonant-review"
       }
     ]
   },
@@ -86,13 +90,15 @@
         "outlet": "Adrenaline",
         "score": 100,
         "source": "https://www.adrenaline.com.br/analise/games/grand-theft-auto-vi-review",
-        "summary": "相比上一作，规模只是变化之一。大量细节和相互关联的系统让城市更像一个有人生活的地方。"
+        "quote": {
+          "text": "GTA VI is fun, memorable, and raises the bar for the entire gaming industry.",
+          "source": "https://www.metacritic.com/game/grand-theft-auto-vi/critic-reviews/?platform=playstation-5"
+        }
       },
       {
         "outlet": "But Why Tho?",
         "score": 100,
-        "source": "https://butwhytho.net/2026/11/grand-theft-auto-vi-review/",
-        "summary": "文章把重点放在体量与完成度上，认为如此庞大的开放世界依然撑住了此前的高期待。"
+        "source": "https://butwhytho.net/2026/11/grand-theft-auto-vi-review/"
       }
     ]
   },
@@ -114,16 +120,18 @@
     ],
     "criticReviews": [
       {
-        "outlet": "PCGamesN",
-        "score": 100,
-        "source": "https://www.pcgamesn.com/phantom-blade-zero/review",
-        "summary": "刀剑战斗很有冲击力，地图与探索路线的结构也让媒体联想到银河恶魔城游戏。"
+        "outlet": "Areajugones",
+        "score": 95,
+        "source": "https://areajugones.sport.es/videojuegos/analisis-de-phantom-blade-zero-el-kung-fu-punk-de-s-game-es-candidato-al-juego-del-ano-y-lo-supe-desde-el-primer-capitulo/",
+        "quote": {
+          "text": "Its bosses are bursting with invention, its arsenal gives every weapon real personality, and it runs beautifully even on mid-range hardware.",
+          "source": "https://www.metacritic.com/game/phantom-blade-zero/critic-reviews/?platform=pc"
+        }
       },
       {
-        "outlet": "Combo Infinito",
-        "score": 95,
-        "source": "https://www.comboinfinito.com.br/principal/phantom-blade-zero-review-combate-espetacular-e-direcao-artistica-fazem-do-jogo-um-dos-melhores-da-geracao/",
-        "summary": "武器定制、首领战和武侠电影式的美术是亮点，部分关卡设计仍会让人受挫。"
+        "outlet": "PCGamesN",
+        "score": 100,
+        "source": "https://www.pcgamesn.com/phantom-blade-zero/review"
       }
     ]
   },
@@ -152,13 +160,15 @@
         "outlet": "IGN France",
         "score": 100,
         "source": "https://fr.ign.com/resident-evil-9/85808/review/test-resident-evil-requiem-ou-la-tentative-de-reconciliation-entre-tension-et-action",
-        "summary": "双主角让生存恐怖与动作场面得以共存，但固定交替也限制了重玩时的节奏自由。"
+        "quote": {
+          "text": "Requiem is a pivotal work that manages to reconcile two long-standing, contrasting visions of the saga.",
+          "source": "https://www.metacritic.com/game/resident-evil-requiem/critic-reviews/?platform=playstation-5"
+        }
       },
       {
         "outlet": "ComicBook",
         "score": 100,
-        "source": "https://comicbook.com/gaming/review/resident-evil-requiem-review/",
-        "summary": "第九部正传把历代各自擅长的元素组合起来，作为系列三十周年作品颇有分量。"
+        "source": "https://comicbook.com/gaming/review/resident-evil-requiem-review/"
       }
     ]
   },
@@ -187,13 +197,15 @@
         "outlet": "GamesRadar+",
         "score": 100,
         "source": "https://www.gamesradar.com/games/the-legend-of-zelda/the-legend-of-zelda-ocarina-of-time-remake-review",
-        "summary": "重新设计的迷宫、新谜题和有声对白让新版更容易上手，同时保留了原作的奇想。"
+        "quote": {
+          "text": "Between newly voiced dialogue, revamped dungeons, fresh puzzles, and more, Hyrule has never felt so alive.",
+          "source": "https://www.metacritic.com/game/the-legend-of-zelda-ocarina-of-time-2026/critic-reviews/?platform=nintendo-switch-2"
+        }
       },
       {
         "outlet": "GAMINGbible",
         "score": 100,
-        "source": "https://www.gamingbible.com/news/platform/nintendo/legend-of-zelda-ocarina-of-time-remake-review-870415-20261030",
-        "summary": "新版用画面和操作上的更新重现原作。评测者也希望能多看到些 N64 版本当年删去的内容。"
+        "source": "https://www.gamingbible.com/news/platform/nintendo/legend-of-zelda-ocarina-of-time-remake-review-870415-20261030"
       }
     ]
   },
@@ -364,16 +376,18 @@
     },
     "criticReviews": [
       {
-        "outlet": "GameSpot",
+        "outlet": "INVEN",
         "score": 90,
-        "source": "https://www.gamespot.com/reviews/cairn-review-an-uphill-battle-worth-taking-on/1900-6418452/",
-        "summary": "攀登用到的机制不多，但关卡不断用新难题检验同一套动作是否已经掌握。"
+        "source": "https://www.inven.co.kr/webzine/news/?news=313093",
+        "quote": {
+          "text": "Cairn goes beyond a simple climbing game, turning the human drive to endure pain in pursuit of a summit into play.",
+          "source": "https://www.metacritic.com/game/cairn/critic-reviews/?platform=pc"
+        }
       },
       {
-        "outlet": "PC Gamer",
-        "score": 91,
-        "source": "https://www.pcgamer.com/games/action/cairn-review/",
-        "summary": "攀登有棱角，却比一些以导航为难点的游戏更容易亲近。"
+        "outlet": "GameSpot",
+        "score": 90,
+        "source": "https://www.gamespot.com/reviews/cairn-review-an-uphill-battle-worth-taking-on/1900-6418452/"
       }
     ]
   },
@@ -637,7 +651,10 @@
         "outlet": "Eurogamer Portugal",
         "score": 100,
         "source": "https://www.eurogamer.pt/forza-horizon-6-review-analise",
-        "summary": "日本道路风景和车辆手感是亮点。评测也提到玩法较保守，并遇到了一些技术问题。"
+        "quote": {
+          "text": "Cruising down Japan’s roads in Forza Horizon 6 is a visually unforgettable experience with superb handling.",
+          "source": "https://www.metacritic.com/game/forza-horizon-6/critic-reviews/?platform=xbox-series-x"
+        }
       },
       {
         "outlet": "Gamers Heroes",
@@ -1105,7 +1122,10 @@
         "outlet": "GameSpew",
         "score": 100,
         "source": "https://www.gamespew.com/2026/04/pragmata-review",
-        "summary": "把即时骇入放进第三人称射击的交战节奏里，整个流程都能维持战斗的新鲜感。"
+        "quote": {
+          "text": "At the heart of it is hacking-infused third-person shooter combat, which remains engaging and exciting throughout.",
+          "source": "https://www.metacritic.com/game/pragmata/critic-reviews/?platform=playstation-5"
+        }
       },
       {
         "outlet": "4P.de",
@@ -1415,7 +1435,10 @@
         "outlet": "IGN",
         "score": 100,
         "source": "https://www.ign.com/articles/fire-emblem-fortunes-weave-review",
-        "summary": "战场战术与两场战斗之间的时间分配都给玩家带来挑战，两部分配合得紧密。"
+        "quote": {
+          "text": "Fire Emblem: Fortune’s Weave builds upon its strategic arts in ways I couldn’t have anticipated.",
+          "source": "https://www.metacritic.com/game/fire-emblem-fortunes-weave/critic-reviews/?platform=nintendo-switch-2"
+        }
       },
       {
         "outlet": "Console Creatures",
@@ -1588,7 +1611,10 @@
         "outlet": "Push Square",
         "score": 80,
         "source": "https://www.pushsquare.com/reviews/ps5/nte-neverness-to-everness",
-        "summary": "城市沙盒有活力，日常生活题材与超自然恐怖的结合也有吸引力，个别角色表现则略逊。"
+        "quote": {
+          "text": "If you like urban open worlds with life sim elements, then it’s impossible not to recommend NTE right now.",
+          "source": "https://www.metacritic.com/game/nte-neverness-to-everness/critic-reviews/?platform=playstation-5"
+        }
       },
       {
         "outlet": "Everyeye.it",
@@ -1670,15 +1696,18 @@
     },
     "criticReviews": [
       {
-        "outlet": "Eurogamer Germany",
+        "outlet": "VGC",
         "score": 100,
-        "source": "https://www.eurogamer.de/saros-test-triple-a-roguelike-von-housemarque-berauschender-arcade-shooter",
-        "summary": "叙事的打磨略不均衡，游戏也要花些时间进入状态。系统逐一成形后，射击节奏相当出色。"
+        "source": "https://www.videogameschronicle.com/review/saros-review/",
+        "quote": {
+          "text": "Saros is a bold, confident realization of 30 years of Housemarque.",
+          "source": "https://www.metacritic.com/game/saros/critic-reviews/?platform=playstation-5"
+        }
       },
       {
-        "outlet": "GameSpew",
+        "outlet": "Eurogamer Germany",
         "score": 100,
-        "source": "https://www.gamespew.com/2026/04/saros-review/"
+        "source": "https://www.eurogamer.de/saros-test-triple-a-roguelike-von-housemarque-berauschender-arcade-shooter"
       }
     ]
   },
