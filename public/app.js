@@ -200,10 +200,7 @@
       const mark = element('span', 'thumb-mark');
       mark.append(icon('check'));
       mark.setAttribute('aria-hidden', 'true');
-      button.append(element('span', 'thumb-label', nominee.name));
-      if (distinctName(category, nominee) !== nominee.name) {
-        button.append(element('span', 'thumb-subtitle', nominee.en));
-      }
+      button.append(element('span', 'thumb-label', distinctName(category, nominee)));
       button.append(mark);
       return button;
     }));
@@ -267,21 +264,19 @@
     }
 
     const content = element('div', 'ballot-copy');
-    const identity = element('div', 'ballot-identity');
-    const name = element('div', 'ballot-name-block');
-    name.append(element('h3', 'ballot-name', nominee.name));
+    content.append(element('h3', 'ballot-name', nominee.name));
     if (nominee.en && nominee.en !== nominee.name) {
       const original = element('p', 'ballot-original', nominee.en);
       if (isGame || categoryId === 'best-adaptation') original.lang = 'en';
-      name.append(original);
+      content.append(original);
     }
+    const metadata = element('div', 'ballot-metadata');
     if (info.studio || nominee.sub) {
       const detail = info.studio || nominee.sub;
       const label = type?.detail || '制作公司';
       const value = categoryId === 'best-performance' ? detail.replace(/^饰\s*/, '') : detail;
-      name.append(element('p', 'ballot-studio', `${label} · ${value}`));
+      metadata.append(element('p', 'ballot-studio', `${label} · ${value}`));
     }
-    identity.append(name);
 
     if (isGame && info.score) {
       const score = info.score;
@@ -304,11 +299,11 @@
       brand.append(emblem, document.createTextNode('Metascore'));
       attribution.append(brand, element('small', 'score-platform', score.platform));
       badge.append(value, attribution);
-      identity.append(badge);
+      metadata.append(badge);
     } else if (isGame && info.metacriticPending) {
-      identity.append(element('span', 'score-pending', 'Metacritic 暂无媒体分'));
+      metadata.append(element('span', 'score-pending', 'Metacritic 暂无媒体分'));
     }
-    content.append(identity);
+    if (metadata.childElementCount) content.append(metadata);
     const introLabel = info.officialIntro ? '官方介绍摘要' : type ? '候选简介' : '游戏简介';
     const intro = element('p', 'ballot-intro', info.officialIntro || info.storeIntro || nominee.intro || '暂无中文简介。');
     const description = element('div', 'ballot-description');
