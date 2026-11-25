@@ -199,22 +199,21 @@
       badge.className = 'ballot-score';
       content.append(badge);
     }
-    content.append(
-      element('h4', 'ballot-section-label', info.officialIntro ? '官方介绍摘要' : '提名简介'),
-      element('p', 'ballot-intro', info.officialIntro || nominee.intro || '暂无简介。')
-    );
+    const introLabel = info.officialIntro ? '官方介绍摘要' : info.officialExcerpt ? '商店介绍节选' : '提名简介';
+    const intro = element('p', 'ballot-intro', info.officialIntro || info.officialExcerpt || nominee.intro || '暂无简介。');
+    if (info.officialExcerpt && !info.officialIntro) intro.lang = 'en';
+    content.append(element('h4', 'ballot-section-label', introLabel), intro);
 
     const links = element('div', 'ballot-links');
     for (const link of info.links || []) links.append(externalLink(link.label, link.url));
     if (isGame) {
-      if (info.metacritic) links.append(externalLink('Metacritic', info.metacritic));
+      const title = encodeURIComponent(nominee.en || nominee.name);
       if (!info.links?.length) {
-        const title = encodeURIComponent(nominee.en || nominee.name);
-        links.append(
-          externalLink('搜索 Steam', 'https://store.steampowered.com/search/?term=' + title),
-          externalLink('搜索 Metacritic', 'https://www.metacritic.com/search/' + title + '/')
-        );
+        links.append(externalLink('搜索 Steam', 'https://store.steampowered.com/search/?term=' + title));
       }
+      links.append(info.metacritic
+        ? externalLink('Metacritic', info.metacritic)
+        : externalLink('搜索 Metacritic', 'https://www.metacritic.com/search/' + title + '/'));
     }
     if (links.childElementCount) content.append(links);
 

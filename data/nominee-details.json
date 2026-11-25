@@ -2,48 +2,603 @@
   "007-first-light": {
     "studio": "IO Interactive",
     "officialIntro": "跟随年轻的詹姆斯·邦德加入军情六处的训练计划，体验他从新兵成长为 00 特工的起源故事。任务中可以运用潜行、谍报工具和正面行动。",
-    "score": { "value": 87, "platform": "PS5", "source": "https://www.metacritic.com/pictures/best-video-games-of-2026-at-midyear/15/" },
+    "score": {
+      "value": 87,
+      "platform": "PS5",
+      "source": "https://www.metacritic.com/pictures/best-video-games-of-2026-at-midyear/15/"
+    },
     "metacritic": "https://www.metacritic.com/game/007-first-light/",
     "links": [
-      { "label": "Steam 商店", "url": "https://store.steampowered.com/app/3768760/007_First_Light/" },
-      { "label": "IO Interactive", "url": "https://ioi.dk/007firstlightgame/news/2026/007-first-light-launches-globally" }
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/3768760/007_First_Light/"
+      },
+      {
+        "label": "IO Interactive",
+        "url": "https://ioi.dk/007firstlightgame/news/2026/007-first-light-launches-globally"
+      }
     ]
   },
   "control-resonant": {
     "studio": "Remedy Entertainment",
     "officialIntro": "联邦控制局对迪伦·法登的长期拘禁结束后，他走进一个被超自然危机扭曲的曼哈顿。迪伦需要掌握异能和能变形的近战武器，与威胁现实本身的未知力量对抗。",
-    "score": { "value": 83, "platform": "PS5", "source": "https://en.gamespark.jp/article/2026/09/28/502.html" },
+    "score": {
+      "value": 83,
+      "platform": "PS5",
+      "source": "https://en.gamespark.jp/article/2026/09/28/502.html"
+    },
     "metacritic": "https://www.metacritic.com/game/control-resonant/",
-    "links": [{ "label": "Steam 商店", "url": "https://store.steampowered.com/app/3669870/CONTROL_Resonant/" }]
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/3669870/CONTROL_Resonant/"
+      }
+    ]
   },
   "gta6": {
     "studio": "Rockstar Games",
     "officialIntro": "杰森和露西亚原本想过上轻松一点的日子，一次行动失手却让他们卷入席卷列奥尼达州的犯罪阴谋，只能依靠彼此走出困境。",
-    "score": { "value": 99, "platform": "PS5", "source": "https://as.com/meristation/noticias/el-review-bombing-llega-a-gta-6-los-usuarios-puntuan-al-juego-de-rockstar-con-un-4-en-metacritic" },
+    "score": {
+      "value": 99,
+      "platform": "PS5",
+      "source": "https://as.com/meristation/noticias/el-review-bombing-llega-a-gta-6-los-usuarios-puntuan-al-juego-de-rockstar-con-un-4-en-metacritic"
+    },
     "metacritic": "https://www.metacritic.com/game/grand-theft-auto-vi/",
-    "links": [{ "label": "Rockstar 官网", "url": "https://www.rockstargames.com/VI" }]
+    "links": [
+      {
+        "label": "Rockstar 官网",
+        "url": "https://www.rockstargames.com/VI"
+      }
+    ]
   },
   "phantom-blade-zero": {
     "studio": "S-GAME 灵游坊",
     "officialIntro": "被诬陷杀害师父的剑客身负重伤，只剩六十六天可活。他在追杀中深入武林追查幕后阴谋。战斗结合传统武术动作、连招和不同武器。",
-    "score": { "value": 86, "platform": "PS5", "source": "https://www.kritgaming.de/article/phantom-blade-zero-test-wertungen-metacritic" },
+    "score": {
+      "value": 86,
+      "platform": "PS5",
+      "source": "https://www.kritgaming.de/article/phantom-blade-zero-test-wertungen-metacritic"
+    },
     "metacritic": "https://www.metacritic.com/game/phantom-blade-zero/",
-    "links": [{ "label": "Steam 商店", "url": "https://store.steampowered.com/app/4115450/Phantom_Blade_Zero/" }]
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/4115450/Phantom_Blade_Zero/"
+      }
+    ]
   },
   "re-requiem": {
     "studio": "CAPCOM",
     "officialIntro": "在《生化危机》系列的第九部正传中，玩家跟随 FBI 分析员格蕾丝·阿什克罗夫特和里昂·S·肯尼迪，以两位主角各自的视角经历生存恐怖和动作战斗。",
-    "score": { "value": 89, "platform": "PS5", "source": "https://www.metacritic.com/game/resident-evil-requiem/critic-reviews/" },
+    "score": {
+      "value": 89,
+      "platform": "PS5",
+      "source": "https://www.metacritic.com/game/resident-evil-requiem/critic-reviews/"
+    },
     "metacritic": "https://www.metacritic.com/game/resident-evil-requiem/",
     "links": [
-      { "label": "CAPCOM 官网", "url": "https://www.residentevil.com/requiem/" },
-      { "label": "Steam 商店", "url": "https://store.steampowered.com/app/3764200/" }
+      {
+        "label": "CAPCOM 官网",
+        "url": "https://www.residentevil.com/requiem/"
+      },
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/3764200/"
+      }
     ]
   },
   "zelda-oot": {
     "studio": "Nintendo",
     "officialIntro": "在 Nintendo Switch 2 上重返海拉鲁。林克用时之笛穿梭于童年与成年，在不同时期解开谜题、探索迷宫，对抗威胁海拉鲁的力量。",
-    "score": { "value": 96, "platform": "Switch 2", "source": "https://www.nintendolife.com/news/2026/11/ocarina-of-time-remake-tops-metacritics-goty-list-and-its-high-on-the-all-time-ranking" },
-    "links": [{ "label": "Nintendo 商品页", "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-games/The-Legend-of-Zelda-Ocarina-of-Time-3115664.html" }]
+    "score": {
+      "value": 96,
+      "platform": "Switch 2",
+      "source": "https://www.nintendolife.com/news/2026/11/ocarina-of-time-remake-tops-metacritics-goty-list-and-its-high-on-the-all-time-ranking"
+    },
+    "metacritic": "https://www.metacritic.com/game/the-legend-of-zelda-ocarina-of-time-2026/",
+    "links": [
+      {
+        "label": "Nintendo 商品页",
+        "url": "https://www.nintendo.com/en-gb/Games/Nintendo-Switch-2-games/The-Legend-of-Zelda-Ocarina-of-Time-3115664.html"
+      }
+    ]
+  },
+  "ac-black-flag-resynced": {
+    "studio": "Ubisoft Singapore / Ubisoft Barcelona / Ubisoft Bordeaux / Ubisoft Belgrade / Ubisoft Chengdu / Ubisoft India / Ubisoft Kyiv / Ubisoft Montpellier / Ubisoft Philippines / Ubisoft Quebec / Ubisoft Shanghai / Ubisoft Montreal / Ubisoft Romania",
+    "officialExcerpt": "The iconic solo pirate adventure returns. Sail the Caribbean as Edward Kenway during the Golden Age of Piracy in this…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/3751950/"
+      }
+    ]
+  },
+  "ace-combat-8": {
+    "studio": "Bandai Namco Aces Inc.",
+    "officialExcerpt": "Soar through the skies and rise above every challenge to earn your place among the elite. Engage in intense aerial…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/2288340/"
+      }
+    ]
+  },
+  "avatar-legends": {
+    "studio": "Gameplay Group International",
+    "officialExcerpt": "Avatar Legends: The Fighting Game is a fast-paced 1v1 fighter where you battle as your favorite characters from the Avatar…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/2424420/"
+      }
+    ]
+  },
+  "big-walk": {
+    "studio": "House House",
+    "officialExcerpt": "Hang out and get lost with close friends in a big world. A cooperative online walker-talker from the creators of…",
+    "score": {
+      "value": 91,
+      "platform": "PC",
+      "source": "https://store.steampowered.com/app/1478500/"
+    },
+    "metacritic": "https://www.metacritic.com/game/pc/big-walk?ftag=MCD-06-10aaa1f",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/1478500/"
+      }
+    ]
+  },
+  "blood-of-dawnwalker": {
+    "studio": "Rebel Wolves",
+    "officialExcerpt": "The Blood of Dawnwalker is an open-world dark fantasy action RPG set in 14th-century Europe. You play as Coen, human…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/3751260/"
+      }
+    ]
+  },
+  "cairn": {
+    "studio": "The Game Bakers",
+    "officialExcerpt": "Reach a summit never climbed before in this survival-climber from the creators of Furi and Haven. Climb anywhere and plan…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/1588550/"
+      }
+    ]
+  },
+  "cod-mw4": {
+    "studio": "Infinity Ward / Beenox / Digital Legends / Activision Shanghai / Raven Software / Treyarch / Sledgehammer Games / High Moon Studios",
+    "officialExcerpt": "War erupts on the Korean Peninsula as North Korea launches an invasion that threatens to destabilize the world in Call…",
+    "score": {
+      "value": 85,
+      "platform": "PC",
+      "source": "https://store.steampowered.com/app/4435490/"
+    },
+    "metacritic": "https://www.metacritic.com/game/pc/call-of-duty-modern-warfare-4?ftag=MCD-06-10aaa1f",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/4435490/"
+      }
+    ]
+  },
+  "cs2": {
+    "studio": "Valve",
+    "officialExcerpt": "For over two decades, Counter-Strike has offered an elite competitive experience, one shaped by millions of players from across the…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/730/"
+      }
+    ]
+  },
+  "denshattack": {
+    "studio": "Undercoders",
+    "officialExcerpt": "Flip, trick and grind your train in a fast-paced, off-the-rails ride through a colourful Japanese dystopia. Outmatch rival gangs, wreck…",
+    "score": {
+      "value": 88,
+      "platform": "PC",
+      "source": "https://store.steampowered.com/app/2524850/"
+    },
+    "metacritic": "https://www.metacritic.com/game/pc/denshattack!?ftag=MCD-06-10aaa1f",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/2524850/"
+      }
+    ]
+  },
+  "dota2": {
+    "studio": "Valve",
+    "officialExcerpt": "Every day, millions of players worldwide enter battle as one of over a hundred Dota heroes. And no matter if…",
+    "score": {
+      "value": 90,
+      "platform": "PC",
+      "source": "https://store.steampowered.com/app/570/"
+    },
+    "metacritic": "https://www.metacritic.com/game/pc/dota-2?ftag=MCD-06-10aaa1f",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/570/"
+      }
+    ]
+  },
+  "esoteric-ebb": {
+    "studio": "Christoffer Bodegård",
+    "officialExcerpt": "Esoteric Ebb is a single-player CRPG inspired by the freedom of tabletop adventures. Unravel a political conspiracy with your goblin…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/2057760/"
+      }
+    ]
+  },
+  "fable": {
+    "studio": "Playground Games",
+    "officialExcerpt": "Become the Hero you want to be in an immersive open-world action-RPG where each choice shapes your journey, reputation is…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/2769570/"
+      }
+    ]
+  },
+  "ff-resonance": {
+    "studio": "Square Enix / LANCARSE Ltd.",
+    "officialExcerpt": "Return to the pixel‑art world of FINAL FANTASY, evolved from its classic roots. Travel with companions bound by fate and…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/3259780/"
+      }
+    ]
+  },
+  "ff7-revelation": {
+    "studio": "Square Enix",
+    "officialExcerpt": "The final battle to decide the fate of the world has begun. Take to the skies, chart your course, and…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/4354570/"
+      }
+    ]
+  },
+  "forefront": {
+    "studio": "Triangle Factory",
+    "officialExcerpt": "Forefront is an intense VR shooter featuring 32-player large-scale battles, land, sea, and air vehicles, and immersive, tactical combat. You…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/2981220/"
+      }
+    ]
+  },
+  "forever-ago": {
+    "studio": "Third Shift",
+    "officialExcerpt": "Following a tragic stroke of fate, Alfred embarks on a journey north in search of redemption in this single-player road…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/1215940/"
+      }
+    ]
+  },
+  "forza-horizon-6": {
+    "studio": "Playground Games",
+    "officialExcerpt": "Discover the breathtaking landscapes of Japan in over 550 real-world cars and become a racing Legend in Forza Horizon's biggest…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/2483190/"
+      }
+    ]
+  },
+  "gears-e-day": {
+    "studio": "The Coalition",
+    "officialExcerpt": "Experience Emergence Day – the brutal origin story of one of gaming’s most acclaimed third-person shooter franchises.",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/3010850/"
+      }
+    ]
+  },
+  "into-the-radius-2": {
+    "studio": "CM IMMERSIVE",
+    "officialExcerpt": "Into the Radius 2 is an immersive VR survival shooter, set in a realm of surreal landscapes and deadly entities…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/2307350/"
+      }
+    ]
+  },
+  "invincible-vs": {
+    "studio": "Quarter Up",
+    "officialExcerpt": "Invincible VS is a brutal superhero 3v3 tag fighting game set in the Invincible universe, where you can battle to…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/2353060/"
+      }
+    ]
+  },
+  "life-is-strange-reunion": {
+    "studio": "Deck Nine Games",
+    "officialExcerpt": "The saga of Max and Chloe, and the fate of Caledon, is yours to decide! Play as both Max and…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/2624870/"
+      }
+    ]
+  },
+  "lilys-world": {
+    "studio": "SonderingEmily",
+    "officialExcerpt": "Lily was an ordinary teenager in 2004, and you just found her laptop. Read her diary, message her friends, and…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/3195580/"
+      }
+    ]
+  },
+  "little-nightmares-vr": {
+    "studio": "ICONIK",
+    "officialExcerpt": "Little Nightmares VR: Altered Echoes is a dark atmospheric adventure‑puzzle game where you embody Dark Six, a mysterious figure with…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/2482940/"
+      }
+    ]
+  },
+  "marathon": {
+    "studio": "Bungie",
+    "officialExcerpt": "Explore the lost colony of Tau Ceti IV, scavenging valuable loot in a high-stakes survival first person shooter from the…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/3065800/"
+      }
+    ]
+  },
+  "marvel-tokon": {
+    "studio": "ARC SYSTEM WORKS CO., LTD",
+    "officialExcerpt": "Assemble your team of legendary Marvel characters in the ultimate 4v4 tag team fighter.",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/3787240/"
+      }
+    ]
+  },
+  "meccha-chameleon": {
+    "studio": "lemorion_1224",
+    "officialExcerpt": "Paint yourself to blend in! \"Meccha Chameleon\" is a new-sensation hide-and-seek game where you paint your white body to mimic…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/4704690/"
+      }
+    ]
+  },
+  "mewgenics": {
+    "studio": "Edmund McMillen / Tyler Glaiel",
+    "officialExcerpt": "Build the ultimate cat army through tactical breeding and send them into deep, challenging turn-based adventures. Draft abilities, collect items,…",
+    "score": {
+      "value": 88,
+      "platform": "PC",
+      "source": "https://store.steampowered.com/app/686060/"
+    },
+    "metacritic": "https://www.metacritic.com/game/pc/mewgenics?ftag=MCD-06-10aaa1f",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/686060/"
+      }
+    ]
+  },
+  "mina-hollower": {
+    "studio": "Yacht Club Games",
+    "officialExcerpt": "Take control of Mina, a renowned Hollower hurtled into a desperate mission to rescue a cursed island. Whip foes, burrow…",
+    "score": {
+      "value": 90,
+      "platform": "PC",
+      "source": "https://store.steampowered.com/app/1875580/"
+    },
+    "metacritic": "https://www.metacritic.com/game/pc/mina-the-hollower?ftag=MCD-06-10aaa1f",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/1875580/"
+      }
+    ]
+  },
+  "mixtape": {
+    "studio": "Beethoven and Dinosaur",
+    "officialExcerpt": "On their last night together, three friends embark on one final adventure. Play through a mixtape of memories, set to…",
+    "score": {
+      "value": 87,
+      "platform": "PC",
+      "source": "https://store.steampowered.com/app/2582320/"
+    },
+    "metacritic": "https://www.metacritic.com/game/pc/mixtape?ftag=MCD-06-10aaa1f",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/2582320/"
+      }
+    ]
+  },
+  "mouse-pi": {
+    "studio": "Fumi Games",
+    "officialExcerpt": "Join private investigator Jack Pepper on a guns blazing, jazz-fueled adventure in MOUSE: P.I. For Hire. MOUSE combines the charm…",
+    "score": {
+      "value": 80,
+      "platform": "PC",
+      "source": "https://store.steampowered.com/app/2416450/"
+    },
+    "metacritic": "https://www.metacritic.com/game/pc/mouse-pi-for-hire?ftag=MCD-06-10aaa1f",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/2416450/"
+      }
+    ]
+  },
+  "no-mans-sky": {
+    "studio": "Hello Games",
+    "officialExcerpt": "No Man's Sky is a game about exploration and survival in an infinite procedurally generated universe.",
+    "score": {
+      "value": 61,
+      "platform": "PC",
+      "source": "https://store.steampowered.com/app/275850/"
+    },
+    "metacritic": "https://www.metacritic.com/game/pc/no-mans-sky?ftag=MCD-06-10aaa1f",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/275850/"
+      }
+    ]
+  },
+  "onimusha": {
+    "studio": "CAPCOM Co., Ltd.",
+    "officialExcerpt": "An Oni Gauntlet-wielding samurai makes a stand in Kyoto against the encroaching Genma menace. Through gritty, blood-soaked brawls, he searches…",
+    "score": {
+      "value": 83,
+      "platform": "PC",
+      "source": "https://store.steampowered.com/app/2638890/"
+    },
+    "metacritic": "https://www.metacritic.com/game/pc/onimusha-way-of-the-sword?ftag=MCD-06-10aaa1f",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/2638890/"
+      }
+    ]
+  },
+  "planet-zoo-2": {
+    "studio": "Frontier Developments",
+    "officialExcerpt": "Build a wilder world in Planet Zoo 2. Create distinctive zoos around the globe filled with awe-inspiring animals, including fully…",
+    "score": {
+      "value": 84,
+      "platform": "PC",
+      "source": "https://store.steampowered.com/app/3219030/"
+    },
+    "metacritic": "https://www.metacritic.com/game/pc/planet-zoo-2?ftag=MCD-06-10aaa1f",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/3219030/"
+      }
+    ]
+  },
+  "pragmata": {
+    "studio": "CAPCOM Co., Ltd.",
+    "officialExcerpt": "Pragmata is a unique, sci-fi action-adventure game from Capcom. Follow Hugh, a member of an ill-fated investigation team, and Diana,…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/3357650/"
+      }
+    ]
+  },
+  "re-veronica": {
+    "studio": "CAPCOM Co., Ltd.",
+    "officialExcerpt": "Resident Evil Veronica is a remake of 2000's Resident Evil Code: Veronica. In 2027, madness and intrigue, love and hate…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/4824610/"
+      }
+    ]
+  },
+  "replaced": {
+    "studio": "Sad Cat Studios",
+    "officialExcerpt": "Follow R.E.A.C.H., an AI trapped in a human body, on a cinematic adventure through an alternate 1980s America. Explore an…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/1663850/"
+      }
+    ]
+  },
+  "silver-pines": {
+    "studio": "Wych Elm",
+    "officialExcerpt": "Silver Pines is a survival horror metroidvania set in small town America. Fight nightmarish terrors and solve puzzles, while carefully…",
+    "score": {
+      "value": 83,
+      "platform": "PC",
+      "source": "https://store.steampowered.com/app/2333000/"
+    },
+    "metacritic": "https://www.metacritic.com/game/pc/silver-pines?ftag=MCD-06-10aaa1f",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/2333000/"
+      }
+    ]
+  },
+  "slay-the-spire-2": {
+    "studio": "Mega Crit",
+    "officialExcerpt": "The iconic roguelike deckbuilder returns. Craft a unique deck, encounter bizarre creatures, and discover relics of immense power in Slay…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/2868840/"
+      }
+    ]
+  },
+  "thief-vr": {
+    "studio": "Maze Theory",
+    "officialExcerpt": "Step into the shadows in Thief VR. You are Magpie, a cunning thief orphaned by Baron Northcrest and shaped by…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/2800080/"
+      }
+    ]
+  },
+  "trails-sky-2nd": {
+    "studio": "Nihon Falcom",
+    "officialExcerpt": "Turn the page on the explosive 2nd chapter of Nihon Falcom’s legendary Trails saga! Estelle Bright sets out on a…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/4225980/"
+      }
+    ]
+  },
+  "warframe": {
+    "studio": "Digital Extremes",
+    "officialExcerpt": "Awaken as an unstoppable warrior and battle alongside your friends in this story-driven free-to-play online action game",
+    "score": {
+      "value": 69,
+      "platform": "PC",
+      "source": "https://store.steampowered.com/app/230410/"
+    },
+    "metacritic": "https://www.metacritic.com/game/pc/warframe?ftag=MCD-06-10aaa1f",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/230410/"
+      }
+    ]
+  },
+  "helldivers2": {
+    "studio": "Arrowhead Game Studios",
+    "officialExcerpt": "The Galaxy’s Last Line of Offence. Enlist in the Helldivers and join the fight for freedom across a hostile galaxy…",
+    "links": [
+      {
+        "label": "Steam 商店",
+        "url": "https://store.steampowered.com/app/553850/"
+      }
+    ]
   }
 }
