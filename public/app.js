@@ -239,7 +239,10 @@
       const score = info.score;
       const badge = externalLink('', score.source);
       badge.className = 'ballot-score';
-      badge.setAttribute('aria-label', `Metacritic 媒体评分 ${score.value} 分，${score.platform}，打开来源`);
+      const scoreLabel = `Metacritic 媒体评分 ${score.value} 分，${score.platform}`;
+      const reviewCount = score.criticReviewCount ? `，基于 ${fmt(score.criticReviewCount)} 篇媒体评测` : '';
+      badge.title = scoreLabel + reviewCount;
+      badge.setAttribute('aria-label', badge.title + '，打开来源');
       badge.replaceChildren();
       const value = element('strong', 'score-value', String(score.value));
       value.dataset.rating = score.value >= 75 ? 'positive' : score.value >= 50 ? 'mixed' : 'negative';

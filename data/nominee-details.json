@@ -5,6 +5,7 @@
     "score": {
       "value": 87,
       "platform": "PS5",
+      "criticReviewCount": 102,
       "source": "https://www.metacritic.com/game/007-first-light/critic-reviews/?platform=playstation-5"
     },
     "metacritic": "https://www.metacritic.com/game/007-first-light/",
@@ -25,6 +26,7 @@
     "score": {
       "value": 83,
       "platform": "PS5",
+      "criticReviewCount": 90,
       "source": "https://www.metacritic.com/game/control-resonant/critic-reviews/?platform=playstation-5"
     },
     "metacritic": "https://www.metacritic.com/game/control-resonant/",
@@ -41,6 +43,7 @@
     "score": {
       "value": 99,
       "platform": "PS5",
+      "criticReviewCount": 158,
       "source": "https://www.metacritic.com/game/grand-theft-auto-vi/critic-reviews/?platform=playstation-5"
     },
     "metacritic": "https://www.metacritic.com/game/grand-theft-auto-vi/",
@@ -55,9 +58,10 @@
     "studio": "S-GAME 灵游坊",
     "officialIntro": "被诬陷杀害师父的剑客身负重伤，只剩六十六天可活。他在追杀中深入武林追查幕后阴谋。战斗结合传统武术动作、连招和不同武器。",
     "score": {
-      "value": 86,
-      "platform": "PS5",
-      "source": "https://www.metacritic.com/game/phantom-blade-zero/critic-reviews/?platform=playstation-5"
+      "value": 88,
+      "platform": "PC",
+      "criticReviewCount": 60,
+      "source": "https://www.metacritic.com/game/phantom-blade-zero/critic-reviews/?platform=pc"
     },
     "metacritic": "https://www.metacritic.com/game/phantom-blade-zero/",
     "links": [
@@ -73,6 +77,7 @@
     "score": {
       "value": 89,
       "platform": "PS5",
+      "criticReviewCount": 141,
       "source": "https://www.metacritic.com/game/resident-evil-requiem/critic-reviews/?platform=playstation-5"
     },
     "metacritic": "https://www.metacritic.com/game/resident-evil-requiem/",
@@ -93,6 +98,7 @@
     "score": {
       "value": 95,
       "platform": "Switch 2",
+      "criticReviewCount": 139,
       "source": "https://www.metacritic.com/game/the-legend-of-zelda-ocarina-of-time-2026/critic-reviews/?platform=nintendo-switch-2"
     },
     "metacritic": "https://www.metacritic.com/game/the-legend-of-zelda-ocarina-of-time-2026/",
@@ -147,9 +153,10 @@
     "score": {
       "value": 91,
       "platform": "PC",
-      "source": "https://store.steampowered.com/app/1478500/"
+      "criticReviewCount": 30,
+      "source": "https://www.metacritic.com/game/big-walk/critic-reviews/?platform=pc"
     },
-    "metacritic": "https://www.metacritic.com/game/pc/big-walk?ftag=MCD-06-10aaa1f",
+    "metacritic": "https://www.metacritic.com/game/big-walk/",
     "links": [
       {
         "label": "Steam 商店",
@@ -181,11 +188,12 @@
     "storeIntro": "故事从朝鲜半岛爆发战争开始。玩家在电影式战役中经历冲突的不同战线，也能在多人模式里进行快节奏的枪战。",
     "studio": "Infinity Ward / Beenox / Digital Legends / Activision Shanghai / Raven Software / Treyarch / Sledgehammer Games / High Moon Studios",
     "score": {
-      "value": 85,
-      "platform": "PC",
-      "source": "https://store.steampowered.com/app/4435490/"
+      "value": 83,
+      "platform": "PS5",
+      "criticReviewCount": 55,
+      "source": "https://www.metacritic.com/game/call-of-duty-modern-warfare-4/critic-reviews/?platform=playstation-5"
     },
-    "metacritic": "https://www.metacritic.com/game/pc/call-of-duty-modern-warfare-4?ftag=MCD-06-10aaa1f",
+    "metacritic": "https://www.metacritic.com/game/call-of-duty-modern-warfare-4/",
     "links": [
       {
         "label": "Steam 商店",
@@ -209,9 +217,10 @@
     "score": {
       "value": 88,
       "platform": "PC",
-      "source": "https://store.steampowered.com/app/2524850/"
+      "criticReviewCount": 48,
+      "source": "https://www.metacritic.com/game/denshattack/critic-reviews/?platform=pc"
     },
-    "metacritic": "https://www.metacritic.com/game/pc/denshattack!?ftag=MCD-06-10aaa1f",
+    "metacritic": "https://www.metacritic.com/game/denshattack/",
     "links": [
       {
         "label": "Steam 商店",
@@ -225,9 +234,10 @@
     "score": {
       "value": 90,
       "platform": "PC",
-      "source": "https://store.steampowered.com/app/570/"
+      "criticReviewCount": 33,
+      "source": "https://www.metacritic.com/game/dota-2/critic-reviews/?platform=pc"
     },
-    "metacritic": "https://www.metacritic.com/game/pc/dota-2?ftag=MCD-06-10aaa1f",
+    "metacritic": "https://www.metacritic.com/game/dota-2/",
     "links": [
       {
         "label": "Steam 商店",
@@ -409,9 +419,10 @@
     "score": {
       "value": 88,
       "platform": "PC",
-      "source": "https://store.steampowered.com/app/686060/"
+      "criticReviewCount": 58,
+      "source": "https://www.metacritic.com/game/mewgenics/critic-reviews/?platform=pc"
     },
-    "metacritic": "https://www.metacritic.com/game/pc/mewgenics?ftag=MCD-06-10aaa1f",
+    "metacritic": "https://www.metacritic.com/game/mewgenics/",
     "links": [
       {
         "label": "Steam 商店",
@@ -425,9 +436,10 @@
     "score": {
       "value": 90,
       "platform": "PC",
-      "source": "https://store.steampowered.com/app/1875580/"
+      "criticReviewCount": 74,
+      "source": "https://www.metacritic.com/game/mina-the-hollower/critic-reviews/?platform=pc"
     },
-    "metacritic": "https://www.metacritic.com/game/pc/mina-the-hollower?ftag=MCD-06-10aaa1f",
+    "metacritic": "https://www.metacritic.com/game/mina-the-hollower/",
     "links": [
       {
         "label": "Steam 商店",
@@ -439,11 +451,12 @@
     "storeIntro": "三位好友在分别前的最后一晚重游往事。游戏用混音带串起滑板、派对等片段，让玩家跟着音乐经历他们各自记得的青春。",
     "studio": "Beethoven and Dinosaur",
     "score": {
-      "value": 87,
-      "platform": "PC",
-      "source": "https://store.steampowered.com/app/2582320/"
+      "value": 86,
+      "platform": "PS5",
+      "criticReviewCount": 41,
+      "source": "https://www.metacritic.com/game/mixtape/critic-reviews/?platform=playstation-5"
     },
-    "metacritic": "https://www.metacritic.com/game/pc/mixtape?ftag=MCD-06-10aaa1f",
+    "metacritic": "https://www.metacritic.com/game/mixtape/",
     "links": [
       {
         "label": "Steam 商店",
@@ -457,9 +470,10 @@
     "score": {
       "value": 80,
       "platform": "PC",
-      "source": "https://store.steampowered.com/app/2416450/"
+      "criticReviewCount": 79,
+      "source": "https://www.metacritic.com/game/mouse-pi-for-hire/critic-reviews/?platform=pc"
     },
-    "metacritic": "https://www.metacritic.com/game/pc/mouse-pi-for-hire?ftag=MCD-06-10aaa1f",
+    "metacritic": "https://www.metacritic.com/game/mouse-pi-for-hire/",
     "links": [
       {
         "label": "Steam 商店",
@@ -471,11 +485,12 @@
     "storeIntro": "驾驶飞船前往程序生成的星系，着陆后采集资源、探索生物和建立基地。可以单独远行，也可以和其他玩家共同探索。",
     "studio": "Hello Games",
     "score": {
-      "value": 61,
-      "platform": "PC",
-      "source": "https://store.steampowered.com/app/275850/"
+      "value": 71,
+      "platform": "PS4",
+      "criticReviewCount": 100,
+      "source": "https://www.metacritic.com/game/no-mans-sky/critic-reviews/?platform=playstation-4"
     },
-    "metacritic": "https://www.metacritic.com/game/pc/no-mans-sky?ftag=MCD-06-10aaa1f",
+    "metacritic": "https://www.metacritic.com/game/no-mans-sky/",
     "links": [
       {
         "label": "Steam 商店",
@@ -487,11 +502,12 @@
     "storeIntro": "在幻魔肆虐的京都，扮演佩戴鬼之笼手的武士。用刀剑格挡、反击和斩杀敌人，在战斗中追查这场灾变的来由。",
     "studio": "CAPCOM Co., Ltd.",
     "score": {
-      "value": 83,
-      "platform": "PC",
-      "source": "https://store.steampowered.com/app/2638890/"
+      "value": 85,
+      "platform": "PS5",
+      "criticReviewCount": 108,
+      "source": "https://www.metacritic.com/game/onimusha-way-of-the-sword/critic-reviews/?platform=playstation-5"
     },
-    "metacritic": "https://www.metacritic.com/game/pc/onimusha-way-of-the-sword?ftag=MCD-06-10aaa1f",
+    "metacritic": "https://www.metacritic.com/game/onimusha-way-of-the-sword/",
     "links": [
       {
         "label": "Steam 商店",
@@ -505,9 +521,10 @@
     "score": {
       "value": 84,
       "platform": "PC",
-      "source": "https://store.steampowered.com/app/3219030/"
+      "criticReviewCount": 23,
+      "source": "https://www.metacritic.com/game/planet-zoo-2/critic-reviews/?platform=pc"
     },
-    "metacritic": "https://www.metacritic.com/game/pc/planet-zoo-2?ftag=MCD-06-10aaa1f",
+    "metacritic": "https://www.metacritic.com/game/planet-zoo-2/",
     "links": [
       {
         "label": "Steam 商店",
@@ -551,9 +568,10 @@
     "score": {
       "value": 83,
       "platform": "PC",
-      "source": "https://store.steampowered.com/app/2333000/"
+      "criticReviewCount": 30,
+      "source": "https://www.metacritic.com/game/silver-pines/critic-reviews/?platform=pc"
     },
-    "metacritic": "https://www.metacritic.com/game/pc/silver-pines?ftag=MCD-06-10aaa1f",
+    "metacritic": "https://www.metacritic.com/game/silver-pines/",
     "links": [
       {
         "label": "Steam 商店",
@@ -595,11 +613,12 @@
     "storeIntro": "唤醒并操控各有能力的战甲，在太阳系执行任务。收集和改装武器，培养战甲能力，也可以与其他玩家组队挑战较难的关卡。",
     "studio": "Digital Extremes",
     "score": {
-      "value": 69,
-      "platform": "PC",
-      "source": "https://store.steampowered.com/app/230410/"
+      "value": 64,
+      "platform": "PS4",
+      "criticReviewCount": 25,
+      "source": "https://www.metacritic.com/game/warframe/critic-reviews/?platform=playstation-4"
     },
-    "metacritic": "https://www.metacritic.com/game/pc/warframe?ftag=MCD-06-10aaa1f",
+    "metacritic": "https://www.metacritic.com/game/warframe/",
     "links": [
       {
         "label": "Steam 商店",
