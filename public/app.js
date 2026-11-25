@@ -29,18 +29,12 @@
   const fmt = (n) => Number(n || 0).toLocaleString('zh-CN');
 
   /* ---------------- 封面图 ---------------- */
-  // 官方封面由服务端预置在 public/covers/{id}.jpg，无图时使用首字头像
-  function initials(name) {
-    const cleaned = String(name).replace(/[《》®™:：]/g, ' ').trim();
-    return cleaned.slice(0, 2).toUpperCase();
-  }
-
   function coverCell(n, extraClass = '') {
     const directory = extraClass === 'ballot-poster' ? '/covers/' : '/covers/previews/';
     const img = n.cover
       ? `<img loading="lazy" alt="${n.name} 封面" src="${directory}${n.id}.jpg" onerror="this.remove()" />`
       : '';
-    return `<div class="cover-cell ${extraClass}"><span class="cover-fallback">${initials(n.name)}</span>${img}</div>`;
+    return `<div class="cover-cell ${extraClass}">${img}<span class="cover-fallback" aria-hidden="true"><img class="ui-icon" src="/icons/image-off.svg" alt="" width="24" height="24" /></span></div>`;
   }
 
   function findCategory(id) {
@@ -119,7 +113,6 @@
       subtitle.lang = 'en';
       button.insertAdjacentHTML('beforeend', coverCell(nominee, 'featured-cover'));
       button.querySelector('.featured-cover').setAttribute('aria-hidden', 'true');
-      button.querySelector('img')?.setAttribute('alt', '');
       button.append(title, subtitle);
       item.append(button);
       return item;
@@ -143,11 +136,21 @@
     return node;
   }
 
+  function icon(name) {
+    const image = element('img', 'ui-icon');
+    image.src = `/icons/${name}.svg`;
+    image.alt = '';
+    image.width = 16;
+    image.height = 16;
+    return image;
+  }
+
   function externalLink(label, url) {
     const link = element('a', 'ballot-link', label);
     link.href = url;
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
+    link.append(icon('external-link'));
     return link;
   }
 
@@ -165,7 +168,8 @@
       button.dataset.selectNominee = nominee.id;
       button.insertAdjacentHTML('beforeend', coverCell(nominee, 'thumb-cover'));
       button.firstElementChild.setAttribute('aria-hidden', 'true');
-      const mark = element('span', 'thumb-mark', '✓');
+      const mark = element('span', 'thumb-mark');
+      mark.append(icon('check'));
       mark.setAttribute('aria-hidden', 'true');
       button.append(element('span', 'thumb-label', nominee.name));
       if (distinctName(category, nominee) !== nominee.name) {
@@ -204,7 +208,7 @@
     panel.dataset.nid = nominee.id;
     panel.insertAdjacentHTML('beforeend', coverCell(nominee, 'ballot-poster'));
     const poster = panel.querySelector('.ballot-poster');
-    const posterImage = poster.querySelector('img');
+    const posterImage = poster.querySelector(':scope > img');
     if (posterImage) {
       posterImage.removeAttribute('loading');
       poster.style.setProperty('--poster-glow', `url("/covers/previews/${nominee.id}.jpg")`);
@@ -231,6 +235,7 @@
         ? externalLink(scoreText, info.score.source)
         : element('span', 'ballot-score', scoreText);
       badge.className = 'ballot-score';
+      badge.querySelector('img')?.remove();
       content.append(badge);
     }
     const introLabel = info.officialIntro ? '官方介绍摘要' : info.officialExcerpt ? '商店介绍节选' : '候选简介';

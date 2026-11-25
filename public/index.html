@@ -6,7 +6,7 @@
   <title>溯游工作室 · 2026 年度游戏票选</title>
   <meta name="description" content="从 TGA 2026 官方提名中，投出溯游工作室的年度最佳。" />
   <link rel="stylesheet" href="/styles.css" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232c1256'/%3E%3Ctext x='32' y='43' font-size='28' font-family='Arial' font-weight='bold' fill='%2342f6aa' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E" />
+  <link rel="icon" type="image/jpeg" href="/brand/suyou-awards-stage.jpg" />
 </head>
 <body>
   <div class="ambient" aria-hidden="true"></div>
@@ -33,7 +33,7 @@
           <p class="hero-kicker">SUYO STUDIO <span>2026</span></p>
           <h1>年度游戏<span>票选</span></h1>
           <p class="hero-sub">从 TGA 2026 的提名名单中，选出溯游工作室的年度最佳。</p>
-          <button id="hero-vote" class="hero-cta" type="button" disabled>投票给年度最佳游戏 <span aria-hidden="true">↗</span></button>
+          <button id="hero-vote" class="hero-cta" type="button" disabled>投票给年度最佳游戏 <img class="ui-icon" src="/icons/arrow-up-right.svg" alt="" width="18" height="18" /></button>
         </div>
         <div class="hero-meta">
           <div class="hero-stats">
@@ -68,7 +68,7 @@
       <section class="hero-nominees" aria-labelledby="hero-award-title">
         <div class="hero-nominees-head">
           <h2 id="hero-award-title">年度最佳游戏 <span lang="en">Game of the Year</span></h2>
-          <button id="hero-award" type="button" disabled>进入投票 <span aria-hidden="true">↗</span></button>
+          <button id="hero-award" type="button" disabled>进入投票 <img class="ui-icon" src="/icons/arrow-up-right.svg" alt="" width="18" height="18" /></button>
         </div>
         <ul id="hero-nominee-list" class="hero-nominee-list"></ul>
       </section>
@@ -118,15 +118,15 @@
         <p class="modal-en" id="modalEn"></p>
         <h2 class="modal-title" id="modalTitle"></h2>
       </div>
-      <button class="icon-btn" type="button" data-close aria-label="关闭">✕</button>
+      <button class="icon-btn" type="button" data-close aria-label="关闭"><img class="ui-icon" src="/icons/x.svg" alt="" width="20" height="20" /></button>
     </div>
     <div class="modal-body" id="modalBody"></div>
     <div class="modal-foot">
       <div class="picker-toolbar">
         <span id="nomineePosition" aria-live="polite"></span>
         <div class="picker-nav" role="group" aria-label="上一位或下一位提名">
-          <button type="button" data-step="-1" aria-label="上一位提名">←</button>
-          <button type="button" data-step="1" aria-label="下一位提名">→</button>
+          <button type="button" data-step="-1" aria-label="上一位提名"><img class="ui-icon" src="/icons/chevron-left.svg" alt="" width="20" height="20" /></button>
+          <button type="button" data-step="1" aria-label="下一位提名"><img class="ui-icon" src="/icons/chevron-right.svg" alt="" width="20" height="20" /></button>
         </div>
       </div>
       <div class="nominee-picker" id="nomineePicker" role="group" aria-label="切换提名"></div>

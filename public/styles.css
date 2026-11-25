@@ -242,6 +242,18 @@ button {
   font-weight: 800;
 }
 
+.ui-icon {
+  display: block;
+  flex: none;
+  filter: invert(92%) sepia(13%) saturate(500%) hue-rotate(200deg);
+}
+
+.hero-cta .ui-icon,
+.hero-nominees-head button .ui-icon,
+.thumb-mark .ui-icon { filter: none; }
+
+.icon-btn { display: grid; place-items: center; }
+
 .hero-cta { margin-top: 22px; box-shadow: 0 8px 36px #42f6aa24; }
 .hero-cta:hover, .hero-nominees-head button:not(:disabled):hover { background: #86ffd0; }
 .about-source { color: var(--highlight); text-decoration: underline; text-underline-offset: 3px; }
@@ -307,17 +319,11 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--mint); outline-
 .featured-nominee .featured-cover {
   width: 100%;
   height: auto;
-  aspect-ratio: 2.1;
+  aspect-ratio: 1.48;
   border: 0;
   border-radius: 0;
   overflow: hidden;
 }
-
-.featured-nominee img { object-position: center 37%; transition: transform .35s ease; }
-.featured-nominee[data-nominee='gta6'] img { object-position: center; }
-.featured-nominee[data-nominee='007-first-light'] img,
-.featured-nominee[data-nominee='control-resonant'] img { object-position: center 13%; }
-.featured-nominee:hover img { transform: scale(1.04); }
 
 .featured-nominee strong,
 .featured-nominee > span {
@@ -627,7 +633,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--mint); outline-
   aspect-ratio: 3 / 4;
   border-radius: 12px;
   overflow: hidden;
-  background: linear-gradient(145deg, #1b2030, #241d10);
+  background: #16101f;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -637,18 +643,13 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--mint); outline-
   border: 0;
 }
 
-.cover-cell img {
+.cover-cell > img {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
-  transition: transform 0.45s cubic-bezier(0.2, 0.7, 0.3, 1);
-}
-
-.cat-card:hover .cover-cell img {
-  transform: scale(1.06);
 }
 
 .cover-fallback {
@@ -814,9 +815,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--mint); outline-
   opacity: .8;
   pointer-events: none;
 }
-.ballot-poster img { object-fit: contain; }
-.ballot-poster .cover-fallback { font-size: clamp(38px, 9vw, 85px); }
-.ballot-poster:has(img) .cover-fallback { visibility: hidden; }
+.ballot-poster .cover-fallback .ui-icon { width: 38px; height: 38px; }
+.cover-cell:has(> img) .cover-fallback { visibility: hidden; }
 .ballot-copy { min-width: 0; overflow-wrap: anywhere; }
 .ballot-name { font-size: clamp(23px, 4vw, 44px); line-height: 1.15; text-wrap: balance; }
 .ballot-original { color: var(--highlight); font-size: clamp(14px, 2vw, 20px); margin-top: 5px; }
@@ -838,6 +838,8 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--mint); outline-
 .vote-dock:has(.vote-confirmation) .ballot-status { display: none; }
 .vote-dock:has(.vote-confirmation) .ballot-actions { flex: 1; }
 .ballot-link { font-size: 13px; color: var(--highlight); text-decoration: underline; text-underline-offset: 3px; padding: 4px 0; }
+.ballot-link { display: inline-flex; align-items: center; gap: 5px; }
+.ballot-link .ui-icon { width: 13px; height: 13px; }
 .ballot-link:hover { color: var(--mint); }
 .ballot-link + .ballot-link { margin-left: 4px; }
 
@@ -932,12 +934,11 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--mint); outline-
   box-shadow: inset 0 0 0 1px var(--mint);
 }
 .nominee-thumb .thumb-cover {
-  aspect-ratio: 2;
+  aspect-ratio: 1.55;
   border: 0;
   border-radius: 5px 5px 0 0;
 }
-.portrait-picker .thumb-cover { aspect-ratio: 1.72; }
-.portrait-picker .thumb-cover img { object-position: center 24%; }
+.portrait-picker .thumb-cover { aspect-ratio: 1.3; }
 
 .thumb-label {
   display: block;
@@ -1062,7 +1063,7 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--mint); outline-
   .modal-head { padding-block: 5px; }
   .modal-foot { padding-top: 4px; }
   .nominee-thumb { flex-basis: 91px; }
-  .nominee-thumb .thumb-cover { aspect-ratio: 2; }
+  .nominee-thumb .thumb-cover { aspect-ratio: 1.7; }
   .thumb-label { padding-block: 3px; }
 }
 
@@ -1070,5 +1071,5 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--mint); outline-
   html { scroll-behavior: auto; }
   .hero-grid, .hero-nominee-list > li, .modal, .ballot-enter { animation: none; }
   .featured-nominee, .featured-nominee img, .cat-card, .cat-card::before, .cover-cell img, .nominee-thumb, .toast { transition: none; }
-  .featured-nominee:hover, .featured-nominee:hover img, .cat-card:hover, .cat-card:hover .cover-cell img { transform: none; }
+  .featured-nominee:hover, .cat-card:hover { transform: none; }
 }
