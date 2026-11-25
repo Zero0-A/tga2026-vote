@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>后台 · TGA 2026 票选</title>
+  <title>组织者后台 · 溯游工作室</title>
   <link rel="stylesheet" href="/styles.css" />
   <style>
     .admin-wrap { max-width: 1080px; margin: 0 auto; padding: 40px 24px 80px; }
@@ -17,7 +17,7 @@
       transition: all .2s;
     }
     .btn:hover { background: rgba(255,255,255,.08); border-color: rgba(245,197,66,.45); }
-    .btn.primary { background: var(--accent); color: #1a1405; border: 0; }
+    .btn.primary { background: var(--accent); color: var(--action-ink); border: 0; }
     .btn.primary:hover { filter: brightness(1.07); }
     .btn.danger { border-color: rgba(255, 92, 92, .4); color: #ff8f8f; }
     .btn.danger:hover { background: rgba(255, 92, 92, .12); }
@@ -25,7 +25,7 @@
 
     .login-shell { min-height: 68vh; display: flex; align-items: center; justify-content: center; }
     .login-card {
-      width: min(400px, 100%); background: linear-gradient(180deg, #14171f, #0d0f15);
+      width: min(400px, 100%); background: linear-gradient(180deg, var(--panel-2), var(--bg-soft));
       border: 1px solid var(--line-strong); border-radius: 20px; padding: 34px 30px;
       box-shadow: var(--shadow);
     }
@@ -76,8 +76,8 @@
     .res-line .num { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 12px; }
     .res-line .pct { font-weight: 700; width: 52px; text-align: right; font-variant-numeric: tabular-nums; }
     .res-bar { height: 5px; background: rgba(255,255,255,.06); border-radius: 99px; margin-top: 6px; overflow: hidden; }
-    .res-bar i { display: block; height: 100%; background: linear-gradient(90deg,#8a6a1f,#f5c542); border-radius: 99px; }
-    .res-row.top .res-bar i { background: linear-gradient(90deg,#f5c542,#ff8a2a); }
+    .res-bar i { display: block; height: 100%; background: linear-gradient(90deg,#6943aa,var(--highlight)); border-radius: 99px; }
+    .res-row.top .res-bar i { background: linear-gradient(90deg,var(--highlight),var(--mint)); }
 
     .recent { margin-top: 26px; background: rgba(18,21,29,.75); border: 1px solid var(--line); border-radius: 16px; padding: 20px; }
     .recent h3 { font-size: 15px; margin-bottom: 12px; }
@@ -85,7 +85,7 @@
     .recent-row:first-of-type { border-top: 0; }
     .recent-row .t { color: var(--dim); flex-shrink: 0; font-variant-numeric: tabular-nums; }
     .recent-row .c { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-    .recent-row .n { margin-left: auto; color: var(--gold); font-weight: 600; flex-shrink: 0; }
+    .recent-row .n { margin-left: auto; color: var(--highlight); font-weight: 600; flex-shrink: 0; }
     .empty { color: var(--dim); font-size: 13px; padding: 10px 0; }
     .hidden { display: none !important; }
   </style>
@@ -96,7 +96,7 @@
   <header class="topbar">
     <div class="topbar-inner">
       <a class="brand" href="/">
-        <span class="brand-mark">TGA</span>
+        <span class="brand-mark">溯游工作室</span>
         <span class="brand-text">2026 后台</span>
       </a>
       <nav class="topnav">
@@ -135,7 +135,7 @@
 
       <div class="stat-row">
         <div class="stat-card"><div class="k">累计票数</div><div class="v" id="dTotalVotes">--</div></div>
-        <div class="stat-card"><div class="k">参与人数</div><div class="v" id="dVoters">--</div></div>
+        <div class="stat-card"><div class="k">参与浏览器</div><div class="v" id="dVoters">--</div></div>
         <div class="stat-card"><div class="k">已有票数的奖项</div><div class="v" id="dCatVoted">-- <small>/ 30</small></div></div>
         <div class="stat-card"><div class="k">数据文件</div><div class="v" style="font-size:14px;font-weight:600;line-height:1.8">storage/votes.json</div></div>
       </div>

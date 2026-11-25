@@ -1,9 +1,14 @@
 (() => {
   const $ = (sel) => document.querySelector(sel);
   const gridEl = $('#categoryGrid');
+  const heroAward = $('#hero-award');
+  const heroVote = $('#hero-vote');
+  const heroList = $('#hero-nominee-list');
   const tabsEl = $('#tabs');
   const modal = $('#modal');
   const modalBody = $('#modalBody');
+  const picker = $('#nomineePicker');
+  const modalNotice = $('#modalNotice');
   const modalTitle = $('#modalTitle');
   const modalEn = $('#modalEn');
   const modalHint = $('#modalHint');
@@ -14,6 +19,8 @@
     data: null,
     activeTab: 'all',
     openCategory: null,
+    selectedNominee: null,
+    modalTrigger: null,
     busy: false
   };
 
@@ -65,7 +72,6 @@
     const list = ui.data.categories.filter((c) => ui.activeTab === 'all' || c.tab === ui.activeTab);
     gridEl.innerHTML = list
       .map((c) => {
-        const idx = ui.data.categories.indexOf(c) + 1;
         const myVote = ui.data.myVotes[c.id];
         const chips = c.nominees.slice(0, 3).map((n) => `<span class="chip">${n.name}</span>`).join('');
         const more = c.nominees.length > 3 ? `<span class="chip more">+${c.nominees.length - 3}</span>` : '';
@@ -74,11 +80,12 @@
           <article class="cat-card ${myVote ? 'voted' : ''}" data-id="${c.id}">
             ${covers ? `<div class="cover-strip">${covers}</div>` : ''}
             <div class="cat-top">
-              <span class="cat-index">${String(idx).padStart(2, '0')}</span>
-              <span class="cat-count ${myVote ? '' : 'live'}">${myVote ? '已投票' : '正在投票'}</span>
+              <div>
+                <p class="cat-en">${c.en}</p>
+                <h3 class="cat-cn">${c.cn}</h3>
+              </div>
+              ${myVote ? '<span class="cat-count">已投票</span>' : ''}
             </div>
-            <p class="cat-en">${c.en}</p>
-            <h3 class="cat-cn">${c.cn}</h3>
             <div class="chips">${chips}${more}</div>
             <div class="cat-foot">
               <span class="cat-status">${myVote ? `你的选择：<strong>${nomineeName(c, myVote)}</strong>` : `${c.nominees.length} 款提名 · ${fmt(categoryTotal(c))} 票`}</span>
@@ -89,68 +96,172 @@
       .join('');
   }
 
-  /* ---------------- 弹窗 ---------------- */
+  function renderFeaturedNominees() {
+    const category = findCategory('goty');
+    if (!category) return;
+    heroAward.disabled = false;
+    heroVote.disabled = false;
+    heroList.replaceChildren(...category.nominees.map((nominee) => {
+      const item = document.createElement('li');
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'featured-nominee';
+      button.dataset.nominee = nominee.id;
+      button.setAttribute('aria-haspopup', 'dialog');
+
+      const title = document.createElement('strong');
+      title.textContent = nominee.name;
+      const subtitle = document.createElement('span');
+      subtitle.textContent = nominee.en;
+      subtitle.lang = 'en';
+      button.insertAdjacentHTML('beforeend', coverCell(nominee, 'featured-cover'));
+      button.querySelector('.featured-cover').setAttribute('aria-hidden', 'true');
+      button.querySelector('img')?.setAttribute('alt', '');
+      button.append(title, subtitle);
+      item.append(button);
+      return item;
+    }));
+  }
+
+  /* ---------------- 选票 ---------------- */
+  const nonGameAwards = new Set([
+    'best-performance', 'best-adaptation', 'best-user-creation',
+    'best-esports-athlete', 'best-esports-team', 'content-creator'
+  ]);
+
+  function element(tag, className, text) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text) node.textContent = text;
+    return node;
+  }
+
+  function externalLink(label, url) {
+    const link = element('a', 'ballot-link', label);
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noopener noreferrer';
+    return link;
+  }
+
+  function renderPicker(category) {
+    picker.replaceChildren(...category.nominees.map((nominee) => {
+      const button = element('button', 'nominee-thumb');
+      button.type = 'button';
+      button.dataset.selectNominee = nominee.id;
+      button.insertAdjacentHTML('beforeend', coverCell(nominee, 'thumb-cover'));
+      button.firstElementChild.setAttribute('aria-hidden', 'true');
+      button.append(element('span', 'thumb-label', nominee.name));
+      return button;
+    }));
+  }
+
   function renderModal(categoryId) {
-    const c = findCategory(categoryId);
-    if (!c) return;
-    const myVote = ui.data.myVotes[c.id];
-    const counts = countOf(c);
-    const total = categoryTotal(c);
+    if (ui.openCategory !== categoryId) return;
+    const category = findCategory(categoryId);
+    const nominee = category.nominees.find((item) => item.id === ui.selectedNominee);
+    if (!nominee) return;
+    const info = nominee.details || {};
+    const isGame = !nonGameAwards.has(categoryId);
+    const myVote = ui.data.myVotes[categoryId];
+    const votes = countOf(category)[nominee.id] || 0;
+    const total = categoryTotal(category);
+    const chosen = myVote === nominee.id;
 
-    modalTitle.textContent = c.cn;
-    modalEn.textContent = c.en;
-    modalMy.textContent = myVote ? `你的选择：${nomineeName(c, myVote)}` : '';
+    modalMy.textContent = myVote ? `你的选择：${nomineeName(category, myVote)}` : '';
     modalHint.textContent = myVote ? '本奖项已完成投票' : '同一浏览器每个奖项限投一票';
+    for (const button of picker.children) {
+      button.setAttribute('aria-pressed', button.dataset.selectNominee === nominee.id);
+    }
 
-    modalBody.innerHTML = c.nominees
-      .map((n, i) => {
-        const votes = counts[n.id] || 0;
-        const pct = total ? (votes / total) * 100 : 0;
-        const mine = myVote === n.id;
-        let btn;
-        if (mine) {
-          btn = '<button class="vote-btn voted-btn" disabled>已投此作</button>';
-        } else if (myVote) {
-          btn = '<button class="vote-btn" disabled>已投票</button>';
-        } else {
-          btn = `<button class="vote-btn" data-vote="${n.id}">投票</button>`;
-        }
-        return `
-          <div class="nominee ${mine ? 'mine' : ''}" data-nid="${n.id}">
-            <div class="nominee-main">
-              ${coverCell(n, 'nominee-cover')}
-              <div class="nominee-info">
-                <div class="nominee-name">${n.name}${mine ? '<span class="mine-tag">我的选择</span>' : ''}</div>
-                <div class="nominee-sub">${String(i + 1).padStart(2, '0')} · ${n.en}${n.sub ? ' · ' + n.sub : ''}</div>
-              </div>
-              ${btn}
-            </div>
-            <div class="bar"><div class="bar-fill" style="width:${pct.toFixed(1)}%"></div></div>
-            <div class="nominee-meta">
-              <span class="pct">${pct.toFixed(1)}%</span>
-              <span>${fmt(votes)} 票</span>
-              <button class="intro-toggle" data-intro="${n.id}">游戏简介 ▾</button>
-            </div>
-            <div class="intro" data-intro-panel="${n.id}">${n.intro || '暂无简介。'}</div>
-          </div>`;
-      })
-      .join('');
+    const panel = element('article', 'ballot-entry');
+    panel.dataset.nid = nominee.id;
+    panel.insertAdjacentHTML('beforeend', coverCell(nominee, 'ballot-poster'));
+    panel.querySelector('img')?.removeAttribute('loading');
+
+    const content = element('div', 'ballot-copy');
+    content.append(element('h3', 'ballot-name', nominee.name));
+    if (nominee.en && nominee.en !== nominee.name) {
+      content.append(element('p', 'ballot-original', nominee.en));
+    }
+    if (info.studio || nominee.sub) {
+      content.append(element('p', 'ballot-studio', `${isGame ? '制作公司' : '所属／作品'} · ${info.studio || nominee.sub}`));
+    }
+
+    if (isGame) {
+      const score = info.score
+        ? `${info.score.value}/100 · ${info.score.platform}`
+        : '暂无已核实评分';
+      const scoreText = `Metacritic  ${score}`;
+      const badge = info.score?.source
+        ? externalLink(scoreText, info.score.source)
+        : element('span', 'ballot-score', scoreText);
+      badge.className = 'ballot-score';
+      content.append(badge);
+    }
+    content.append(
+      element('h4', 'ballot-section-label', info.officialIntro ? '官方介绍摘要' : '提名简介'),
+      element('p', 'ballot-intro', info.officialIntro || nominee.intro || '暂无简介。')
+    );
+
+    const links = element('div', 'ballot-links');
+    for (const link of info.links || []) links.append(externalLink(link.label, link.url));
+    if (isGame) {
+      if (info.metacritic) links.append(externalLink('Metacritic', info.metacritic));
+      if (!info.links?.length) {
+        const title = encodeURIComponent(nominee.en || nominee.name);
+        links.append(
+          externalLink('搜索 Steam', 'https://store.steampowered.com/search/?term=' + title),
+          externalLink('搜索 Metacritic', 'https://www.metacritic.com/search/' + title + '/')
+        );
+      }
+    }
+    if (links.childElementCount) content.append(links);
+
+    const actions = element('div', 'ballot-actions');
+    const voteButton = element('button', 'vote-btn' + (chosen ? ' voted-btn' : ''),
+      chosen ? '已投此作' : myVote ? '本奖项已投票' : ui.busy ? '提交中…' : '投给此作');
+    voteButton.type = 'button';
+    voteButton.dataset.vote = nominee.id;
+    voteButton.disabled = Boolean(myVote) || ui.busy;
+    actions.append(voteButton, element('span', 'ballot-tally',
+      `${fmt(votes)} 票 · ${total ? (votes / total * 100).toFixed(1) : '0'}%`));
+    content.append(actions);
+    panel.append(content);
+    modalBody.replaceChildren(panel);
   }
 
-  function openModal(categoryId) {
+  function selectNominee(nomineeId) {
+    ui.selectedNominee = nomineeId;
+    modalNotice.textContent = '';
+    renderModal(ui.openCategory);
+    modalBody.scrollTop = 0;
+  }
+
+  function openModal(categoryId, nomineeId) {
+    const category = findCategory(categoryId);
+    if (!category?.nominees.length || modal.open) return;
+    ui.modalTrigger = document.activeElement;
     ui.openCategory = categoryId;
-    renderModal(categoryId);
-    modal.classList.add('open');
-    modal.setAttribute('aria-hidden', 'false');
+    modalTitle.textContent = category.cn;
+    modalEn.textContent = category.en;
+    renderPicker(category);
+    selectNominee(nomineeId || ui.data.myVotes[categoryId] || category.nominees[0].id);
     document.body.style.overflow = 'hidden';
+    modal.showModal();
+    modalBody.scrollTop = 0;
+    const button = modalBody.querySelector('.vote-btn:not(:disabled)');
+    (nomineeId && button ? button : modal.querySelector('.icon-btn')).focus({ preventScroll: true });
+    picker.querySelector('[aria-pressed=true]')?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'instant' });
   }
 
-  function closeModal() {
+  modal.addEventListener('close', () => {
     ui.openCategory = null;
-    modal.classList.remove('open');
-    modal.setAttribute('aria-hidden', 'true');
+    ui.selectedNominee = null;
     document.body.style.overflow = '';
-  }
+    ui.modalTrigger?.focus({ preventScroll: true });
+    ui.modalTrigger = null;
+  });
 
   /* ---------------- 投票 ---------------- */
   async function vote(categoryId, nomineeId, btn) {
@@ -175,30 +286,31 @@
         ui.data.event.voters = data.voters;
         renderStats();
         renderCards();
-        renderModal(categoryId);
         showToast('投票成功，感谢参与！');
       } else if (res.status === 409) {
         ui.data.myVotes[categoryId] = data.votedFor;
         const cat = findCategory(categoryId);
         if (cat && data.counts) cat.counts = data.counts;
         renderCards();
-        renderModal(categoryId);
         showToast('你已经在该奖项投过票了');
       } else {
         showToast(data.error || '投票失败，请稍后再试');
-        renderModal(categoryId);
       }
     } catch (err) {
       showToast('网络异常，请检查服务是否正常运行');
-      renderModal(categoryId);
     } finally {
       ui.busy = false;
+      if (ui.openCategory) renderModal(ui.openCategory);
     }
   }
 
   /* ---------------- Toast ---------------- */
   let toastTimer = null;
   function showToast(msg) {
+    if (modal.open) {
+      modalNotice.textContent = msg;
+      return;
+    }
     toastEl.textContent = msg;
     toastEl.classList.add('show');
     clearTimeout(toastTimer);
@@ -240,34 +352,31 @@
     renderCards();
   });
 
+  heroAward.addEventListener('click', () => openModal('goty'));
+  heroVote.addEventListener('click', () => openModal('goty'));
+  heroList.addEventListener('click', (event) => {
+    const tile = event.target.closest('[data-nominee]');
+    if (tile) openModal('goty', tile.dataset.nominee);
+  });
+
   gridEl.addEventListener('click', (e) => {
     const card = e.target.closest('.cat-card');
     if (!card) return;
     openModal(card.dataset.id);
   });
 
-  modal.addEventListener('click', (e) => {
-    if (e.target.closest('[data-close]')) {
-      closeModal();
+  modal.addEventListener('click', (event) => {
+    if (event.target.closest('[data-close]')) {
+      modal.close();
       return;
     }
-    const introBtn = e.target.closest('[data-intro]');
-    if (introBtn) {
-      const panel = modalBody.querySelector(`[data-intro-panel="${introBtn.dataset.intro}"]`);
-      if (panel) {
-        const open = panel.classList.toggle('open');
-        introBtn.textContent = open ? '收起简介 ▴' : '游戏简介 ▾';
-      }
+    const thumbnail = event.target.closest('[data-select-nominee]');
+    if (thumbnail) {
+      selectNominee(thumbnail.dataset.selectNominee);
       return;
     }
-    const voteBtn = e.target.closest('[data-vote]');
-    if (voteBtn && ui.openCategory) {
-      vote(ui.openCategory, voteBtn.dataset.vote, voteBtn);
-    }
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+    const button = event.target.closest('[data-vote]');
+    if (button && ui.openCategory) vote(ui.openCategory, button.dataset.vote, button);
   });
 
   /* ---------------- 初始化 ---------------- */
@@ -276,6 +385,7 @@
       const res = await fetch('/api/state');
       if (!res.ok) throw new Error('bad status');
       ui.data = await res.json();
+      renderFeaturedNominees();
       renderStats();
       renderCards();
       startCountdown(ui.data.event.ceremonyAt);

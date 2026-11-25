@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TGA 2026 提名游戏票选</title>
-  <meta name="description" content="为 TGA 2026 提名游戏投出你的一票，查看游戏简介与实时票数。" />
+  <title>溯游工作室 · 2026 年度游戏票选</title>
+  <meta name="description" content="从 TGA 2026 官方提名中，投出溯游工作室的年度最佳。" />
   <link rel="stylesheet" href="/styles.css" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b0c10'/%3E%3Ctext x='32' y='43' font-size='28' font-family='Arial' font-weight='bold' fill='%23f5c542' text-anchor='middle'%3ET%3C/text%3E%3C/svg%3E" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232c1256'/%3E%3Ctext x='32' y='43' font-size='28' font-family='Arial' font-weight='bold' fill='%2342f6aa' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E" />
 </head>
 <body>
   <div class="ambient" aria-hidden="true"></div>
@@ -14,8 +14,8 @@
   <header class="topbar">
     <div class="topbar-inner">
       <a class="brand" href="/">
-        <span class="brand-mark">TGA</span>
-        <span class="brand-text">2026 票选</span>
+        <span class="brand-mark">溯游工作室</span>
+        <span class="brand-text">2026</span>
       </a>
       <nav class="topnav">
         <a href="#categories">奖项列表</a>
@@ -27,39 +27,54 @@
 
   <main>
     <section class="hero">
-      <div class="hero-badge">玩家票选 · 非官方</div>
-      <h1>
-        TGA 2026<br />
-        <span class="hero-gradient">提名游戏票选</span>
-      </h1>
-      <p class="hero-sub">为你心中的年度游戏投出一票。30 个奖项，全部提名作品与简介一次看全。</p>
+      <div class="hero-meta">
+        <div class="hero-stats">
+          <div class="stat">
+            <span class="stat-value" id="statVotes">--</span>
+            <span class="stat-label">累计票数</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <span class="stat-value" id="statVoters">--</span>
+            <span class="stat-label">参与浏览器</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <span class="stat-value" id="statCats">30</span>
+            <span class="stat-label">奖项数</span>
+          </div>
+        </div>
 
-      <div class="hero-stats">
-        <div class="stat">
-          <span class="stat-value" id="statVotes">--</span>
-          <span class="stat-label">累计票数</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat">
-          <span class="stat-value" id="statVoters">--</span>
-          <span class="stat-label">参与人数</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat">
-          <span class="stat-value" id="statCats">30</span>
-          <span class="stat-label">奖项数</span>
+        <div class="countdown">
+          <span class="countdown-label">距离 TGA 官方直播开场</span>
+          <div class="countdown-boxes" id="countdown">
+            <div class="cd-box"><span id="cdD">--</span><em>天</em></div>
+            <div class="cd-box"><span id="cdH">--</span><em>时</em></div>
+            <div class="cd-box"><span id="cdM">--</span><em>分</em></div>
+            <div class="cd-box"><span id="cdS">--</span><em>秒</em></div>
+          </div>
         </div>
       </div>
 
-      <div class="countdown">
-        <span class="countdown-label">距离颁奖典礼（北京时间 12 月 11 日）</span>
-        <div class="countdown-boxes" id="countdown">
-          <div class="cd-box"><span id="cdD">--</span><em>天</em></div>
-          <div class="cd-box"><span id="cdH">--</span><em>时</em></div>
-          <div class="cd-box"><span id="cdM">--</span><em>分</em></div>
-          <div class="cd-box"><span id="cdS">--</span><em>秒</em></div>
+      <div class="hero-grid">
+        <div>
+          <p class="hero-kicker">SUYO STUDIO <span>2026</span></p>
+          <h1>年度游戏<span>票选</span></h1>
+        </div>
+        <div class="hero-copy">
+          <p class="hero-sub">从 TGA 2026 的提名作品中，选出溯游工作室的年度最佳。</p>
+          <button id="hero-vote" class="hero-cta" type="button" disabled>投票给年度最佳游戏 <span aria-hidden="true">↗</span></button>
         </div>
       </div>
+
+      <section class="hero-nominees" aria-labelledby="hero-award-title">
+        <div class="hero-nominees-head">
+          <h2 id="hero-award-title">年度最佳游戏 <span lang="en">Game of the Year</span></h2>
+          <button id="hero-award" type="button" disabled>进入投票 <span aria-hidden="true">↗</span></button>
+        </div>
+        <ul id="hero-nominee-list" class="hero-nominee-list"></ul>
+      </section>
+
     </section>
 
     <section class="board" id="categories">
@@ -83,39 +98,40 @@
     <section class="about" id="about">
       <div class="about-card">
         <h3>关于本次票选</h3>
-        <p>TGA 2026 提名名单于 11 月 18 日公布，《GTA6》以 8 项提名领跑，《控制：共振》《生化危机：安魂曲》各获 6 项提名。本站还原全部 30 个奖项，方便玩家为喜欢的作品投票并查看游戏简介。</p>
+        <p>这是溯游工作室的社团票选。候选来自 <a class="about-source" href="https://thegameawards.com/nominees">TGA 2026 官方提名名单</a>，打开页面即可为喜欢的作品投票。</p>
         <ul>
           <li>投票为匿名记录，仅保存浏览器标识与投票时间，用于防止重复投票。</li>
           <li>游戏简介整理自公开资料，仅供了解作品，不代表官方描述。</li>
-          <li>作品封面取自 Steam 商店官方主视觉图；人物、战队、主播等以文字头像展示。</li>
-          <li>本站为玩家自建活动，与 The Game Awards 官方没有任何关联。</li>
+          <li>作品封面来自 TGA 提名页、发行商媒体页及 Steam 商店。无封面的条目使用文字头像。</li>
+          <li>本活动由溯游工作室举办，与 The Game Awards 官方无关。</li>
         </ul>
       </div>
     </section>
   </main>
 
   <footer class="footer">
-    <p>TGA 2026 玩家票选 · 与 The Game Awards 官方无关</p>
+    <p>溯游工作室 · 2026 年度游戏票选</p>
     <p class="footer-dim">数据保存在本站服务器，管理员可在后台查看实时结果。</p>
   </footer>
 
-  <div class="modal" id="modal" aria-hidden="true">
-    <div class="modal-backdrop" data-close></div>
-    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <div class="modal-head">
-        <div>
-          <p class="modal-en" id="modalEn"></p>
-          <h3 class="modal-title" id="modalTitle"></h3>
-        </div>
-        <button class="icon-btn" data-close aria-label="关闭">✕</button>
+  <dialog class="modal" id="modal" aria-labelledby="modalTitle">
+    <div class="modal-head">
+      <div>
+        <p class="modal-en" id="modalEn"></p>
+        <h2 class="modal-title" id="modalTitle"></h2>
       </div>
-      <div class="modal-body" id="modalBody"></div>
-      <div class="modal-foot">
+      <button class="icon-btn" type="button" data-close aria-label="关闭">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot">
+      <div class="ballot-status">
         <span id="modalHint">同一浏览器每个奖项限投一票</span>
         <span class="modal-my" id="modalMy"></span>
       </div>
+      <p id="modalNotice" class="modal-notice" role="status"></p>
+      <div class="nominee-picker" id="nomineePicker" role="group" aria-label="切换提名"></div>
     </div>
-  </div>
+  </dialog>
 
   <div class="toast" id="toast"></div>
 

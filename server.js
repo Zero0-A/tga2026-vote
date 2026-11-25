@@ -9,6 +9,7 @@ const path = require('path');
 const crypto = require('crypto');
 
 const categories = require('./data/categories');
+const nomineeDetails = require('./data/nominee-details.json');
 
 const PORT = Number(process.env.PORT) || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
@@ -159,8 +160,8 @@ function publicState(voterId) {
   });
   return {
     event: {
-      name: 'TGA 2026',
-      ceremonyAt: '2026-12-11T12:00:00+08:00',
+      name: '溯游工作室 · 2026 年度游戏票选',
+      ceremonyAt: '2026-12-11T08:30:00+08:00',
       totalVotes: totalVotes(),
       voters: uniqueVoters(),
       categoryCount: categories.length
@@ -172,7 +173,7 @@ function publicState(voterId) {
       cn: c.cn,
       tab: c.tab,
       counts: countsForCategory(c),
-      nominees: c.nominees.map((n) => ({ ...n, cover: hasCoverFile(n.id) }))
+      nominees: c.nominees.map((n) => ({ ...n, cover: hasCoverFile(n.id), details: nomineeDetails[n.id] }))
     }))
   };
 }
@@ -216,6 +217,7 @@ function adminStats() {
 }
 
 /* ---------------- 静态文件 ---------------- */
+const PNG_SIGNATURE = Buffer.from('89504e470d0a1a0a', 'hex');
 const MIME = {
   '.html': 'text/html; charset=utf-8',
   '.js': 'text/javascript; charset=utf-8',
@@ -224,7 +226,8 @@ const MIME = {
   '.svg': 'image/svg+xml',
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
-  '.ico': 'image/x-icon'
+  '.ico': 'image/x-icon',
+  '.ttf': 'font/ttf'
 };
 
 function serveStatic(res, urlPath) {
@@ -241,8 +244,17 @@ function serveStatic(res, urlPath) {
       res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
       return res.end('Not Found');
     }
+    const extension = path.extname(filePath).toLowerCase();
+    let contentType = MIME[extension] || 'application/octet-stream';
+    // 旧封面链接统一以 .jpg 结尾，部分源图实际是 PNG 或 WebP。
+    if (extension === '.jpg') {
+      if (data.subarray(0, 8).equals(PNG_SIGNATURE)) contentType = 'image/png';
+      else if (data.toString('ascii', 0, 4) === 'RIFF' && data.toString('ascii', 8, 12) === 'WEBP') {
+        contentType = 'image/webp';
+      }
+    }
     res.writeHead(200, {
-      'Content-Type': MIME[path.extname(filePath).toLowerCase()] || 'application/octet-stream',
+      'Content-Type': contentType,
       'Cache-Control': 'no-cache'
     });
     res.end(data);
@@ -371,7 +383,7 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, HOST, () => {
-  console.log(`TGA 2026 票选已启动：http://localhost:${PORT}`);
+  console.log(`溯游工作室票选已启动：http://localhost:${PORT}`);
   console.log(`后台地址：http://localhost:${PORT}/admin`);
   console.log(`数据文件：${DATA_FILE}`);
 });
