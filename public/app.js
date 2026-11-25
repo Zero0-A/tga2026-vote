@@ -210,17 +210,24 @@
   }
 
   function renderCriticQuote(critic) {
-    const media = element('details', 'ballot-media');
-    const toggle = element('summary', 'ballot-media-toggle');
-    toggle.append(icon('chevron-right'), element('span', null, '媒体短评'));
-    const line = element('p', 'ballot-review-quote');
-    const quote = element('q', null, critic.text);
-    quote.lang = 'en';
+    const media = element('figure', 'ballot-media');
+    const quote = element('blockquote', 'ballot-quote');
     quote.cite = critic.source;
+
+    if (critic.translationZh) {
+      const translation = element('q', 'ballot-quote-main', critic.translationZh);
+      translation.lang = 'zh-CN';
+      quote.append(translation);
+    }
+    const original = element('q', critic.translationZh ? 'ballot-quote-original' : 'ballot-quote-main', critic.text);
+    original.lang = critic.lang || 'en';
+    quote.append(original);
+
+    const caption = element('figcaption', 'ballot-media-byline');
     const source = externalLink(critic.outlet, critic.source);
     source.classList.add('ballot-media-source');
-    line.append(quote, document.createTextNode(' '), source);
-    media.append(toggle, line);
+    caption.append(element('span', null, '媒体短评'), source);
+    media.append(quote, caption);
     return media;
   }
 
@@ -322,12 +329,7 @@
       }
     }
     if (links.childElementCount) content.append(links);
-    if (isGame && info.criticQuote) {
-      const media = renderCriticQuote(info.criticQuote);
-      const previous = modalBody.firstElementChild;
-      media.open = modal.open && previous?.dataset.nid === nominee.id && Boolean(previous.querySelector('.ballot-media[open]'));
-      content.append(media);
-    }
+    if (isGame && info.criticQuote) content.append(renderCriticQuote(info.criticQuote));
 
     ballotActions.replaceChildren();
     if (ui.confirmingVote && !myVote && !ui.busy) {
@@ -381,7 +383,7 @@
     modal.showModal();
     modalBody.scrollTop = 0;
     const button = ballotActions.querySelector('.vote-btn:not(:disabled)');
-    (nomineeId && button ? button : modal.querySelector('.icon-btn')).focus({ preventScroll: true });
+    (nomineeId && button ? button : modal.querySelector('[data-close]')).focus({ preventScroll: true });
     revealThumbnail();
   }
 
