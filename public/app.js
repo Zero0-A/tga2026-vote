@@ -257,9 +257,6 @@
     modalMy.textContent = myVote ? `你的选择：${nomineeName(category, myVote)}` : '';
     modalHint.textContent = myVote ? '本奖项已完成投票' : '每人每个奖项限投一票';
     $('#nomineePosition').textContent = `提名 ${index + 1} / ${category.nominees.length}`;
-    for (const button of modal.querySelectorAll('[data-step]')) {
-      button.disabled = !category.nominees[index + Number(button.dataset.step)];
-    }
     for (const button of picker.children) {
       button.setAttribute('aria-pressed', button.dataset.selectNominee === nominee.id);
     }
@@ -648,17 +645,6 @@
   modal.addEventListener('click', (event) => {
     if (event.target.closest('[data-close]')) {
       modal.close();
-      return;
-    }
-    const step = event.target.closest('[data-step]');
-    if (step) {
-      const category = findCategory(ui.openCategory);
-      const current = category.nominees.findIndex((item) => item.id === ui.selectedNominee);
-      const next = category.nominees[current + Number(step.dataset.step)];
-      if (next) {
-        selectNominee(next.id);
-        if (step.disabled) picker.querySelector('[aria-pressed=true]')?.focus({ preventScroll: true });
-      }
       return;
     }
     const thumbnail = event.target.closest('[data-select-nominee]');
