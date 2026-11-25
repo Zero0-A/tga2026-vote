@@ -210,33 +210,47 @@
     panel.querySelector('.ballot-poster > img')?.removeAttribute('loading');
 
     const content = element('div', 'ballot-copy');
-    content.append(element('h3', 'ballot-name', nominee.name));
+    const identity = element('div', 'ballot-identity');
+    const name = element('div', 'ballot-name-block');
+    name.append(element('h3', 'ballot-name', nominee.name));
     if (nominee.en && nominee.en !== nominee.name) {
-      content.append(element('p', 'ballot-original', nominee.en));
+      name.append(element('p', 'ballot-original', nominee.en));
     }
     if (info.studio || nominee.sub) {
       const detail = info.studio || nominee.sub;
       const label = type?.detail || '制作公司';
       const value = categoryId === 'best-performance' ? detail.replace(/^饰\s*/, '') : detail;
-      content.append(element('p', 'ballot-studio', `${label} · ${value}`));
+      name.append(element('p', 'ballot-studio', `${label} · ${value}`));
     }
+    identity.append(name);
 
-    if (isGame) {
-      const score = info.score
-        ? `${info.score.value}/100 · ${info.score.platform}`
-        : '暂无已核实评分';
-      const scoreText = `Metacritic  ${score}`;
-      const badge = info.score?.source
-        ? externalLink(scoreText, info.score.source)
-        : element('span', 'ballot-score', scoreText);
+    if (isGame && info.score) {
+      const score = info.score;
+      const badge = externalLink('', score.source);
       badge.className = 'ballot-score';
-      badge.querySelector('img')?.remove();
-      content.append(badge);
+      badge.setAttribute('aria-label', `Metacritic 媒体评分 ${score.value} 分，${score.platform}，打开来源`);
+      badge.replaceChildren();
+      const value = element('strong', 'score-value', String(score.value));
+      value.dataset.rating = score.value >= 75 ? 'positive' : score.value >= 50 ? 'mixed' : 'negative';
+      const emblem = element('img', 'score-icon');
+      emblem.src = '/icons/metacritic.png';
+      emblem.alt = '';
+      emblem.width = 14;
+      emblem.height = 14;
+      const attribution = element('span', 'score-attribution');
+      const brand = element('span', 'score-brand');
+      brand.append(emblem, document.createTextNode('Metascore'));
+      attribution.append(brand, element('small', 'score-platform', score.platform));
+      badge.append(value, attribution);
+      identity.append(badge);
     }
+    content.append(identity);
     const introLabel = info.officialIntro ? '官方介绍摘要' : info.officialExcerpt ? '商店介绍节选' : '候选简介';
     const intro = element('p', 'ballot-intro', info.officialIntro || info.officialExcerpt || nominee.intro || '暂无简介。');
     if (info.officialExcerpt && !info.officialIntro) intro.lang = 'en';
-    content.append(element('h4', 'ballot-section-label', introLabel), intro);
+    const description = element('div', 'ballot-description');
+    description.append(element('h4', 'ballot-section-label', introLabel), intro);
+    content.append(description);
 
     const links = element('div', 'ballot-links');
     for (const link of info.links || []) links.append(externalLink(link.label, link.url));
@@ -262,7 +276,11 @@
       const confirm = element('button', 'vote-btn', '确认投票');
       confirm.type = 'button';
       confirm.dataset.confirmVote = nominee.id;
-      confirmation.append(title, hint, cancel, confirm);
+      const confirmCopy = element('div', 'confirm-copy');
+      confirmCopy.append(title, hint);
+      const confirmButtons = element('div', 'confirm-buttons');
+      confirmButtons.append(cancel, confirm);
+      confirmation.append(confirmCopy, confirmButtons);
       ballotActions.append(confirmation);
     } else {
       const voteButton = element('button', 'vote-btn' + (chosen ? ' voted-btn' : ''),
@@ -308,8 +326,13 @@
     if (!thumb) return;
     const frame = picker.getBoundingClientRect();
     const tile = thumb.getBoundingClientRect();
-    if (tile.left < frame.left) picker.scrollLeft += tile.left - frame.left - 4;
-    else if (tile.right > frame.right) picker.scrollLeft += tile.right - frame.right + 4;
+    if (picker.scrollHeight > picker.clientHeight) {
+      if (tile.top < frame.top) picker.scrollTop += tile.top - frame.top - 4;
+      else if (tile.bottom > frame.bottom) picker.scrollTop += tile.bottom - frame.bottom + 4;
+    } else {
+      if (tile.left < frame.left) picker.scrollLeft += tile.left - frame.left - 4;
+      else if (tile.right > frame.right) picker.scrollLeft += tile.right - frame.right + 4;
+    }
   }
 
   modal.addEventListener('close', () => {
