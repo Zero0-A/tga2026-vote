@@ -13,6 +13,10 @@
   const modalBody = $('#modalBody');
   const ballotActions = $('#ballotActions');
   const picker = $('#nomineePicker');
+  const pickerDrawer = $('#pickerDrawer');
+  const pickerSegments = $('#pickerSegments');
+  const drawerToggle = $('#drawerToggle');
+  const drawerHint = $('#drawerHint');
   const modalNotice = $('#modalNotice');
   const modalTitle = $('#modalTitle');
   const modalEn = $('#modalEn');
@@ -198,6 +202,20 @@
       button.append(mark);
       return button;
     }));
+    pickerSegments.replaceChildren(...category.nominees.map((nominee, i) => {
+      const seg = element('button', 'picker-seg');
+      seg.type = 'button';
+      seg.dataset.selectNominee = nominee.id;
+      seg.setAttribute('aria-pressed', 'false');
+      seg.setAttribute('aria-label', '第 ' + (i + 1) + ' 个提名：' + distinctName(category, nominee));
+      return seg;
+    }));
+  }
+
+  function setDrawer(open) {
+    pickerDrawer.dataset.open = open ? 'true' : 'false';
+    drawerToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    drawerHint.textContent = open ? '收起名单' : '展开名单';
   }
 
   function renderCriticQuote(critic) {
@@ -244,6 +262,9 @@
     }
     for (const button of picker.children) {
       button.setAttribute('aria-pressed', button.dataset.selectNominee === nominee.id);
+    }
+    for (const seg of pickerSegments.children) {
+      seg.setAttribute('aria-pressed', seg.dataset.selectNominee === nominee.id);
     }
 
     const panel = element('article', animate ? 'ballot-entry ballot-enter' : 'ballot-entry');
@@ -376,6 +397,7 @@
     modalTitle.textContent = category.cn;
     modalEn.textContent = category.en;
     renderPicker(category);
+    setDrawer(false);
     selectNominee(nomineeId || ui.data.myVotes[categoryId] || category.nominees[0].id);
     document.body.style.overflow = 'hidden';
     modal.showModal();
@@ -570,6 +592,43 @@
     const frontArtwork = clickedCover && Number(getComputedStyle(clickedCover).zIndex) > 1;
     openModal(card.dataset.id, (frontArtwork ? clickedCover : activeCover)?.dataset.coverNominee);
   });
+
+  drawerToggle.addEventListener('click', () => {
+    setDrawer(pickerDrawer.dataset.open !== 'true');
+  });
+
+  /* 左右滑动正文切换提名 */
+  modalBody.addEventListener('dragstart', (event) => event.preventDefault());
+  let swipeTrack = null;
+  modalBody.addEventListener('pointerdown', (event) => {
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
+    swipeTrack = { id: event.pointerId, x: event.clientX, y: event.clientY, axis: null, dx: 0 };
+  }, { passive: true });
+  modalBody.addEventListener('pointermove', (event) => {
+    if (!swipeTrack || swipeTrack.id !== event.pointerId) return;
+    const dx = event.clientX - swipeTrack.x;
+    const dy = event.clientY - swipeTrack.y;
+    if (!swipeTrack.axis) {
+      if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return;
+      swipeTrack.axis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+      if (swipeTrack.axis === 'x') modalBody.classList.add('is-swiping');
+    }
+    if (swipeTrack.axis === 'x') swipeTrack.dx = dx;
+  }, { passive: true });
+  function endSwipe(event) {
+    if (!swipeTrack || swipeTrack.id !== event.pointerId) return;
+    const track = swipeTrack;
+    swipeTrack = null;
+    modalBody.classList.remove('is-swiping');
+    if (track.axis !== 'x' || Math.abs(track.dx) < 48) return;
+    const category = findCategory(ui.openCategory);
+    if (!category) return;
+    const current = category.nominees.findIndex((item) => item.id === ui.selectedNominee);
+    const next = category.nominees[current + (track.dx < 0 ? 1 : -1)];
+    if (next) selectNominee(next.id);
+  }
+  modalBody.addEventListener('pointerup', endSwipe, { passive: true });
+  modalBody.addEventListener('pointercancel', endSwipe, { passive: true });
 
   picker.addEventListener('keydown', (event) => {
     if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
