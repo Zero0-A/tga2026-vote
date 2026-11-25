@@ -34,7 +34,8 @@
     const img = n.cover
       ? `<img loading="lazy" alt="${n.name} 封面" src="${directory}${n.id}.jpg" onerror="this.remove()" />`
       : '';
-    return `<div class="cover-cell ${extraClass}">${img}<span class="cover-fallback" aria-hidden="true"><img class="ui-icon" src="/icons/image-off.svg" alt="" width="24" height="24" /></span></div>`;
+    const format = n.id === 'gta6' ? ' cover-wide' : '';
+    return `<div class="cover-cell ${extraClass}${format}">${img}<span class="cover-fallback" aria-hidden="true"><img class="ui-icon" src="/icons/image-off.svg" alt="" width="24" height="24" /></span></div>`;
   }
 
   function findCategory(id) {
@@ -121,10 +122,10 @@
 
   /* ---------------- 选票 ---------------- */
   const nomineeTypes = {
-    'best-performance': { vote: '投给这位演员', detail: '饰演角色', portrait: true },
-    'best-esports-athlete': { vote: '投给这位选手', detail: '参赛项目', portrait: true },
+    'best-performance': { vote: '投给这位演员', detail: '饰演角色' },
+    'best-esports-athlete': { vote: '投给这位选手', detail: '参赛项目' },
     'best-esports-team': { vote: '投给这支战队', detail: '赛区' },
-    'content-creator': { vote: '投给这位创作者', detail: '身份', portrait: true },
+    'content-creator': { vote: '投给这位创作者', detail: '身份' },
     'best-adaptation': { vote: '投给这部作品', detail: '制作公司' },
     'best-user-creation': { vote: '投给这个创作', detail: '创作团队' }
   };
@@ -161,7 +162,6 @@
   }
 
   function renderPicker(category) {
-    picker.classList.toggle('portrait-picker', Boolean(nomineeTypes[category.id]?.portrait));
     picker.replaceChildren(...category.nominees.map((nominee) => {
       const button = element('button', 'nominee-thumb');
       button.type = 'button';
@@ -207,12 +207,7 @@
     const panel = element('article', animate ? 'ballot-entry ballot-enter' : 'ballot-entry');
     panel.dataset.nid = nominee.id;
     panel.insertAdjacentHTML('beforeend', coverCell(nominee, 'ballot-poster'));
-    const poster = panel.querySelector('.ballot-poster');
-    const posterImage = poster.querySelector(':scope > img');
-    if (posterImage) {
-      posterImage.removeAttribute('loading');
-      poster.style.setProperty('--poster-glow', `url("/covers/previews/${nominee.id}.jpg")`);
-    }
+    panel.querySelector('.ballot-poster > img')?.removeAttribute('loading');
 
     const content = element('div', 'ballot-copy');
     content.append(element('h3', 'ballot-name', nominee.name));
