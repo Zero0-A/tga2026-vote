@@ -17,6 +17,7 @@
   const pickerSegments = $('#pickerSegments');
   const drawerToggle = $('#drawerToggle');
   const drawerHint = $('#drawerHint');
+  const mobilePicker = matchMedia('(max-width: 767px), (pointer: coarse) and (orientation: landscape) and (max-height: 500px)');
   const modalNotice = $('#modalNotice');
   const modalTitle = $('#modalTitle');
   const modalEn = $('#modalEn');
@@ -256,7 +257,12 @@
     modalTally.textContent = '本奖项累计 ' + fmt(category.total) + ' 票';
     modalMy.textContent = myVote ? `你的选择：${nomineeName(category, myVote)}` : '';
     modalHint.textContent = myVote ? '本奖项已完成投票' : '每人每个奖项限投一票';
-    $('#nomineePosition').textContent = `提名 ${index + 1} / ${category.nominees.length}`;
+    const position = `提名 ${index + 1} / ${category.nominees.length}`;
+    $('#nomineePosition').textContent = position;
+    $('#desktopNomineePosition').textContent = position;
+    for (const button of modal.querySelectorAll('[data-step]')) {
+      button.disabled = !category.nominees[index + Number(button.dataset.step)];
+    }
     for (const button of picker.children) {
       button.setAttribute('aria-pressed', button.dataset.selectNominee === nominee.id);
     }
@@ -598,14 +604,26 @@
   });
 
   drawerToggle.addEventListener('click', () => {
-    setDrawer(pickerDrawer.dataset.open !== 'true');
+    const open = pickerDrawer.dataset.open !== 'true';
+    setDrawer(open);
+    if (open) revealThumbnail();
   });
 
+  function stepNominee(direction) {
+    const category = findCategory(ui.openCategory);
+    if (!category) return;
+    const index = category.nominees.findIndex((item) => item.id === ui.selectedNominee);
+    const next = category.nominees[index + direction];
+    if (next) selectNominee(next.id);
+  }
+
   /* 左右滑动正文切换提名 */
-  modalBody.addEventListener('dragstart', (event) => event.preventDefault());
+  modalBody.addEventListener('dragstart', (event) => {
+    if (mobilePicker.matches) event.preventDefault();
+  });
   let swipeTrack = null;
   modalBody.addEventListener('pointerdown', (event) => {
-    if (event.pointerType === 'mouse' && event.button !== 0) return;
+    if (!mobilePicker.matches || !event.isPrimary || event.pointerType !== 'touch') return;
     swipeTrack = { id: event.pointerId, x: event.clientX, y: event.clientY, axis: null, dx: 0 };
   }, { passive: true });
   modalBody.addEventListener('pointermove', (event) => {
@@ -624,12 +642,9 @@
     const track = swipeTrack;
     swipeTrack = null;
     modalBody.classList.remove('is-swiping');
-    if (track.axis !== 'x' || Math.abs(track.dx) < 48) return;
-    const category = findCategory(ui.openCategory);
-    if (!category) return;
-    const current = category.nominees.findIndex((item) => item.id === ui.selectedNominee);
-    const next = category.nominees[current + (track.dx < 0 ? 1 : -1)];
-    if (next) selectNominee(next.id);
+    if (event.type === 'pointerup' && mobilePicker.matches && track.axis === 'x' && Math.abs(track.dx) >= 48) {
+      stepNominee(track.dx < 0 ? 1 : -1);
+    }
   }
   modalBody.addEventListener('pointerup', endSwipe, { passive: true });
   modalBody.addEventListener('pointercancel', endSwipe, { passive: true });
@@ -652,6 +667,12 @@
   modal.addEventListener('click', (event) => {
     if (event.target.closest('[data-close]')) {
       modal.close();
+      return;
+    }
+    const step = event.target.closest('[data-step]');
+    if (step) {
+      stepNominee(Number(step.dataset.step));
+      if (step.disabled) picker.querySelector('[aria-pressed=true]')?.focus({ preventScroll: true });
       return;
     }
     const thumbnail = event.target.closest('[data-select-nominee]');
