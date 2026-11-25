@@ -11,6 +11,7 @@ const crypto = require('crypto');
 const categories = require('./data/categories');
 const nomineeDetails = require('./data/nominee-details.json');
 const nomineeVideos = require('./data/nominee-videos.json');
+const { deviceFromHeaders, emptyAnalytics, recordVisit, reportAnalytics } = require('./data/analytics');
 
 const PORT = Number(process.env.PORT) || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
@@ -26,7 +27,7 @@ const sessions = new Map(); // token -> expiresAt
 
 /* ---------------- 数据存储 ---------------- */
 function emptyState() {
-  return { votes: {}, log: [] };
+  return { votes: {}, log: [], analytics: emptyAnalytics() };
 }
 
 function loadState() {
@@ -35,7 +36,8 @@ function loadState() {
     const parsed = JSON.parse(raw);
     return {
       votes: parsed.votes && typeof parsed.votes === 'object' ? parsed.votes : {},
-      log: Array.isArray(parsed.log) ? parsed.log : []
+      log: Array.isArray(parsed.log) ? parsed.log : [],
+      analytics: parsed.analytics?.views ? parsed.analytics : emptyAnalytics()
     };
   } catch (err) {
     return emptyState();
@@ -216,14 +218,16 @@ function adminStats() {
       return {
         category: cat ? cat.cn : item.categoryId,
         nominee: nom ? nom.name : item.nomineeId,
-        ts: item.ts
+        ts: item.ts,
+        device: item.device || 'unknown'
       };
     });
   return {
     totalVotes: totalVotes(),
     voters: uniqueVoters(),
     categories: list,
-    recent
+    recent,
+    analytics: reportAnalytics(state.analytics, state.votes)
   };
 }
 
@@ -278,6 +282,10 @@ async function handleApi(req, res, pathname) {
   // 公共：获取票选数据
   if (req.method === 'GET' && pathname === '/api/state') {
     const voterId = ensureVoter(req, res);
+    if (req.headers['x-suyou-view'] === '1') {
+      recordVisit(state.analytics, voterId, deviceFromHeaders(req.headers), Date.now());
+      saveState();
+    }
     return sendJson(res, 200, publicState(voterId));
   }
 
@@ -305,8 +313,11 @@ async function handleApi(req, res, pathname) {
         categoryTotal: categoryTotal(categoryId)
       });
     }
-    state.votes[categoryId][voterId] = { nomineeId, ts: Date.now() };
-    state.log.push({ categoryId, nomineeId, ts: Date.now() });
+    const ts = Date.now();
+    const device = deviceFromHeaders(req.headers);
+    state.analytics.startedAt ??= ts;
+    state.votes[categoryId][voterId] = { nomineeId, ts, device };
+    state.log.push({ categoryId, nomineeId, ts, device });
     if (state.log.length > 2000) state.log = state.log.slice(-2000);
     saveState();
     return sendJson(res, 200, {
@@ -366,7 +377,7 @@ async function handleApi(req, res, pathname) {
       delete state.votes[body.categoryId];
       state.log = state.log.filter((x) => x.categoryId !== body.categoryId);
     } else {
-      state = emptyState();
+      state = { ...emptyState(), analytics: state.analytics };
     }
     saveState();
     return sendJson(res, 200, { ok: true });

@@ -78,6 +78,29 @@
     .admin-section { margin-top: 30px; }
     .admin-section h2 { margin-bottom: 9px; padding-bottom: 9px; border-bottom: 1px solid var(--line); font-size: clamp(18px, 2.7vw, 26px); }
 
+    .analytics-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin-bottom: 8px; }
+    .analytics-head h2 { flex: 1 1 auto; margin: 0; padding: 0; border: 0; }
+    .analytics-note { color: var(--muted); font-size: 12px; }
+    .analytics-table { width: 100%; margin-top: 9px; border-collapse: collapse; table-layout: fixed; font-size: clamp(11px, 1.5vw, 13px); font-variant-numeric: tabular-nums; }
+    .analytics-table :is(th, td) { padding: 7px clamp(2px, 1.4vw, 14px); border-bottom: 1px solid var(--line); text-align: end; overflow-wrap: anywhere; }
+    .analytics-table th:first-child { width: 20%; text-align: start; }
+    .analytics-table thead { background: var(--panel); color: var(--highlight); }
+    .analytics-table tbody th { font-weight: 650; }
+    .analytics-table [data-device="all"] { color: var(--mint); font-weight: 700; }
+    .analytics-trend { display: grid; gap: 10px; margin-top: 18px; }
+    .analytics-trend h3 { font-size: 17px; }
+    .analytics-trend-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
+    .analytics-controls { display: flex; flex-wrap: wrap; gap: 6px 10px; }
+    .analytics-controls label { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; }
+    .analytics-controls select { max-width: 100%; min-height: 38px; padding: 4px 8px; border: 1px solid var(--line); border-radius: 2px; color: var(--text); background: var(--panel); font: inherit; }
+    .analytics-controls select:focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; }
+    .analytics-plot { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: clamp(3px, 1.6vw, 16px); padding: 8px 8px 3px; background: var(--panel); }
+    .analytics-day { display: grid; grid-template-rows: minmax(0, 1fr) 17px; height: 112px; color: var(--muted); font-size: 11px; text-align: center; }
+    .analytics-track { display: flex; min-height: 0; align-items: end; justify-content: center; border-bottom: 1px solid var(--line); }
+    .analytics-track i { display: block; width: min(80%, 44px); border-radius: 2px 2px 0 0; background: var(--mint); }
+    .analytics-day time { white-space: nowrap; }
+    .analytics-daily summary { width: fit-content; min-height: 35px; padding-block: 7px; cursor: pointer; color: var(--highlight); font-size: 13px; }
+
     .cat-block { border-bottom: 1px solid var(--line); }
     .cat-block-head {
       display: grid;
@@ -110,6 +133,7 @@
 
     .recent-row { display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr); gap: 7px 16px; padding: 9px; border-bottom: 1px solid var(--line); font-size: 13px; }
     .recent-row .t, .recent-row .c { color: var(--muted); }
+    .recent-row .t small { display: block; color: var(--dim); }
     .recent-row .n { overflow-wrap: anywhere; font-weight: 650; }
     .empty { padding: 10px 9px; color: var(--muted); font-size: 13px; }
     .admin-maintenance { display: flex; justify-content: flex-end; margin-top: 28px; padding-top: 11px; border-top: 1px solid var(--line); }
@@ -128,6 +152,7 @@
       .stat-card .k { font-size: 11px; }
       .recent-row { gap: 5px 8px; padding-inline: 5px; font-size: 12px; }
       .recent-row .c { overflow-wrap: anywhere; }
+      .analytics-day time:not(.chart-tick) { visibility: hidden; }
     }
     @media (prefers-reduced-motion: reduce) {
       .cat-block-head .caret { transition: none; }
@@ -178,6 +203,49 @@
         <div class="stat-card"><div class="k">已有票数的奖项</div><div class="v" id="dCatVoted">--</div></div>
       </div>
 
+      <section class="admin-section" id="analytics" aria-labelledby="analyticsTitle">
+        <div class="analytics-head">
+          <h2 id="analyticsTitle">访问与投票分析</h2>
+          <button class="btn" type="button" id="exportAnalyticsBtn" disabled>导出分析 CSV</button>
+        </div>
+        <p class="analytics-note" id="analyticsPeriod">等待统计数据。</p>
+        <table class="analytics-table" aria-label="各设备访问与投票汇总">
+          <thead>
+            <tr><th scope="col">设备</th><th scope="col">访问量</th><th scope="col">独立访客</th><th scope="col">投票人数</th><th scope="col">票数</th><th scope="col">转化率</th></tr>
+          </thead>
+          <tbody id="analyticsSummary"></tbody>
+        </table>
+        <p class="analytics-note">人数按浏览器去重。转化率为同一统计范围内既访问又投票的浏览器数，占独立访客的比例。</p>
+        <div class="analytics-trend">
+          <div class="analytics-trend-header">
+            <h3>每日趋势 <span class="analytics-note">最近 14 天 · 北京时间</span></h3>
+            <div class="analytics-controls">
+              <label>设备
+                <select id="analyticsDevice">
+                  <option value="all">全部设备</option><option value="mobile">移动端</option><option value="desktop">电脑端</option><option value="tablet">平板</option><option value="unknown">未知</option>
+                </select>
+              </label>
+              <label>指标
+                <select id="analyticsMetric">
+                  <option value="visits">访问量</option><option value="visitors">独立访客</option><option value="voters">投票人数</option><option value="votes">票数</option><option value="conversionRate">转化率</option>
+                </select>
+              </label>
+            </div>
+          </div>
+          <div class="analytics-plot hidden" id="analyticsPlot" aria-hidden="true"></div>
+          <p class="empty hidden" id="analyticsEmpty">暂无该设备的趋势数据。</p>
+          <details class="analytics-daily">
+            <summary>查看每日明细</summary>
+            <table class="analytics-table" aria-label="所选设备的每日访问与投票">
+              <thead>
+                <tr><th scope="col">日期</th><th scope="col">访问量</th><th scope="col">独立访客</th><th scope="col">投票人数</th><th scope="col">票数</th><th scope="col">转化率</th></tr>
+              </thead>
+              <tbody id="analyticsDaily"></tbody>
+            </table>
+          </details>
+        </div>
+      </section>
+
       <section class="admin-section" aria-labelledby="awardStatsTitle">
         <h2 id="awardStatsTitle">奖项统计</h2>
         <div id="catList"></div>
@@ -187,7 +255,7 @@
         <div id="recentList"><div class="empty">暂无投票记录</div></div>
       </section>
       <div class="admin-maintenance">
-        <button class="btn danger" type="button" id="resetBtn">清空数据</button>
+        <button class="btn danger" type="button" id="resetBtn">清空投票数据</button>
       </div>
     </section>
   </main>
@@ -206,6 +274,9 @@
 
       const fmt = (n) => Number(n || 0).toLocaleString('zh-CN');
       const TAB_NAMES = { game: '游戏类', esports: '电竞类', production: '制作类' };
+      const DEVICE_NAMES = { all: '全部设备', mobile: '移动端', desktop: '电脑端', tablet: '平板', unknown: '未知' };
+
+      const fmtRate = rate => rate === null ? '—' : rate + '%';
 
       async function api(url, options = {}) {
         try {
@@ -251,6 +322,48 @@
         notice.textContent = message;
       }
 
+      function analyticsCells(row) {
+        return [fmt(row.visits), fmt(row.visitors), fmt(row.voters), fmt(row.votes), fmtRate(row.conversionRate)]
+          .map(value => '<td>' + value + '</td>').join('');
+      }
+
+      function renderAnalytics(analytics) {
+        $('#analytics').classList.toggle('hidden', !analytics);
+        if (!analytics) return;
+        const period = analytics.since ? '自 ' + analytics.since + ' 起统计（北京时间）。' : '首次访问或投票后开始统计。';
+        const legacy = analytics.legacyVotes ? ' 另有 ' + fmt(analytics.legacyVotes) + ' 票缺少设备记录，计入下方奖项统计。' : '';
+        $('#analyticsPeriod').textContent = period + legacy;
+        $('#analyticsSummary').innerHTML = Object.entries(DEVICE_NAMES).map(([key, name]) =>
+          '<tr data-device="' + key + '"><th scope="row">' + name + '</th>' + analyticsCells(analytics.summary[key]) + '</tr>'
+        ).join('');
+        $('#exportAnalyticsBtn').disabled = !analytics.daily.length;
+        renderTrend();
+      }
+
+      function renderTrend() {
+        const analytics = statsData?.analytics;
+        if (!analytics) return;
+        const device = $('#analyticsDevice').value;
+        const metric = $('#analyticsMetric').value;
+        const days = analytics.daily.slice(-14).map(day => ({ date: day.date, row: day.groups[device] }));
+        const values = days.map(day => day.row[metric] ?? 0);
+        const scale = metric === 'conversionRate' ? 100 : Math.max(1, ...values);
+        const hasData = days.some(day => day.row.visits || day.row.votes);
+        $('#analyticsEmpty').classList.toggle('hidden', hasData);
+        const plot = $('#analyticsPlot');
+        plot.classList.toggle('hidden', !hasData);
+        plot.innerHTML = days.map(({ date, row }, index) => {
+          const tick = index === 0 || index === days.length - 1 || (index % 4 === 0 && index < days.length - 2);
+          const label = metric === 'conversionRate' ? fmtRate(row[metric]) : fmt(row[metric]);
+          return '<div class="analytics-day" title="' + date + ' · ' + label + '"><div class="analytics-track"><i style="height:' +
+            values[index] / scale * 100 + '%"></i></div><time datetime="' + date + '"' +
+            (tick ? ' class="chart-tick"' : '') + '>' + date.slice(5) + '</time></div>';
+        }).join('');
+        $('#analyticsDaily').innerHTML = days.length ? days.reverse().map(({ date, row }) =>
+          '<tr><th scope="row"><time datetime="' + date + '">' + date.slice(5) + '</time></th>' + analyticsCells(row) + '</tr>'
+        ).join('') : '<tr><td colspan="6">暂无统计数据</td></tr>';
+      }
+
       function render() {
         const d = statsData;
         $('#dTotalVotes').textContent = fmt(d.totalVotes);
@@ -258,6 +371,7 @@
         const votedCats = d.categories.filter((c) => c.total > 0).length;
         $('#dCatVoted').innerHTML = `${votedCats} <small>/ ${d.categories.length}</small>`;
         $('#lastUpdated').textContent = '最后更新 ' + new Date().toLocaleTimeString('zh-CN');
+        renderAnalytics(d.analytics);
 
         const expandedIds = new Set([...catList.querySelectorAll('details[open]')].map((node) => node.dataset.id));
         const focusedId = document.activeElement.closest('.cat-block-head')?.parentElement.dataset.id;
@@ -298,7 +412,7 @@
             .map((r) => {
               const t = new Date(r.ts);
               const time = `${String(t.getHours()).padStart(2, '0')}:${String(t.getMinutes()).padStart(2, '0')}:${String(t.getSeconds()).padStart(2, '0')}`;
-              return `<div class="recent-row"><span class="t">${time}</span><span class="c">${r.category}</span><span class="n">${r.nominee}</span></div>`;
+              return `<div class="recent-row"><span class="t">${time}<small>${DEVICE_NAMES[r.device] || '未知'}</small></span><span class="c">${r.category}</span><span class="n">${r.nominee}</span></div>`;
             })
             .join('');
         }
@@ -362,6 +476,33 @@
         if (autoOn) startAuto(); else stopAuto();
       });
 
+      $('#analyticsDevice').addEventListener('change', renderTrend);
+      $('#analyticsMetric').addEventListener('change', renderTrend);
+
+      function downloadCsv(filename, lines) {
+        const blob = new Blob(['\uFEFF' + lines.join('\n')], { type: 'text/csv;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(a.href);
+      }
+
+      $('#exportAnalyticsBtn').addEventListener('click', () => {
+        const analytics = statsData?.analytics;
+        if (!analytics) return;
+        const lines = ['日期,设备,访问量,独立访客,投票人数,票数,转化率'];
+        const periods = [{ date: '累计', groups: analytics.summary }, ...analytics.daily];
+        for (const { date, groups } of periods) {
+          for (const [device, name] of Object.entries(DEVICE_NAMES)) {
+            const row = groups[device];
+            lines.push([date, name, row.visits, row.visitors, row.voters, row.votes,
+              row.conversionRate === null ? '' : fmtRate(row.conversionRate)].join(','));
+          }
+        }
+        downloadCsv('tga2026-analytics-' + analytics.daily.at(-1).date + '.csv', lines);
+      });
+
       $('#exportBtn').addEventListener('click', () => {
         if (!statsData) return;
         const lines = ['奖项分类,奖项(中文),奖项(英文),提名,票数,占比'];
@@ -370,12 +511,7 @@
             lines.push([TAB_NAMES[c.tab] || c.tab, c.cn, c.en, n.name, n.votes, n.votes > 0 ? n.pct + '%' : '0%'].join(','));
           });
         });
-        const blob = new Blob(['\uFEFF' + lines.join('\n')], { type: 'text/csv;charset=utf-8' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = 'tga2026-votes-' + new Date().toISOString().slice(0, 10) + '.csv';
-        a.click();
-        URL.revokeObjectURL(a.href);
+        downloadCsv('tga2026-votes-' + new Date().toISOString().slice(0, 10) + '.csv', lines);
       });
 
       $('#resetBtn').addEventListener('click', async () => {

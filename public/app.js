@@ -716,7 +716,7 @@
   /* ---------------- 初始化 ---------------- */
   async function init() {
     try {
-      const res = await fetch('/api/state');
+      const res = await fetch('/api/state', { headers: { 'X-Suyou-View': '1' } });
       if (!res.ok) throw new Error('bad status');
       ui.data = await res.json();
       renderFeaturedNominees();
