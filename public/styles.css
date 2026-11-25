@@ -212,6 +212,9 @@ body:has(#about:target) .site-nav-sections a[href="#about"]::after { opacity: 1;
   font-variant-numeric: tabular-nums;
 }
 .stat-label, .countdown-label { color: var(--muted); font-size: 12px; }
+.hero-schedule { display: grid; justify-items: end; gap: 6px; min-width: 0; }
+.results-announcement { color: var(--muted); font-size: 13px; text-wrap: pretty; }
+.results-announcement strong { color: var(--text); font-weight: 750; }
 .countdown { gap: 12px; }
 .countdown-label { line-height: 1.28; }
 .countdown-boxes { gap: 8px; }
@@ -510,6 +513,7 @@ body:has(#about:target) .site-nav-sections a[href="#about"]::after { opacity: 1;
   .hero-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; }
   .stat + .stat { padding-inline-start: 14px; }
   .stat-value { font-size: 29px; }
+  .hero-schedule { justify-items: start; }
   .countdown { flex-wrap: wrap; }
   .cd-box span { font-size: 22px; }
   .hero-cta { width: 100%; margin-top: 13px; }
