@@ -7,6 +7,7 @@
   const tabsEl = $('#tabs');
   const modal = $('#modal');
   const modalBody = $('#modalBody');
+  const ballotActions = $('#ballotActions');
   const picker = $('#nomineePicker');
   const modalNotice = $('#modalNotice');
   const modalTitle = $('#modalTitle');
@@ -202,7 +203,12 @@
     const panel = element('article', animate ? 'ballot-entry ballot-enter' : 'ballot-entry');
     panel.dataset.nid = nominee.id;
     panel.insertAdjacentHTML('beforeend', coverCell(nominee, 'ballot-poster'));
-    panel.querySelector('img')?.removeAttribute('loading');
+    const poster = panel.querySelector('.ballot-poster');
+    const posterImage = poster.querySelector('img');
+    if (posterImage) {
+      posterImage.removeAttribute('loading');
+      poster.style.setProperty('--poster-glow', `url("/covers/previews/${nominee.id}.jpg")`);
+    }
 
     const content = element('div', 'ballot-copy');
     content.append(element('h3', 'ballot-name', nominee.name));
@@ -245,7 +251,7 @@
     }
     if (links.childElementCount) content.append(links);
 
-    const actions = element('div', 'ballot-actions');
+    ballotActions.replaceChildren();
     if (ui.confirmingVote && !myVote && !ui.busy) {
       const confirmation = element('div', 'vote-confirmation');
       const title = element('p', null, `确认将「${category.cn}」投给「${distinctName(category, nominee)}」？`);
@@ -257,17 +263,16 @@
       confirm.type = 'button';
       confirm.dataset.confirmVote = nominee.id;
       confirmation.append(title, hint, cancel, confirm);
-      actions.append(confirmation);
+      ballotActions.append(confirmation);
     } else {
       const voteButton = element('button', 'vote-btn' + (chosen ? ' voted-btn' : ''),
         chosen ? '已投给该候选' : myVote ? '本奖项已投票' : ui.busy ? '提交中…' : type?.vote || '投给这款游戏');
       voteButton.type = 'button';
       voteButton.dataset.vote = nominee.id;
       voteButton.disabled = Boolean(myVote) || ui.busy;
-      actions.append(voteButton, element('span', 'ballot-tally',
-        `${fmt(votes)} 票 · ${total ? (votes / total * 100).toFixed(1) : '0'}%`));
+      ballotActions.append(element('span', 'ballot-tally',
+        `${fmt(votes)} 票 · ${total ? (votes / total * 100).toFixed(1) : '0'}%`), voteButton);
     }
-    content.append(actions);
     panel.append(content);
     modalBody.replaceChildren(panel);
   }
@@ -293,7 +298,7 @@
     document.body.style.overflow = 'hidden';
     modal.showModal();
     modalBody.scrollTop = 0;
-    const button = modalBody.querySelector('.vote-btn:not(:disabled)');
+    const button = ballotActions.querySelector('.vote-btn:not(:disabled)');
     (nomineeId && button ? button : modal.querySelector('.icon-btn')).focus({ preventScroll: true });
     revealThumbnail();
   }
@@ -458,14 +463,14 @@
     if (button && ui.openCategory && !ui.busy) {
       ui.confirmingVote = true;
       renderModal(ui.openCategory);
-      modalBody.querySelector('[data-cancel-vote]')?.focus();
+      ballotActions.querySelector('[data-cancel-vote]')?.focus();
     }
   });
 
   function cancelConfirmation() {
     ui.confirmingVote = false;
     renderModal(ui.openCategory);
-    modalBody.querySelector('[data-vote]')?.focus();
+    ballotActions.querySelector('[data-vote]')?.focus();
   }
 
   modal.addEventListener('cancel', (event) => {
