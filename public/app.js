@@ -8,6 +8,7 @@
   const heroVote = $('#hero-vote');
   const heroList = $('#hero-nominee-list');
   const tabsEl = $('#tabs');
+  const unvotedOnly = $('#unvotedOnly');
   const modal = $('#modal');
   const modalBody = $('#modalBody');
   const ballotActions = $('#ballotActions');
@@ -34,6 +35,8 @@
     confirmingVote: false,
     voteError: '',
     modalTrigger: null,
+    awardListScroll: null,
+    pendingCardRefresh: false,
     busy: false
   };
 
@@ -90,8 +93,17 @@
   window.addEventListener('blur', stopCoverRotation);
 
   function renderCards() {
+    if (modal.open) {
+      ui.pendingCardRefresh = true;
+      return;
+    }
+    ui.pendingCardRefresh = false;
     stopCoverRotation();
-    const list = ui.data.categories.filter((c) => ui.activeTab === 'all' || c.tab === ui.activeTab);
+    const { categories, myVotes } = ui.data;
+    $('#todayVoteCount').textContent = categories.filter(c => myVotes[c.id]).length + ' / ' + categories.length;
+    unvotedOnly.disabled = false;
+    const list = categories.filter(c => (ui.activeTab === 'all' || c.tab === ui.activeTab) &&
+      (!unvotedOnly.checked || !myVotes[c.id]));
     gridEl.innerHTML = list.map((c) => {
       const myVote = ui.data.myVotes[c.id];
       const covers = c.nominees.filter((nominee) => nominee.cover);
@@ -119,7 +131,7 @@
             </svg>
           </button>
         </article>`;
-    }).join('');
+    }).join('') || '<p class="loading">这个分类的奖项今天都投过了。</p>';
     for (const card of gridEl.querySelectorAll('.cat-card')) {
       const stage = card.querySelector('.cat-cover-stage');
       showAwardCover(stage, 0);
@@ -153,6 +165,16 @@
     const count = stage.childElementCount;
     const index = (Number(stage.dataset.coverIndex) + step + count) % count;
     showAwardCover(stage, index, announce);
+  }
+
+  unvotedOnly.addEventListener('change', renderCards);
+
+  function nextUnvotedAward(categoryId) {
+    const { categories, myVotes } = ui.data;
+    const index = categories.findIndex(category => category.id === categoryId);
+    const remaining = [...categories.slice(index + 1), ...categories.slice(0, index)]
+      .filter(category => !myVotes[category.id] && category.nominees.length);
+    return remaining.find(category => category.tab === ui.activeTab) || remaining[0];
   }
 
   function renderFeaturedNominees() {
@@ -286,7 +308,6 @@
     const type = nomineeTypes[categoryId];
     const isGame = !type;
     const myVote = ui.data.myVotes[categoryId];
-    const chosen = myVote === nominee.id;
 
     modalTotal.textContent = `累计 ${fmt(category.total)} 票`;
     modalNotice.textContent = ui.voteError;
@@ -413,13 +434,29 @@
       confirmButtons.append(cancel, confirm);
       confirmation.append(confirmCopy, confirmButtons);
       ballotActions.append(confirmation);
+    } else if (myVote) {
+      const followup = element('div', 'vote-followup');
+      const back = element('button', 'vote-cancel', '返回奖项列表');
+      back.type = 'button';
+      back.dataset.returnAwards = '';
+      followup.append(back);
+      const next = nextUnvotedAward(categoryId);
+      if (next) {
+        const proceed = element('button', 'vote-btn', '下一个未投奖项');
+        proceed.type = 'button';
+        proceed.dataset.nextAward = next.id;
+        followup.append(proceed);
+      } else {
+        modalHint.textContent = '今日全部奖项已投';
+      }
+      ballotActions.append(followup);
     } else {
-      const voteButton = element('button', 'vote-btn' + (chosen ? ' voted-btn' : ''),
-        chosen ? '今日已投给该候选' : myVote ? '本奖项今日已投' : ui.busy ? '提交中…' : ui.voteError ? '重试投票' : type?.vote || '投给这款游戏');
+      const voteButton = element('button', 'vote-btn',
+        ui.busy ? '提交中…' : ui.voteError ? '重试投票' : type?.vote || '投给这款游戏');
       voteButton.type = 'button';
       voteButton.dataset.vote = nominee.id;
-      voteButton.disabled = Boolean(myVote) || ui.busy;
-      if (!voteButton.disabled || chosen) voteButton.append(icon(chosen ? 'check' : 'arrow-up-right'));
+      voteButton.disabled = ui.busy;
+      if (!voteButton.disabled) voteButton.append(icon('arrow-up-right'));
       ballotActions.append(voteButton);
     }
     panel.append(content);
@@ -435,27 +472,33 @@
     if (modal.open) revealThumbnail();
   }
 
-  function openModal(categoryId, nomineeId) {
+  function openModal(categoryId, nomineeId, trigger = document.activeElement) {
     const category = findCategory(categoryId);
     if (!category?.nominees.length || modal.open) return;
     stopCoverRotation();
-    ui.modalTrigger = document.activeElement;
-    ui.openCategory = categoryId;
-    modalTitle.textContent = category.cn;
-    modalEn.textContent = category.en;
-    renderPicker(category);
-    setDrawer(false);
-    selectNominee(nomineeId || ui.data.myVotes[categoryId] || category.nominees[0].id);
+    ui.modalTrigger = trigger;
+    ui.awardListScroll = gridEl.contains(trigger) ? window.scrollY : null;
+    modal.returnValue = '';
+    showAward(category, nomineeId);
     document.body.style.overflow = 'hidden';
     modal.showModal();
     modalBody.scrollTop = 0;
     const button = ballotActions.querySelector('.vote-btn:not(:disabled)');
     (nomineeId && button ? button : modal.querySelector('[data-close]')).focus({ preventScroll: true });
     revealThumbnail();
+  }
+
+  function showAward(category, nomineeId) {
+    ui.openCategory = category.id;
+    modalTitle.textContent = category.cn;
+    modalEn.textContent = category.en;
+    renderPicker(category);
+    setDrawer(false);
+    selectNominee(nomineeId || ui.data.myVotes[category.id] || category.nominees[0].id);
     fetch('/api/award-view', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ categoryId }),
+      body: JSON.stringify({ categoryId: category.id }),
       keepalive: true
     }).catch(() => {});
   }
@@ -471,16 +514,27 @@
 
   modal.addEventListener('close', () => {
     if (modal.open) return;
-    const categoryId = ui.openCategory;
     ui.openCategory = null;
     ui.selectedNominee = null;
     ui.confirmingVote = false;
     document.body.style.overflow = '';
-    const trigger = ui.modalTrigger?.isConnected
-      ? ui.modalTrigger
-      : gridEl.querySelector('[data-open="' + categoryId + '"]');
-    trigger?.focus({ preventScroll: true });
+    if (ui.pendingCardRefresh) renderCards();
+    const originCategory = ui.modalTrigger?.dataset.open;
+    let trigger = ui.modalTrigger?.isConnected ? ui.modalTrigger :
+      gridEl.querySelector('[data-open="' + originCategory + '"]');
+    if (ui.awardListScroll !== null) {
+      window.scrollTo({ top: ui.awardListScroll, behavior: 'instant' });
+      trigger ??= [...gridEl.querySelectorAll('[data-open]')].find(button => {
+        const { top, bottom } = button.getBoundingClientRect();
+        return top >= tabsEl.getBoundingClientRect().bottom && bottom <= window.innerHeight;
+      });
+    } else if (modal.returnValue === 'awards') {
+      $('#categories').scrollIntoView({ behavior: 'instant' });
+      trigger = unvotedOnly;
+    }
+    (trigger || unvotedOnly).focus({ preventScroll: true });
     ui.modalTrigger = null;
+    ui.awardListScroll = null;
   });
 
   /* ---------------- 投票 ---------------- */
@@ -532,7 +586,8 @@
           (document.activeElement === btn || document.activeElement === document.body);
         renderModal(ui.openCategory);
         if (shouldRestoreFocus) {
-          (ballotActions.querySelector('.vote-btn:not(:disabled)') || modal.querySelector('.ballot-status'))?.focus({ preventScroll: true });
+          const action = ballotActions.querySelector('.vote-btn:not(:disabled), [data-return-awards]:only-child');
+          (action || modal.querySelector('.ballot-status'))?.focus({ preventScroll: true });
         }
       } else if (error) {
         showToast(error);
@@ -663,7 +718,7 @@
     const clickedCover = e.target.closest('[data-cover-nominee]');
     // 换场中以指针下仍处于前层的图片为准。
     const frontArtwork = clickedCover && Number(getComputedStyle(clickedCover).zIndex) > 1;
-    openModal(card.dataset.id, (frontArtwork ? clickedCover : activeCover)?.dataset.coverNominee);
+    openModal(card.dataset.id, (frontArtwork ? clickedCover : activeCover)?.dataset.coverNominee, card.querySelector('[data-open]'));
   });
 
   drawerToggle.addEventListener('click', () => {
@@ -731,6 +786,16 @@
   }, { passive: false });
 
   modal.addEventListener('click', (event) => {
+    if (event.target.closest('[data-return-awards]')) {
+      modal.close('awards');
+      return;
+    }
+    const nextAward = event.target.closest('[data-next-award]');
+    if (nextAward) {
+      showAward(findCategory(nextAward.dataset.nextAward));
+      modalTitle.focus({ preventScroll: true });
+      return;
+    }
     if (event.target.closest('[data-close]')) {
       modal.close();
       return;

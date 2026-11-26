@@ -93,6 +93,11 @@
         </div>
       </div>
 
+      <div class="award-progress">
+        <p id="todayVoteProgress" role="status">今日已投 <strong id="todayVoteCount">—</strong></p>
+        <label><input type="checkbox" id="unvotedOnly" disabled />只看今日未投</label>
+      </div>
+
       <div class="tabs" id="tabs" role="tablist" aria-label="奖项分类">
         <button class="tab" id="tab-all" data-tab="all" type="button" role="tab" aria-controls="categoryGrid" aria-selected="true">全部 <span id="tabAllCount">30</span></button>
         <button class="tab" id="tab-game" data-tab="game" type="button" role="tab" aria-controls="categoryGrid" aria-selected="false" tabindex="-1">游戏类</button>
@@ -172,7 +177,7 @@
       <div>
         <p class="modal-en" id="modalEn"></p>
         <div class="modal-title-row">
-          <h2 class="modal-title" id="modalTitle"></h2>
+          <h2 class="modal-title" id="modalTitle" tabindex="-1"></h2>
           <span class="modal-total" id="modalTotal"></span>
         </div>
       </div>
