@@ -555,23 +555,27 @@ body:has(#about:target) .site-nav-sections a[href="#about"]::after { opacity: 1;
   .featured-nominee strong { margin-top: 5px; font-size: clamp(11px, 3.5vw, 15px); }
   .featured-nominee > span { font-size: clamp(9px, 2.6vw, 12px); }
   .board-head { min-height: 78px; }
-  .cat-card { grid-template-columns: clamp(132px, 43vw, 170px) minmax(0, 1fr); gap: 4px 12px; padding-block: 12px 14px; }
-  .cat-cover-slider { grid-area: 1 / 1 / span 2; }
-  .cat-cover-stage { height: clamp(80px, 24vw, 98px); }
-  .cat-top { grid-area: 1 / 2; align-self: end; padding-top: 32px; }
+  .cat-card {
+    grid-template-columns: clamp(88px, 26vw, 118px) minmax(0, 1fr) auto;
+    grid-template-areas: "covers title vote" "covers subtitle vote";
+    gap: 4px 10px;
+    padding-block: 20px;
+  }
+  .cat-cover-slider { grid-area: covers; }
+  .cat-cover-stage { height: clamp(58px, 16vw, 70px); }
+  .cat-cover-hit { min-width: 24px; min-height: 44px; }
+  .cat-top { display: contents; }
+  .cat-cn { grid-area: title; align-self: end; margin: 0; font-size: clamp(20px, 5.5vw, 24px); }
+  .cat-en { grid-area: subtitle; align-self: start; font-size: 11px; letter-spacing: .08em; }
   .cat-card .card-vote {
-    position: absolute;
-    top: 8px;
-    right: 0;
-    grid-area: auto;
-    height: 26px;
-    min-height: 0;
-    padding: 0 10px;
-    gap: 5px;
+    grid-area: vote;
+    min-height: 44px;
+    padding: 0 11px;
+    gap: 6px;
     border: 0.5px solid #ffffff2e;
     border-radius: 999px;
     color: var(--text);
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
     background: #ffffff0a;
   }
@@ -579,7 +583,8 @@ body:has(#about:target) .site-nav-sections a[href="#about"]::after { opacity: 1;
   .cat-card .card-vote .vote-label,
   .cat-card .card-vote .vote-arrow { display: none; }
   .cat-card .card-vote .vote-label-short { display: inline; }
-  .cat-card .card-vote .vote-ticket { display: block; color: var(--mint); }
+  .cat-card .card-vote .vote-ticket { display: block; width: 15px; height: 15px; color: var(--mint); }
+  .cat-card .card-vote.is-voted .vote-ticket { color: #b6b6b6; }
 }
 @media (max-width: 430px) {
   /* 窄屏只留外链图标，避免导航挤压换行 */
@@ -596,7 +601,7 @@ body:has(#about:target) .site-nav-sections a[href="#about"]::after { opacity: 1;
   .site-brand-emblem { width: 26px; height: 26px; }
   .site-nav-tools { padding-inline-start: 0; border-inline-start: 0; }
   .tab { gap: 3px; font-size: 13px; }
-  .cat-card { gap: 7px; }
+  .cat-card { column-gap: 7px; }
   .ghost-btn { font-size: 12px; }
 }
 
@@ -785,7 +790,18 @@ body:has(.recruit-dialog[open]) { overflow: hidden; }
   color: #593d73;
 }
 
-.modal-title { margin-top: 3px; font-size: clamp(25px, 3vw, 42px); line-height: 1.16; text-wrap: balance; }
+.modal-title-row { display: flex; align-items: baseline; flex-wrap: wrap; gap: 3px 8px; margin-top: 3px; }
+.modal-title { font-size: clamp(25px, 3vw, 42px); line-height: 1.16; text-wrap: balance; }
+.modal-total {
+  padding: 2px 6px;
+  border-radius: 3px;
+  background: #f1e7fbeb;
+  color: #593d73;
+  font-size: 12px;
+  line-height: 1.4;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
 .modal-close {
   display: inline-flex;
   align-items: center;
@@ -1192,7 +1208,8 @@ body:has(.recruit-dialog[open]) { overflow: hidden; }
     padding-inline-end: max(12px, env(safe-area-inset-right));
   }
   .modal-head { padding-block: max(3px, env(safe-area-inset-top)) 3px; }
-  .modal-title { font-size: 20px; margin-top: 2px; }
+  .modal-title-row { margin-top: 2px; }
+  .modal-title { font-size: 20px; }
   .modal-en { font-size: 10px; }
   .modal-body { container-type: size; padding-block: 8px; }
   .ballot-entry, .ballot-entry:has(.ballot-person) {

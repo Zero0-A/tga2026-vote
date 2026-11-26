@@ -20,6 +20,7 @@
   const modalNotice = $('#modalNotice');
   const modalTitle = $('#modalTitle');
   const modalEn = $('#modalEn');
+  const modalTotal = $('#modalTotal');
   const modalHint = $('#modalHint');
   const modalMy = $('#modalMy');
 
@@ -86,7 +87,7 @@
             <p class="cat-en" lang="en">${c.en}</p>
             <h3 class="cat-cn">${c.cn}</h3>
           </div>
-          <button class="ghost-btn card-vote" type="button" data-open="${c.id}" aria-haspopup="dialog" aria-label="${myVote ? '查看今日投票' : '去投票'}：${c.cn}">
+          <button class="ghost-btn card-vote${myVote ? ' is-voted' : ''}" type="button" data-open="${c.id}" aria-haspopup="dialog" aria-label="${myVote ? '查看今日投票' : '去投票'}：${c.cn}">
             <span class="vote-label">${myVote ? '查看今日投票' : '去投票'}</span>
             <span class="vote-label-short">${myVote ? '已投' : '投票'}</span>
             <img class="ui-icon vote-arrow" src="/icons/arrow-up-right.svg" width="19" height="19" alt="" />
@@ -255,6 +256,7 @@
     const myVote = ui.data.myVotes[categoryId];
     const chosen = myVote === nominee.id;
 
+    modalTotal.textContent = `累计 ${fmt(category.total)} 票`;
     modalNotice.textContent = ui.voteError;
     if (myVote) {
       modalHint.textContent = '';
