@@ -178,6 +178,7 @@ function publicState(voterId, serverNow) {
     event: {
       name: '溯游工作室 · 2026 年度游戏票选',
       ceremonyAt: CEREMONY_AT,
+      resultsOpen: serverNow >= RESULTS_AVAILABLE_AT,
       votingClosed: Boolean(publication),
       totalVotes: totalVotes(),
       voters: uniqueVoters(),
@@ -270,6 +271,10 @@ function serveStatic(res, urlPath) {
     res.writeHead(403);
     return res.end('Forbidden');
   }
+  if (filePath.toLowerCase() === path.join(PUBLIC_DIR, 'results.html').toLowerCase() && Date.now() < RESULTS_AVAILABLE_AT) {
+    res.writeHead(403, { 'Content-Type': 'text/plain; charset=utf-8', 'Cache-Control': 'no-store' });
+    return res.end('票选结果入口尚未开放。');
+  }
   fs.readFile(filePath, (err, data) => {
     if (err) {
       res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
@@ -324,7 +329,8 @@ async function handleApi(req, res, url) {
   }
 
   if (req.method === 'GET' && pathname === '/api/results') {
-    return sendJson(res, 200, { availableAt: RESULTS_AVAILABLE_AT, results: publication });
+    const open = Date.now() >= RESULTS_AVAILABLE_AT;
+    return sendJson(res, open ? 200 : 403, { availableAt: RESULTS_AVAILABLE_AT, results: open ? publication : null });
   }
 
   // 公共：投票

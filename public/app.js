@@ -69,6 +69,9 @@
     $('#statVoters').textContent = fmt(ui.data.event.voters);
     $('#statCats').textContent = fmt(ui.data.event.categoryCount);
     $('#tabAllCount').textContent = ui.data.categories.length;
+    const resultsOpen = ui.data.event.resultsOpen || ui.data.event.votingClosed;
+    $('#resultsLink').hidden = !resultsOpen;
+    $('#resultsLocked').hidden = Boolean(resultsOpen);
     if (ui.data.event.votingClosed) {
       $('#resultsAnnouncement').textContent = '溯游票选结果已公布';
       $('#awardProgress').hidden = true;
@@ -904,7 +907,8 @@
         voteDayTimer = setTimeout(refreshVoteDay, 1000);
         return;
       }
-      if (data.voteDayEndsAt !== previousDayEnd || data.event.votingClosed !== ui.data.event.votingClosed) {
+      if (data.voteDayEndsAt !== previousDayEnd || data.event.votingClosed !== ui.data.event.votingClosed ||
+          data.event.resultsOpen !== ui.data.event.resultsOpen) {
         const focusAction = ballotActions.contains(document.activeElement);
         ui.data = data;
         ui.voteError = '';

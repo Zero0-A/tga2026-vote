@@ -225,6 +225,8 @@ body:has(#about:target) .site-nav-sections a[href="#about"]::after { opacity: 1;
 .results-announcement { color: var(--muted); font-size: 13px; text-wrap: pretty; }
 .results-announcement strong { color: var(--text); font-weight: 750; }
 .results-announcement a { display: inline-block; margin-top: 3px; color: var(--mint); }
+.results-announcement [hidden] { display: none; }
+.results-locked { display: block; margin-top: 3px; padding: 0; border: 0; color: var(--dim); background: transparent; font-size: inherit; }
 .countdown { gap: 12px; }
 .countdown-label { line-height: 1.28; }
 .countdown-boxes { gap: 8px; }
