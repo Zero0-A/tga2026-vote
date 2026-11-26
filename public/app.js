@@ -574,12 +574,20 @@
 
   function openRecruitDialog() {
     const posters = recruitDialog.querySelector('.recruit-posters');
-    if (posters.childElementCount === 1) {
-      const set = posters.firstElementChild;
-      for (const image of set.children) image.loading = 'eager';
-      // 四组等高的海报让轨道平移一组时，斜切视窗仍铺满同一图案。
-      posters.append(set.cloneNode(true), set.cloneNode(true), set.cloneNode(true));
+    const set = posters.firstElementChild;
+    const previous = [...set.children];
+    const images = [...previous];
+    for (let index = images.length - 1; index > 0; index--) {
+      const randomIndex = Math.floor(Math.random() * (index + 1));
+      [images[index], images[randomIndex]] = [images[randomIndex], images[index]];
     }
+    if (images.length > 1 && images.every((image, index) => image === previous[index])) {
+      images.push(images.shift());
+    }
+    for (const image of images) image.loading = 'eager';
+    set.replaceChildren(...images);
+    // 四组保持同一顺序，轨道移动一组的距离后可以无缝循环。
+    posters.replaceChildren(set, set.cloneNode(true), set.cloneNode(true), set.cloneNode(true));
     recruitStatus.textContent = '';
     recruitDialog.showModal();
   }
