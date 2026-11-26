@@ -635,7 +635,8 @@
   });
   let swipeTrack = null;
   modalBody.addEventListener('pointerdown', (event) => {
-    if (!mobilePicker.matches || !event.isPrimary || event.pointerType !== 'touch') return;
+    if (!mobilePicker.matches || !event.isPrimary) return;
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
     swipeTrack = { id: event.pointerId, x: event.clientX, y: event.clientY, axis: null, dx: 0 };
   }, { passive: true });
   modalBody.addEventListener('pointermove', (event) => {
