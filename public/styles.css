@@ -479,6 +479,64 @@ body:has(#about:target) .site-nav-sections a[href="#about"]::after { opacity: 1;
 .about-card p, .about-card ul { margin-top: 11px; color: var(--muted); font-size: 14px; }
 .about-card ul { display: grid; gap: 6px; max-width: 66ch; padding-left: 1.25em; }
 .about-source { text-decoration: underline; text-underline-offset: 3px; }
+.about-label { display: none; }
+
+@media (min-width: 681px) {
+  .hero-meta {
+    background: linear-gradient(110deg, #342149, #291839 58%, #21132e);
+    padding-block: 16px;
+  }
+  .hero-stats { gap: clamp(14px, 2.4vw, 30px); }
+  .stat { gap: 5px; }
+  .stat-value { font-size: clamp(32px, 3.4vw, 44px); }
+  .hero-schedule { justify-items: stretch; gap: 8px; }
+  .countdown { display: grid; justify-items: start; gap: 6px; }
+  .countdown-label { font-weight: 650; }
+  .countdown-boxes { gap: 5px; }
+  .cd-box {
+    display: grid;
+    justify-items: center;
+    gap: 3px;
+    min-width: 42px;
+    padding: 6px 3px 4px;
+    border-radius: 3px;
+    background: #dfcff710;
+  }
+  .cd-box span { font-size: 26px; }
+  .cd-box em { line-height: 1; }
+  .results-announcement {
+    padding-inline-start: 10px;
+    border-inline-start: 2px solid var(--mint);
+    line-height: 1.4;
+  }
+  .results-announcement strong { display: block; margin-top: 3px; font-size: 14px; }
+  .about { padding-bottom: clamp(44px, 6vw, 76px); }
+  .about-card { display: grid; gap: 22px; padding-top: clamp(22px, 4vw, 44px); }
+  .about-intro p { max-width: 36em; }
+  .about-card ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 20px;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .about-card li {
+    padding-block: 10px 13px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    line-height: 1.65;
+  }
+  .about-label { display: block; margin-bottom: 3px; color: var(--text); font-size: 14px; }
+}
+
+@media (min-width: 960px) {
+  .hero-meta { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1.6fr); align-items: stretch; }
+  .hero-schedule { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: clamp(11px, 2vw, 24px); }
+  .countdown { padding-inline-start: clamp(13px, 2vw, 24px); border-inline-start: 1px solid var(--line); }
+  .about-card { grid-template-columns: minmax(0, 1fr) minmax(0, 1.55fr); gap: clamp(25px, 5vw, 68px); }
+  .about h2 { font-size: clamp(29px, 3vw, 39px); }
+}
 .footer { border-top: 1px solid var(--line); background: #140a23; }
 .footer-inner {
   display: flex;
