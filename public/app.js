@@ -272,7 +272,7 @@
     $('#nomineePosition').textContent = position;
     $('#desktopNomineePosition').textContent = position;
     for (const button of modal.querySelectorAll('[data-step]')) {
-      button.disabled = !category.nominees[index + Number(button.dataset.step)];
+      button.disabled = category.nominees.length < 2;
     }
     for (const button of picker.children) {
       button.setAttribute('aria-pressed', button.dataset.selectNominee === nominee.id);
@@ -634,10 +634,12 @@
 
   function stepNominee(direction) {
     const category = findCategory(ui.openCategory);
-    if (!category) return;
+    const count = category?.nominees.length ?? 0;
+    if (count < 2) return;
     const index = category.nominees.findIndex((item) => item.id === ui.selectedNominee);
-    const next = category.nominees[index + direction];
-    if (next) selectNominee(next.id);
+    if (index < 0) return;
+    const next = (index + direction + count) % count;
+    selectNominee(category.nominees[next].id);
   }
 
   /* 左右滑动正文切换提名 */
@@ -696,7 +698,6 @@
     const step = event.target.closest('[data-step]');
     if (step) {
       stepNominee(Number(step.dataset.step));
-      if (step.disabled) picker.querySelector('[aria-pressed=true]')?.focus({ preventScroll: true });
       return;
     }
     const thumbnail = event.target.closest('[data-select-nominee]');
