@@ -86,9 +86,14 @@
             <p class="cat-en" lang="en">${c.en}</p>
             <h3 class="cat-cn">${c.cn}</h3>
           </div>
-          <button class="ghost-btn" type="button" data-open="${c.id}" aria-haspopup="dialog">
-            ${myVote ? '查看今日投票' : '去投票'}
-            <img class="ui-icon" src="/icons/arrow-up-right.svg" width="19" height="19" alt="" />
+          <button class="ghost-btn card-vote" type="button" data-open="${c.id}" aria-haspopup="dialog" aria-label="${myVote ? '查看今日投票' : '去投票'}：${c.cn}">
+            <span class="vote-label">${myVote ? '查看今日投票' : '去投票'}</span>
+            <span class="vote-label-short">${myVote ? '已投' : '投票'}</span>
+            <img class="ui-icon vote-arrow" src="/icons/arrow-up-right.svg" width="19" height="19" alt="" />
+            <svg class="vote-ticket" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
           </button>
         </article>`;
     }).join('');
