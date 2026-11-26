@@ -69,7 +69,28 @@
   }
 
   /* ---------------- 卡片 ---------------- */
+  const hoverCoverMotion = matchMedia('(width > 680px) and (any-hover: hover) and (any-pointer: fine) and (prefers-reduced-motion: no-preference)');
+  let hoveredCoverStage;
+  let coverRotation;
+
+  function stopCoverRotation() {
+    clearInterval(coverRotation);
+    hoveredCoverStage = null;
+  }
+
+  function startCoverRotation(stage) {
+    stopCoverRotation();
+    if (!hoverCoverMotion.matches || stage.childElementCount < 2 || document.hidden || modal.open || recruitDialog.open) return;
+    hoveredCoverStage = stage;
+    coverRotation = setInterval(() => stepAwardCover(stage, 1, false), 1800);
+  }
+
+  hoverCoverMotion.addEventListener('change', stopCoverRotation);
+  document.addEventListener('visibilitychange', stopCoverRotation);
+  window.addEventListener('blur', stopCoverRotation);
+
   function renderCards() {
+    stopCoverRotation();
     const list = ui.data.categories.filter((c) => ui.activeTab === 'all' || c.tab === ui.activeTab);
     gridEl.innerHTML = list.map((c) => {
       const myVote = ui.data.myVotes[c.id];
@@ -99,10 +120,19 @@
           </button>
         </article>`;
     }).join('');
-    gridEl.querySelectorAll('.cat-cover-stage').forEach((stage) => showAwardCover(stage, 0));
+    for (const card of gridEl.querySelectorAll('.cat-card')) {
+      const stage = card.querySelector('.cat-cover-stage');
+      showAwardCover(stage, 0);
+      card.addEventListener('pointerenter', (event) => {
+        if (event.pointerType === 'mouse') startCoverRotation(stage);
+      });
+      card.addEventListener('pointerleave', () => {
+        if (hoveredCoverStage === stage) stopCoverRotation();
+      });
+    }
   }
 
-  function showAwardCover(stage, index) {
+  function showAwardCover(stage, index, announce = true) {
     const tiles = [...stage.children];
     stage.dataset.coverIndex = index;
     tiles.forEach((tile, position) => {
@@ -114,15 +144,15 @@
     const name = nomineeName(category, tiles[index]?.dataset.coverNominee);
     card.querySelector('.cat-cover-caption').textContent = name;
     const announcement = card.querySelector('.cat-cover-announcement');
-    if (announcement) {
+    if (announcement && announce) {
       announcement.textContent = '第 ' + (index + 1) + ' 张，共 ' + tiles.length + ' 张' + (name ? '，' + name : '');
     }
   }
 
-  function stepAwardCover(stage, step) {
+  function stepAwardCover(stage, step, announce = true) {
     const count = stage.childElementCount;
     const index = (Number(stage.dataset.coverIndex) + step + count) % count;
-    showAwardCover(stage, index);
+    showAwardCover(stage, index, announce);
   }
 
   function renderFeaturedNominees() {
@@ -408,6 +438,7 @@
   function openModal(categoryId, nomineeId) {
     const category = findCategory(categoryId);
     if (!category?.nominees.length || modal.open) return;
+    stopCoverRotation();
     ui.modalTrigger = document.activeElement;
     ui.openCategory = categoryId;
     modalTitle.textContent = category.cn;
@@ -575,6 +606,7 @@
   });
 
   function openRecruitDialog() {
+    stopCoverRotation();
     const posters = recruitDialog.querySelector('.recruit-posters');
     const set = posters.firstElementChild;
     const previous = [...set.children];
@@ -624,6 +656,7 @@
       const slider = sideCover.closest('.cat-cover-slider');
       const stage = slider.querySelector('.cat-cover-stage');
       stepAwardCover(stage, Number(sideCover.dataset.coverStep));
+      if (hoveredCoverStage === stage) startCoverRotation(stage);
       return;
     }
     const activeCover = card.querySelector('.cat-cover[data-cover-depth="0"]');
