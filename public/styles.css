@@ -92,7 +92,7 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
 .site-topbar .brand {
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 9px;
   padding: 0;
   border: 0;
   border-radius: 3px;
@@ -102,16 +102,14 @@ a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visibl
 }
 .site-topbar .brand:hover .brand-mark { color: var(--mint-hover); }
 .site-brand-emblem {
+  display: block;
   flex: none;
-  width: 37px;
-  height: 37px;
-  border: 1px solid #edddff44;
-  border-radius: 3px;
-  background: var(--paper) url("/brand/suyou-editorial.webp") 82% 52% / 235% auto no-repeat;
+  width: 29px;
+  height: 29px;
 }
-.site-brand-name { display: grid; gap: 5px; }
-.site-topbar .brand-mark { font-size: 21px; letter-spacing: .035em; }
-.site-topbar .brand-text { color: var(--muted); }
+.site-brand-name { display: grid; gap: 4px; }
+.site-topbar .brand-mark { font-size: 20px; letter-spacing: .02em; }
+.site-topbar .brand-text { color: var(--dim); font-size: 9px; font-weight: 650; letter-spacing: .08em; }
 .site-topbar .topnav { gap: clamp(14px, 2.8vw, 34px); }
 .site-nav-sections, .site-nav-tools { display: flex; align-items: center; }
 .site-nav-sections { gap: clamp(14px, 2.5vw, 30px); }
@@ -560,7 +558,7 @@ body:has(#about:target) .site-nav-sections a[href="#about"]::after { opacity: 1;
   .brand-text { font-size: 9px; }
   .site-topbar .topbar-inner { gap: 8px; }
   .site-topbar .brand { gap: 7px; }
-  .site-brand-emblem { width: 30px; height: 30px; }
+  .site-brand-emblem { width: 25px; height: 25px; }
   .site-brand-name { gap: 3px; }
   .site-topbar .brand-mark { font-size: 17px; }
   .site-topbar .topnav { gap: 11px; }
@@ -644,7 +642,7 @@ body:has(#about:target) .site-nav-sections a[href="#about"]::after { opacity: 1;
   .site-topbar .topnav, .site-nav-sections { gap: 7px; }
   .site-topbar .topbar-inner, .site-nav-tools, .site-topbar .brand { gap: 6px; }
   .site-topbar .brand-mark { font-size: 16px; }
-  .site-brand-emblem { width: 26px; height: 26px; }
+  .site-brand-emblem { width: 23px; height: 23px; }
   .site-nav-tools { padding-inline-start: 0; border-inline-start: 0; }
   .tab { gap: 3px; font-size: 13px; }
   .cat-card { column-gap: 7px; }
