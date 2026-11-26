@@ -385,7 +385,7 @@ body:has(#about:target) .site-nav-sections a[href="#about"]::after { opacity: 1;
 .cat-card {
   position: relative;
   display: grid;
-  grid-template-columns: clamp(145px, 16vw, 212px) minmax(0, 1fr) auto;
+  grid-template-columns: clamp(128px, 13vw, 178px) minmax(0, 1fr) auto;
   align-items: center;
   gap: clamp(8px, 1.4vw, 17px);
   min-width: 0;
@@ -463,11 +463,7 @@ body:has(#about:target) .site-nav-sections a[href="#about"]::after { opacity: 1;
 }
 .cat-top { min-width: 0; }
 .cat-en { color: var(--dim); font-size: 12px; line-height: 1.22; }
-.cat-cn { margin-top: 2px; overflow-wrap: anywhere; font-size: clamp(17px, 2vw, 25px); font-weight: 800; line-height: 1.22; }
-.cat-status { margin-top: 5px; overflow-wrap: anywhere; color: var(--muted); font-size: 12px; }
-.cat-cover-caption { margin-top: 2px; color: var(--dim); font-size: 11px; overflow-wrap: anywhere; text-wrap: balance; }
-.cat-cover-caption:empty { display: none; }
-.cat-count { margin-right: 5px; color: var(--mint); font-weight: 750; }
+.cat-cn { margin-top: 3px; overflow-wrap: anywhere; text-wrap: balance; line-break: strict; font-size: clamp(20px, 2.45vw, 29px); font-weight: 800; line-height: 1.16; letter-spacing: -.01em; }
 .ghost-btn .ui-icon { width: 19px; height: 19px; }
 
 /* ---------- 海报与活动说明 ---------- */

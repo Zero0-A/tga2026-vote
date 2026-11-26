@@ -73,9 +73,6 @@
     gridEl.innerHTML = list.map((c) => {
       const myVote = ui.data.myVotes[c.id];
       const covers = c.nominees.filter((nominee) => nominee.cover);
-      const status = myVote
-        ? '<span class="cat-count">今日已投</span>你的选择：' + nomineeName(c, myVote)
-        : c.nominees.length + ' 个提名 · ' + fmt(c.total) + ' 票';
       return `
         <article class="cat-card" data-id="${c.id}">
           <div class="cat-cover-slider" role="group" aria-label="${c.cn}候选封面">
@@ -88,8 +85,6 @@
           <div class="cat-top">
             <p class="cat-en" lang="en">${c.en}</p>
             <h3 class="cat-cn">${c.cn}</h3>
-            <p class="cat-status">${status}</p>
-            <p class="cat-cover-caption"></p>
           </div>
           <button class="ghost-btn" type="button" data-open="${c.id}" aria-haspopup="dialog">
             ${myVote ? '查看今日投票' : '去投票'}
@@ -108,9 +103,11 @@
       tile.dataset.coverDepth = distance > tiles.length / 2 ? distance - tiles.length : distance;
     });
     const card = stage.closest('.cat-card');
-    const category = findCategory(card.dataset.id);
-    const activeId = tiles[index]?.dataset.coverNominee;
-    card.querySelector('.cat-cover-caption').textContent = nomineeName(category, activeId);
+    const announcement = card.querySelector('.cat-cover-announcement');
+    if (announcement) {
+      const name = tiles[index]?.querySelector('img')?.alt || '';
+      announcement.textContent = '第 ' + (index + 1) + ' 张，共 ' + tiles.length + ' 张' + (name ? '，' + name : '');
+    }
   }
 
   function stepAwardCover(stage, step) {
