@@ -82,6 +82,7 @@
               <button class="cat-cover-hit cat-cover-next" type="button" data-cover-step="1" aria-label="下一张封面"></button>
               <span class="cat-cover-announcement" role="status"></span>` : ''}
             <div class="cat-cover-stage" data-cover-index="0" aria-hidden="true">${covers.map((nominee) => coverCell(nominee, 'cat-cover')).join('')}</div>
+            <p class="cat-cover-caption"></p>
           </div>
           <div class="cat-top">
             <p class="cat-en" lang="en">${c.en}</p>
@@ -109,9 +110,11 @@
       tile.dataset.coverDepth = distance > tiles.length / 2 ? distance - tiles.length : distance;
     });
     const card = stage.closest('.cat-card');
+    const category = findCategory(card.dataset.id);
+    const name = nomineeName(category, tiles[index]?.dataset.coverNominee);
+    card.querySelector('.cat-cover-caption').textContent = name;
     const announcement = card.querySelector('.cat-cover-announcement');
     if (announcement) {
-      const name = tiles[index]?.querySelector('img')?.alt || '';
       announcement.textContent = '第 ' + (index + 1) + ' 张，共 ' + tiles.length + ' 张' + (name ? '，' + name : '');
     }
   }
@@ -120,7 +123,6 @@
     const count = stage.childElementCount;
     const index = (Number(stage.dataset.coverIndex) + step + count) % count;
     showAwardCover(stage, index);
-    return index;
   }
 
   function renderFeaturedNominees() {
@@ -621,10 +623,7 @@
     if (sideCover) {
       const slider = sideCover.closest('.cat-cover-slider');
       const stage = slider.querySelector('.cat-cover-stage');
-      const index = stepAwardCover(stage, Number(sideCover.dataset.coverStep));
-      const label = stage.children[index].querySelector('img')?.alt;
-      slider.querySelector('.cat-cover-announcement').textContent =
-        '第 ' + (index + 1) + ' 张，共 ' + stage.childElementCount + ' 张' + (label ? '，' + label : '');
+      stepAwardCover(stage, Number(sideCover.dataset.coverStep));
       return;
     }
     const activeCover = card.querySelector('.cat-cover[data-cover-depth="0"]');
