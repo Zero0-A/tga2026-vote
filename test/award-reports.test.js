@@ -5,7 +5,7 @@ const path = require('node:path');
 const test = require('node:test');
 const { emptyAnalytics, recordVisit, reportAnalytics } = require('../data/analytics');
 const { recordAwardOpen, reportAwardActivity } = require('../data/award-activity');
-const { createArchive, listArchives, readArchive, archiveCsv } = require('../data/archives');
+const { createArchive, listArchives, readArchive, archiveCsv, readPublication, publishArchive } = require('../data/archives');
 
 test('award activity uses dated ballots, deduplicates opens and counts same-day conversion', () => {
   const time = Date.parse('2026-11-25T15:59:00Z');
@@ -63,4 +63,22 @@ test('results archive preserves an independent snapshot and original ballots', (
   assert.equal(archive.backup.votes.goty.browser, 'first');
   assert(archiveCsv(archive).includes('"示例, ""作品"""'));
   assert.equal(readArchive(directory, '../votes'), null);
+});
+
+test('publishing keeps the snapshot public without raw ballots and prevents replacement', (t) => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'suyou-publication-test-'));
+  t.after(() => fs.rmSync(directory, { recursive: true, force: true }));
+  const time = Date.parse('2026-12-10T01:00:00+08:00');
+  const results = { totalVotes: 1, voters: 1, categories: [] };
+  const backup = { votes: { goty: { privateBrowserId: 'game' } } };
+  const { id } = createArchive(directory, results, backup, time);
+  const archive = readArchive(directory, id);
+  assert.equal(readPublication(directory), null);
+  const published = publishArchive(directory, archive, time + 1);
+  assert.deepEqual(readPublication(directory), published);
+  assert.equal(published.archivedAt, time);
+  assert.equal(published.publishedAt, time + 1);
+  assert(!JSON.stringify(published).includes('privateBrowserId'));
+  assert.throws(() => publishArchive(directory, archive, time + 2), { code: 'EEXIST' });
+  assert.deepEqual(readPublication(directory), published);
 });

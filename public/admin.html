@@ -299,7 +299,7 @@
           <h2 id="archiveTitle">结果归档与备份</h2>
           <button class="btn" type="button" id="archiveBtn">归档当前结果</button>
         </div>
-        <p class="analytics-note">公布结果前可归档一份快照，同时保存可下载的结果 CSV 和原始数据 JSON。</p>
+        <p class="analytics-note">归档后可下载结果 CSV 和原始数据 JSON。颁奖典礼前一天起，可选择最新归档正式公布并结束投票。</p>
         <p class="report-status" id="archiveStatus" role="status"></p>
         <ul class="archive-list" id="archiveList"></ul>
       </section>
@@ -502,6 +502,10 @@
           return;
         }
         const list = $('#archiveList');
+        $('#resetBtn').disabled = Boolean(data.publishedId);
+        $('#archiveStatus').textContent = data.publishedId ? '结果已公布，投票已结束。' :
+          data.canPublish ? '现在可以公布结果。' :
+            '最早可于 ' + formatVoteTime.format(data.availableAt) + '（北京时间）公布。';
         list.replaceChildren();
         if (!data.archives.length) {
           const empty = document.createElement('li');
@@ -526,6 +530,20 @@
             link.href = '/api/admin/archives/' + encodeURIComponent(archive.id) + '/' + format;
             link.textContent = text;
             links.append(link);
+          }
+          if (archive.id === data.publishedId) {
+            const link = document.createElement('a');
+            link.className = 'btn';
+            link.href = '/results';
+            link.textContent = '查看已公布结果';
+            links.append(link);
+          } else if (data.canPublish && archive === data.archives[0]) {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'btn';
+            button.dataset.publishArchive = archive.id;
+            button.textContent = '正式公布';
+            links.append(button);
           }
           item.append(label, links);
           list.append(item);
@@ -636,6 +654,7 @@
       $('#refreshBtn').addEventListener('click', () => {
         notice.textContent = '';
         loadStats();
+        loadArchives();
       });
 
       $('#autoBtn').addEventListener('click', () => {
@@ -657,6 +676,22 @@
         button.disabled = false;
         status.textContent = ok ? '归档完成，可下载 CSV 和 JSON。' : data.error || '归档失败，请重试。';
         if (ok) loadArchives();
+      });
+
+      $('#archiveList').addEventListener('click', async (event) => {
+        const button = event.target.closest('[data-publish-archive]');
+        if (!button || !confirm('公布这份归档后，公众可查看最终结果，投票将结束。确定公布吗？')) return;
+        button.disabled = true;
+        const { ok, data } = await api('/api/admin/publish-results', {
+          method: 'POST',
+          body: JSON.stringify({ archiveId: button.dataset.publishArchive })
+        });
+        if (ok) {
+          await loadArchives();
+        } else {
+          $('#archiveStatus').textContent = data.error || '公布失败，请重试。';
+          button.disabled = false;
+        }
       });
 
       function downloadCsv(filename, lines) {

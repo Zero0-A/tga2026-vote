@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>票选结果 · 溯游工作室</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/results.css" />
+  <script src="/results.js" defer></script>
+</head>
+<body>
+  <header class="topbar site-topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="/">
+        <img class="site-brand-emblem" src="/brand/suyou-fold.svg" width="29" height="29" alt="" />
+        <span class="site-brand-name">
+          <span class="brand-mark">溯游工作室</span>
+          <span class="brand-text" lang="en">SUYO STUDIO</span>
+        </span>
+      </a>
+      <nav class="topnav site-nav-sections" aria-label="网站导航"><a href="/#categories">返回奖项列表</a></nav>
+    </div>
+  </header>
+  <main class="results-page">
+    <section class="results-head" aria-labelledby="resultsTitle">
+      <h1 id="resultsTitle">2026 年度游戏票选结果</h1>
+      <p id="resultsStatus" role="status">正在加载票选结果…</p>
+      <button class="button-primary" type="button" id="resultsRetry" hidden>重试</button>
+      <dl class="results-summary" id="resultsSummary" hidden>
+        <div><dt>最终票数</dt><dd id="resultsVotes"></dd></div>
+        <div><dt>参与人数</dt><dd id="resultsVoters"></dd></div>
+      </dl>
+    </section>
+    <div id="resultsAwards" class="results-awards"></div>
+  </main>
+</body>
+</html>

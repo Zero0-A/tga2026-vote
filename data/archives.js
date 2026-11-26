@@ -53,4 +53,34 @@ function archiveCsv(archive) {
   return '\uFEFF' + lines.map(row => row.map(value => '"' + String(value).replaceAll('"', '""') + '"').join(',')).join('\r\n');
 }
 
-module.exports = { createArchive, readArchive, listArchives, archiveCsv };
+function readPublication(directory) {
+  let publication;
+  try {
+    publication = JSON.parse(fs.readFileSync(path.join(directory, 'published.json'), 'utf8'));
+  } catch (error) {
+    if (error.code === 'ENOENT') return null;
+    throw error;
+  }
+  const archive = readArchive(directory, publication.id);
+  if (!archive) throw new Error('Published archive is missing');
+  return publicResults(archive, publication.publishedAt);
+}
+
+function publicResults(archive, publishedAt) {
+  const { totalVotes, voters, categories } = archive.results;
+  return { id: archive.id, archivedAt: archive.archivedAt, publishedAt, totalVotes, voters, categories };
+}
+
+function publishArchive(directory, archive, publishedAt) {
+  const filename = path.join(directory, 'published.json');
+  const tmp = filename + '.' + randomBytes(4).toString('hex') + '.tmp';
+  fs.writeFileSync(tmp, JSON.stringify({ id: archive.id, publishedAt }), { flag: 'wx' });
+  try {
+    fs.linkSync(tmp, filename);
+  } finally {
+    fs.unlinkSync(tmp);
+  }
+  return publicResults(archive, publishedAt);
+}
+
+module.exports = { createArchive, readArchive, listArchives, archiveCsv, readPublication, publishArchive };

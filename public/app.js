@@ -69,6 +69,13 @@
     $('#statVoters').textContent = fmt(ui.data.event.voters);
     $('#statCats').textContent = fmt(ui.data.event.categoryCount);
     $('#tabAllCount').textContent = ui.data.categories.length;
+    if (ui.data.event.votingClosed) {
+      $('#resultsAnnouncement').textContent = '溯游票选结果已公布';
+      $('#awardProgress').hidden = true;
+      $('#categoriesTitle + p').textContent = '本次投票已结束，仍可浏览所有提名。';
+      heroVote.textContent = '查看年度最佳提名';
+      heroAward.textContent = '查看提名';
+    }
   }
 
   /* ---------------- 卡片 ---------------- */
@@ -99,14 +106,16 @@
     }
     ui.pendingCardRefresh = false;
     stopCoverRotation();
-    const { categories, myVotes } = ui.data;
+    const { categories, myVotes, event } = ui.data;
     $('#todayVoteCount').textContent = categories.filter(c => myVotes[c.id]).length + ' / ' + categories.length;
     unvotedOnly.disabled = false;
     const list = categories.filter(c => (ui.activeTab === 'all' || c.tab === ui.activeTab) &&
-      (!unvotedOnly.checked || !myVotes[c.id]));
+      (event.votingClosed || !unvotedOnly.checked || !myVotes[c.id]));
     gridEl.innerHTML = list.map((c) => {
       const myVote = ui.data.myVotes[c.id];
       const covers = c.nominees.filter((nominee) => nominee.cover);
+      const label = event.votingClosed ? '查看提名' : myVote ? '查看今日投票' : '去投票';
+      const shortLabel = event.votingClosed ? '提名' : myVote ? '已投' : '投票';
       return `
         <article class="cat-card" data-id="${c.id}">
           <div class="cat-cover-slider" role="group" aria-label="${c.cn}候选封面">
@@ -121,9 +130,9 @@
             <h3 class="cat-cn">${c.cn}</h3>
             <p class="cat-cover-caption"></p>
           </div>
-          <button class="ghost-btn card-vote${myVote ? ' is-voted' : ''}" type="button" data-open="${c.id}" aria-haspopup="dialog" aria-label="${myVote ? '查看今日投票' : '去投票'}：${c.cn}">
-            <span class="vote-label">${myVote ? '查看今日投票' : '去投票'}</span>
-            <span class="vote-label-short">${myVote ? '已投' : '投票'}</span>
+          <button class="ghost-btn card-vote${myVote ? ' is-voted' : ''}" type="button" data-open="${c.id}" aria-haspopup="dialog" aria-label="${label}：${c.cn}">
+            <span class="vote-label">${label}</span>
+            <span class="vote-label-short">${shortLabel}</span>
             <img class="ui-icon vote-arrow" src="/icons/arrow-up-right.svg" width="19" height="19" alt="" />
             <svg class="vote-ticket" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" />
@@ -418,7 +427,12 @@
     if (isGame && info.criticQuote) content.append(renderCriticQuote(info.criticQuote));
 
     ballotActions.replaceChildren();
-    if (ui.confirmingVote && !myVote && !ui.busy) {
+    if (ui.data.event.votingClosed) {
+      modalHint.textContent = '本次投票已结束';
+      const link = element('a', 'vote-btn', '查看最终结果');
+      link.href = '/results';
+      ballotActions.append(link);
+    } else if (ui.confirmingVote && !myVote && !ui.busy) {
       const confirmation = element('div', 'vote-confirmation');
       const title = element('p', null, `确认将「${category.cn}」投给「${distinctName(category, nominee)}」？`);
       const hint = element('p', 'ballot-tally', '提交后不可更改。');
@@ -530,9 +544,9 @@
       });
     } else if (modal.returnValue === 'awards') {
       $('#categories').scrollIntoView({ behavior: 'instant' });
-      trigger = unvotedOnly;
+      trigger = ui.data.event.votingClosed ? $('#categoriesTitle') : unvotedOnly;
     }
-    (trigger || unvotedOnly).focus({ preventScroll: true });
+    (trigger || (ui.data.event.votingClosed ? $('#categoriesTitle') : unvotedOnly)).focus({ preventScroll: true });
     ui.modalTrigger = null;
     ui.awardListScroll = null;
   });
@@ -565,6 +579,10 @@
         renderStats();
         renderCards();
         if (!modal.open) showToast('投票成功，感谢参与！');
+      } else if (data.code === 'VOTING_CLOSED') {
+        ui.data.event.votingClosed = true;
+        renderStats();
+        renderCards();
       } else if (res.status === 409) {
         updateVoteClock(data);
         ui.data.myVotes[categoryId] = data.votedFor;
@@ -886,7 +904,7 @@
         voteDayTimer = setTimeout(refreshVoteDay, 1000);
         return;
       }
-      if (data.voteDayEndsAt !== previousDayEnd) {
+      if (data.voteDayEndsAt !== previousDayEnd || data.event.votingClosed !== ui.data.event.votingClosed) {
         const focusAction = ballotActions.contains(document.activeElement);
         ui.data = data;
         ui.voteError = '';

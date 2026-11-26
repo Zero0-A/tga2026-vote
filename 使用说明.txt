@@ -32,6 +32,7 @@
   - 所有投票保存在 storage/votes.json（首次运行自动创建）
   - 备份：直接复制该文件
   - 在后台点击“归档当前结果”，可下载当时的结果 CSV 和原始数据 JSON。服务端归档位于数据文件旁的 .archives 目录（默认 storage/votes.json.archives）
+  - 颁奖典礼前一天起，在后台新建归档并点击“正式公布”。公布后 /results 公开获选者及最终票数，站点停止接受投票；归档后若收到新票，请重新归档
   - 清零：在后台点击“清空投票数据”。已创建的归档可继续下载
   - 渠道统计：分享首页时加上 ?utm_source=qq、wechat、bilibili 或 xiaohongshu（每条链接只使用一个值）
 

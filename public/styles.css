@@ -224,6 +224,7 @@ body:has(#about:target) .site-nav-sections a[href="#about"]::after { opacity: 1;
 .hero-schedule { display: grid; justify-items: end; gap: 6px; min-width: 0; }
 .results-announcement { color: var(--muted); font-size: 13px; text-wrap: pretty; }
 .results-announcement strong { color: var(--text); font-weight: 750; }
+.results-announcement a { display: inline-block; margin-top: 3px; color: var(--mint); }
 .countdown { gap: 12px; }
 .countdown-label { line-height: 1.28; }
 .countdown-boxes { gap: 8px; }
@@ -353,6 +354,7 @@ body:has(#about:target) .site-nav-sections a[href="#about"]::after { opacity: 1;
   color: var(--muted);
   font-size: 13px;
 }
+.award-progress[hidden] { display: none; }
 .award-progress strong { margin-inline-start: 4px; color: var(--mint); font-variant-numeric: tabular-nums; }
 .award-progress label { display: flex; align-items: center; gap: 7px; min-height: 44px; cursor: pointer; }
 .award-progress input { width: 16px; height: 16px; margin: 0; accent-color: var(--mint); cursor: pointer; }

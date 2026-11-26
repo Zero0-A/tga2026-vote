@@ -12,9 +12,9 @@ const categories = require('./data/categories');
 const nomineeDetails = require('./data/nominee-details.json');
 const nomineeVideos = require('./data/nominee-videos.json');
 const { deviceFromHeaders, emptyAnalytics, recordVisit, reportAnalytics } = require('./data/analytics');
-const { dayKey, nextDayAt, ballotHistory, ballotForDay } = require('./data/ballots');
+const { DAY_MS, dayKey, nextDayAt, ballotHistory, ballotForDay } = require('./data/ballots');
 const { recordAwardOpen, reportAwardActivity } = require('./data/award-activity');
-const { createArchive, readArchive, listArchives, archiveCsv } = require('./data/archives');
+const { createArchive, readArchive, listArchives, archiveCsv, readPublication, publishArchive } = require('./data/archives');
 
 const PORT = Number(process.env.PORT) || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
@@ -24,6 +24,8 @@ const COVER_DIR = path.join(PUBLIC_DIR, 'covers');
 const STORAGE_DIR = path.join(__dirname, 'storage');
 const DATA_FILE = process.env.DATA_FILE || path.join(STORAGE_DIR, 'votes.json');
 const ARCHIVE_DIR = DATA_FILE + '.archives';
+const CEREMONY_AT = '2026-12-11T08:30:00+08:00';
+const RESULTS_AVAILABLE_AT = nextDayAt(Date.parse(CEREMONY_AT)) - 2 * DAY_MS;
 const SESSION_TTL = 12 * 60 * 60 * 1000; // 12 小时
 
 const validCategory = new Map(categories.map((c) => [c.id, new Set(c.nominees.map((n) => n.id))]));
@@ -49,6 +51,7 @@ function loadState() {
 }
 
 let state = loadState();
+let publication = readPublication(ARCHIVE_DIR);
 
 function saveState() {
   try {
@@ -174,7 +177,8 @@ function publicState(voterId, serverNow) {
   return {
     event: {
       name: '溯游工作室 · 2026 年度游戏票选',
-      ceremonyAt: '2026-12-11T08:30:00+08:00',
+      ceremonyAt: CEREMONY_AT,
+      votingClosed: Boolean(publication),
       totalVotes: totalVotes(),
       voters: uniqueVoters(),
       categoryCount: categories.length
@@ -259,6 +263,7 @@ const MIME = {
 function serveStatic(res, urlPath) {
   let relative = decodeURIComponent(urlPath);
   if (relative === '/' || relative === '') relative = '/index.html';
+  if (relative === '/results' || relative === '/results/') relative = '/results.html';
   if (relative === '/admin' || relative === '/admin/') relative = '/admin.html';
   const filePath = path.join(PUBLIC_DIR, path.normalize(relative));
   if (!filePath.startsWith(PUBLIC_DIR)) {
@@ -318,6 +323,10 @@ async function handleApi(req, res, url) {
     return res.end();
   }
 
+  if (req.method === 'GET' && pathname === '/api/results') {
+    return sendJson(res, 200, { availableAt: RESULTS_AVAILABLE_AT, results: publication });
+  }
+
   // 公共：投票
   if (req.method === 'POST' && pathname === '/api/vote') {
     const voterId = ensureVoter(req, res);
@@ -327,7 +336,8 @@ async function handleApi(req, res, url) {
     } catch (err) {
       return sendJson(res, 400, { error: '请求格式错误' });
     }
-    const { categoryId, nomineeId } = body;
+    if (publication) return sendJson(res, 403, { code: 'VOTING_CLOSED', error: '本次投票已结束。' });
+    const { categoryId, nomineeId } = body ?? {};
     const category = categories.find((c) => c.id === categoryId);
     if (!category || !validCategory.get(categoryId).has(nomineeId)) {
       return sendJson(res, 400, { error: '无效的奖项或提名' });
@@ -406,11 +416,36 @@ async function handleApi(req, res, url) {
 
   if (pathname === '/api/admin/archives') {
     if (!isAdmin(req)) return sendJson(res, 401, { error: '未登录' });
-    if (req.method === 'GET') return sendJson(res, 200, { archives: listArchives(ARCHIVE_DIR) });
+    if (req.method === 'GET') return sendJson(res, 200, {
+      archives: listArchives(ARCHIVE_DIR),
+      publishedId: publication?.id ?? null,
+      availableAt: RESULTS_AVAILABLE_AT,
+      canPublish: Date.now() >= RESULTS_AVAILABLE_AT && !publication
+    });
     if (req.method === 'POST') {
       const archive = createArchive(ARCHIVE_DIR, resultSummary(), state);
       return sendJson(res, 201, { archive });
     }
+  }
+
+  if (req.method === 'POST' && pathname === '/api/admin/publish-results') {
+    if (!isAdmin(req)) return sendJson(res, 401, { error: '未登录' });
+    if (publication) return sendJson(res, 409, { error: '结果已经公布。' });
+    if (Date.now() < RESULTS_AVAILABLE_AT) return sendJson(res, 409, { error: '颁奖典礼前一天起可公布结果。' });
+    let body;
+    try {
+      body = await readBody(req);
+    } catch {
+      return sendJson(res, 400, { error: '请求格式错误' });
+    }
+    if (publication) return sendJson(res, 409, { error: '结果已经公布。' });
+    const archive = typeof body?.archiveId === 'string' && readArchive(ARCHIVE_DIR, body.archiveId);
+    if (!archive) return sendJson(res, 404, { error: '未找到归档' });
+    if (JSON.stringify(archive.backup.votes) !== JSON.stringify(state.votes)) {
+      return sendJson(res, 409, { error: '归档后票数已有变化，请重新归档再公布。' });
+    }
+    publication = publishArchive(ARCHIVE_DIR, archive, Date.now());
+    return sendJson(res, 201, { id: publication.id, publishedAt: publication.publishedAt });
   }
 
   const archivePath = pathname.match(/^\/api\/admin\/archives\/([^/]+)\/(results|backup)$/);
@@ -441,6 +476,7 @@ async function handleApi(req, res, url) {
     } catch (err) {
       body = {};
     }
+    if (publication) return sendJson(res, 409, { error: '结果已经公布，投票数据已锁定。' });
     if (body.categoryId) {
       delete state.votes[body.categoryId];
       state.log = state.log.filter((x) => x.categoryId !== body.categoryId);

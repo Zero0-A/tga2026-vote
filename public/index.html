@@ -71,7 +71,10 @@
               <div class="cd-box"><span id="cdS">--</span><em>秒</em></div>
             </div>
           </div>
-          <p class="results-announcement">溯游票选结果将在 <strong>TGA 颁奖典礼前一天公布。</strong></p>
+          <p class="results-announcement">
+            <span id="resultsAnnouncement">溯游票选结果将在 <strong>TGA 颁奖典礼前一天公布。</strong></span>
+            <a class="about-source" href="/results">查看票选结果</a>
+          </p>
         </div>
       </div>
 
@@ -88,12 +91,12 @@
     <section class="board" id="categories" aria-labelledby="categoriesTitle">
       <div class="board-head">
         <div>
-          <h2 id="categoriesTitle">奖项总览</h2>
+          <h2 id="categoriesTitle" tabindex="-1">奖项总览</h2>
           <p>每人每天每个奖项限投一票。北京时间 00:00 重置，已投的票不可更改。</p>
         </div>
       </div>
 
-      <div class="award-progress">
+      <div class="award-progress" id="awardProgress">
         <p id="todayVoteProgress" role="status">今日已投 <strong id="todayVoteCount">—</strong></p>
         <label><input type="checkbox" id="unvotedOnly" disabled />只看今日未投</label>
       </div>
