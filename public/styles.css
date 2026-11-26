@@ -1072,6 +1072,7 @@ body:has(.recruit-dialog[open]) { overflow: hidden; }
 .ballot-status span:empty { display: none; }
 .modal-my, .modal-notice { grid-column: 1 / -1; }
 .modal-my { color: var(--ballot-green); }
+.vote-rule { color: var(--ballot-muted); font-weight: 400; }
 .modal-notice { color: #ffb2b8; }
 .ballot-actions { display: flex; min-width: 0; align-items: center; justify-content: flex-end; gap: 8px 16px; }
 .vote-dock:has(.vote-confirmation) .ballot-status { display: none; }

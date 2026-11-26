@@ -22,7 +22,7 @@
   const modalEn = $('#modalEn');
   const modalHint = $('#modalHint');
   const modalMy = $('#modalMy');
-  const modalTally = $('#modalTally');
+
   const toastEl = $('#toast');
 
   const ui = {
@@ -37,7 +37,7 @@
   };
 
   const fmt = (n) => Number(n || 0).toLocaleString('zh-CN');
-  const dailyVoteRule = '每人每天每个奖项限投一票';
+  const dailyVoteRule = '每个奖项每日仅限一票';
 
   /* ---------------- 封面图 ---------------- */
   function coverCell(n, extraClass = '') {
@@ -256,9 +256,16 @@
     const chosen = myVote === nominee.id;
 
     modalNotice.textContent = ui.voteError;
-    modalTally.textContent = '本奖项累计 ' + fmt(category.total) + ' 票';
-    modalMy.textContent = myVote ? `今日选择：${nomineeName(category, myVote)}` : '';
-    modalHint.textContent = myVote ? '今日已投，次日 00:00 可再投（北京时间）' : dailyVoteRule;
+    if (myVote) {
+      modalHint.textContent = '';
+      modalMy.replaceChildren(
+        document.createTextNode(`今日选择：${nomineeName(category, myVote)}`),
+        element('span', 'vote-rule', `（${dailyVoteRule}）`)
+      );
+    } else {
+      modalHint.textContent = dailyVoteRule;
+      modalMy.textContent = '';
+    }
     const position = `提名 ${index + 1} / ${category.nominees.length}`;
     $('#nomineePosition').textContent = position;
     $('#desktopNomineePosition').textContent = position;
