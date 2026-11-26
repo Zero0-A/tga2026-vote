@@ -82,11 +82,11 @@
               <button class="cat-cover-hit cat-cover-next" type="button" data-cover-step="1" aria-label="下一张封面"></button>
               <span class="cat-cover-announcement" role="status"></span>` : ''}
             <div class="cat-cover-stage" data-cover-index="0" aria-hidden="true">${covers.map((nominee) => coverCell(nominee, 'cat-cover')).join('')}</div>
-            <p class="cat-cover-caption"></p>
           </div>
           <div class="cat-top">
             <p class="cat-en" lang="en">${c.en}</p>
             <h3 class="cat-cn">${c.cn}</h3>
+            <p class="cat-cover-caption"></p>
           </div>
           <button class="ghost-btn card-vote${myVote ? ' is-voted' : ''}" type="button" data-open="${c.id}" aria-haspopup="dialog" aria-label="${myVote ? '查看今日投票' : '去投票'}：${c.cn}">
             <span class="vote-label">${myVote ? '查看今日投票' : '去投票'}</span>
