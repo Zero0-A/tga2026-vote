@@ -1,7 +1,7 @@
 /**
  * TGA 2026 玩家票选 - 零依赖 Node.js 服务
  * 启动：node server.js   （默认 http://localhost:3000）
- * 后台：http://localhost:3000/admin （默认密码 tga2026admin，可用环境变量 ADMIN_PASSWORD 修改）
+ * 后台：http://localhost:3000/admin （默认密码 sy42062，可用环境变量 ADMIN_PASSWORD 修改）
  */
 const http = require('http');
 const fs = require('fs');
@@ -18,7 +18,7 @@ const { createArchive, readArchive, listArchives, archiveCsv, readPublication, p
 
 const PORT = Number(process.env.PORT) || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'tga2026admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'sy42062';
 const PUBLIC_DIR = path.join(__dirname, 'public');
 const COVER_DIR = path.join(PUBLIC_DIR, 'covers');
 const STORAGE_DIR = path.join(__dirname, 'storage');
