@@ -1,3 +1,5 @@
+import { renderShareCard } from './share-card.js';
+
 (() => {
   const $ = (sel) => document.querySelector(sel);
   const gridEl = $('#categoryGrid');
@@ -190,6 +192,7 @@
     }
     ui.pendingCardRefresh = false;
     stopCoverRotation();
+    if ($('#shareDialog').open) updateShareCard();
     const { categories, myVotes, event } = ui.data;
     $('#todayVoteCount').textContent = categories.filter(c => myVotes[c.id]).length + ' / ' + categories.length;
     unvotedOnly.disabled = false;
@@ -808,6 +811,31 @@
       : (index + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
     selectTab(tabs[next]);
     tabs[next].focus();
+  });
+
+  function updateShareCard() {
+    const data = ui.data;
+    const choices = [];
+    for (const category of data?.categories || []) {
+      const nominee = category.nominees.find((item) => item.id === data.myVotes[category.id]);
+      if (nominee) choices.push({
+        award: category.cn,
+        name: distinctName(category, nominee),
+        cover: nominee.cover ? '/covers/previews/' + nominee.id + '.jpg' : ''
+      });
+    }
+    renderShareCard({
+      choices,
+      total: data?.categories.length,
+      synced: Boolean(data?.cloudReady),
+      closed: Boolean(data?.event.votingClosed),
+      dayEnd: data?.voteDayEndsAt || voteClockNow().voteDayEndsAt
+    });
+  }
+
+  $('#sharePage').addEventListener('click', () => {
+    $('#shareDialog').showModal();
+    updateShareCard();
   });
 
   function openRecruitDialog() {
