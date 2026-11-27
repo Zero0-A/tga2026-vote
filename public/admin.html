@@ -363,6 +363,15 @@
       }
 
       let statsData = null;
+      let adminCloudKey = '';
+
+      function promptCloudKey() {
+        if (adminCloudKey) return adminCloudKey;
+        const input = window.prompt('此操作直接作用于云端数据库，请再次输入管理密码确认');
+        if (!input) return '';
+        adminCloudKey = input.normalize('NFKC');
+        return adminCloudKey;
+      }
       let awardActivity = null;
       let awardRequest = 0;
       let autoTimer = null;
@@ -668,13 +677,15 @@
         btn.disabled = true;
         btn.textContent = '登录中…';
         errEl.textContent = '';
+        const entered = $('#passwordInput').value;
         const { ok, data } = await api('/api/admin/login', {
           method: 'POST',
-          body: JSON.stringify({ password: $('#passwordInput').value })
+          body: JSON.stringify({ password: entered })
         });
         btn.disabled = false;
         btn.textContent = '进入后台';
         if (ok) {
+          adminCloudKey = entered.normalize('NFKC');
           $('#passwordInput').value = '';
           showDash();
           $('#statsTitle').focus({ preventScroll: true });
@@ -809,12 +820,24 @@
       $('#resetBtn').addEventListener('click', async () => {
         if (!confirm('确定要清空全部投票数据吗？此操作不可恢复。')) return;
         if (!confirm('再次确认：所有投票记录将被删除。')) return;
-        const { ok } = await api('/api/admin/reset', { method: 'POST', body: '{}' });
-        if (ok) {
+        if (!cloud) {
+          report('云端未连接，无法清空投票数据。');
+          return;
+        }
+        const key = promptCloudKey();
+        if (!key) return;
+        try {
+          const { data, error } = await cloud.database.rpc('admin_clear_votes', {
+            p_key: key.normalize('NFKC')
+          });
+          if (error) {
+            report(error.code && String(error.code).endsWith('42501') ? '口令不正确，未执行清空。' : '清空失败：' + (error.message || '请重试。'));
+            return;
+          }
           await loadStats();
-          report('已清空全部投票数据。', 'success');
-        } else {
-          report('清空失败，请重新登录后再试。');
+          report('已清空 ' + Number(data || 0) + ' 条投票记录。', 'success');
+        } catch {
+          report('清空失败，请检查网络后重试。');
         }
       });
 
