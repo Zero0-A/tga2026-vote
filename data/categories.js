@@ -10,7 +10,7 @@ module.exports = [
     nominees: [
       { id: '007-first-light', name: '007 初露锋芒', en: '007 First Light', sub: 'IO Interactive', intro: '《杀手》系列团队 IO Interactive 打造的邦德起源故事，你将扮演刚加入军情六处的年轻詹姆斯·邦德，展开电影式间谍冒险。' },
       { id: 'control-resonant', name: '控制：共振', en: 'CONTROL Resonant', sub: 'Remedy / Annapurna', intro: '《控制》宇宙续作，超自然动作冒险。迪伦·法登踏入扭曲的联邦控制局世界，用念力与变形武器对抗未知力量。' },
-      { id: 'gta6', name: 'Grand Theft Auto VI', en: 'Grand Theft Auto VI', sub: 'Rockstar Games', intro: 'Rockstar 的开放世界犯罪史诗，故事回到阳光与罪恶交织的雷奥奈达州，双主角杰森与露西娅卷入一场横跨全州的犯罪风暴。' },
+      { id: 'gta6', name: '侠盗猎车手6', en: 'Grand Theft Auto VI', sub: 'Rockstar Games', intro: 'Rockstar 的开放世界犯罪史诗，故事回到阳光与罪恶交织的雷奥奈达州，双主角杰森与露西娅卷入一场横跨全州的犯罪风暴。' },
       { id: 'phantom-blade-zero', name: '影之刃零', en: 'Phantom Blade Zero', sub: 'S-GAME 灵游坊', intro: '灵游坊打造的武侠动作游戏，融合中国武术、蒸汽朋克与高速刀剑战斗，主打凌厉连招与电影化演出。' },
       { id: 're-requiem', name: '生化危机：安魂曲', en: 'Resident Evil Requiem', sub: 'Capcom', intro: '《生化危机》系列正统续作，FBI 分析员格蕾丝·阿什克罗夫特调查废弃酒店中的离奇事件，重回生存恐怖原点。' },
       { id: 'zelda-oot', name: '塞尔达传说 时之笛', en: 'The Legend of Zelda: Ocarina of Time', sub: 'Nintendo', intro: '任天堂经典名作的全面重制，保留时之笛的时空冒险与迷宫设计，以现代画面与操作重现海拉鲁传说。' }
@@ -23,7 +23,7 @@ module.exports = [
     tab: 'production',
     nominees: [
       { id: 'control-resonant', name: '控制：共振', en: 'CONTROL Resonant', sub: 'Remedy / Annapurna', intro: '《控制》宇宙续作，超自然动作冒险。迪伦·法登踏入扭曲的联邦控制局世界，用念力与变形武器对抗未知力量。' },
-      { id: 'gta6', name: 'Grand Theft Auto VI', en: 'Grand Theft Auto VI', sub: 'Rockstar Games', intro: 'Rockstar 的开放世界犯罪史诗，双主角杰森与露西娅在雷奥奈达州展开冒险。' },
+      { id: 'gta6', name: '侠盗猎车手6', en: 'Grand Theft Auto VI', sub: 'Rockstar Games', intro: 'Rockstar 的开放世界犯罪史诗，双主角杰森与露西娅在雷奥奈达州展开冒险。' },
       { id: 'phantom-blade-zero', name: '影之刃零', en: 'Phantom Blade Zero', sub: 'S-GAME 灵游坊', intro: '融合中国武术与蒸汽朋克的武侠动作游戏，主打高速刀剑战斗与电影化演出。' },
       { id: 'pragmata', name: '识质存在', en: 'PRAGMATA', sub: 'Capcom', intro: '卡普空科幻动作新作，故事发生在近未来的月球站，玩家与仿生少女搭档，在失控的机械环境中求生。' },
       { id: 're-requiem', name: '生化危机：安魂曲', en: 'Resident Evil Requiem', sub: 'Capcom', intro: '《生化危机》系列正统续作，FBI 分析员格蕾丝·阿什克罗夫特调查废弃酒店中的离奇事件。' }
@@ -37,7 +37,7 @@ module.exports = [
     nominees: [
       { id: '007-first-light', name: '007 初露锋芒', en: '007 First Light', sub: 'IO Interactive', intro: '邦德起源故事，讲述年轻詹姆斯·邦德如何获得“00”代号。' },
       { id: 'control-resonant', name: '控制：共振', en: 'CONTROL Resonant', sub: 'Remedy / Annapurna', intro: 'Remedy 超自然动作冒险新作，以迪伦·法登为主角，延续联邦控制局的怪异世界。' },
-      { id: 'gta6', name: 'Grand Theft Auto VI', en: 'Grand Theft Auto VI', sub: 'Rockstar Games', intro: '双主角犯罪叙事，杰森与露西娅的关系是整部作品的情感核心。' },
+      { id: 'gta6', name: '侠盗猎车手6', en: 'Grand Theft Auto VI', sub: 'Rockstar Games', intro: '双主角犯罪叙事，杰森与露西娅的关系是整部作品的情感核心。' },
       { id: 're-requiem', name: '生化危机：安魂曲', en: 'Resident Evil Requiem', sub: 'Capcom', intro: '生存恐怖系列新作，围绕格蕾丝·阿什克罗夫特与酒店惨案的真相展开。' },
       { id: 'blood-of-dawnwalker', name: '黎明行者之血', en: 'The Blood of Dawnwalker', sub: 'Rebel Wolves / Bandai Namco', intro: '前《巫师3》核心成员组建的 Rebel Wolves 打造的黑暗奇幻 RPG：白天是人类，夜晚则化为吸血鬼。' }
     ]
@@ -49,7 +49,7 @@ module.exports = [
     tab: 'production',
     nominees: [
       { id: 'control-resonant', name: '控制：共振', en: 'CONTROL Resonant', sub: 'Remedy / Annapurna', intro: '粗野主义建筑与超现实畸变交织的视觉风格，是《控制》系列的标志。' },
-      { id: 'gta6', name: 'Grand Theft Auto VI', en: 'Grand Theft Auto VI', sub: 'Rockstar Games', intro: '以佛罗里达为原型的雷奥奈达州，霓虹、湿地与城市街区细节拉满。' },
+      { id: 'gta6', name: '侠盗猎车手6', en: 'Grand Theft Auto VI', sub: 'Rockstar Games', intro: '以佛罗里达为原型的雷奥奈达州，霓虹、湿地与城市街区细节拉满。' },
       { id: 'mouse-pi', name: '神探杰克鼠', en: 'MOUSE: P.I. For Hire', sub: 'Fumi Games / PlaySide', intro: '1930 年代橡皮管动画风格的黑色幽默射击游戏，扮演私家侦探老鼠杰克用左轮手枪破案。' },
       { id: 'phantom-blade-zero', name: '影之刃零', en: 'Phantom Blade Zero', sub: 'S-GAME 灵游坊', intro: '水墨与蒸汽朋克融合的武侠美学，刀光与雨夜构成独特画面语言。' },
       { id: 'zelda-oot', name: '塞尔达传说 时之笛', en: 'The Legend of Zelda: Ocarina of Time', sub: 'Nintendo', intro: '经典海拉鲁世界的现代重制，在保留原作气质的同时全面升级美术表现。' }
@@ -62,7 +62,7 @@ module.exports = [
     tab: 'production',
     nominees: [
       { id: 'ace-combat-8', name: '空战奇兵8 希孚之翼', en: 'ACE COMBAT 8: WINGS OF THEVE', sub: 'Bandai Namco Aces', intro: '《皇牌空战》系列新作，围绕“希孚之翼”展开空中战争叙事，主打高速空战与电影化演出。' },
-      { id: 'gta6', name: 'Grand Theft Auto VI', en: 'Grand Theft Auto VI', sub: 'Rockstar Games', intro: '系列一贯的高密度电台音乐与原创配乐，覆盖拉丁、嘻哈与电子等多种风格。' },
+      { id: 'gta6', name: '侠盗猎车手6', en: 'Grand Theft Auto VI', sub: 'Rockstar Games', intro: '系列一贯的高密度电台音乐与原创配乐，覆盖拉丁、嘻哈与电子等多种风格。' },
       { id: 'mixtape', name: 'Mixtape', en: 'Mixtape', sub: 'Beethoven & Dinosaur / Annapurna', intro: '《The Artful Escape》团队新作，以音乐与青春记忆为核心的叙事冒险，跟随三位好友度过难忘的一夜。' },
       { id: 'phantom-blade-zero', name: '影之刃零', en: 'Phantom Blade Zero', sub: 'S-GAME 灵游坊', intro: '将民乐、摇滚与武侠氛围融合的配乐，为高速战斗提供强烈节奏。' },
       { id: 'zelda-oot', name: '塞尔达传说 时之笛', en: 'The Legend of Zelda: Ocarina of Time', sub: 'Nintendo', intro: '近藤浩治经典旋律的现代重新编曲，时之歌依旧令人难忘。' }
@@ -76,7 +76,7 @@ module.exports = [
     nominees: [
       { id: 'ace-combat-8', name: '空战奇兵8 希孚之翼', en: 'ACE COMBAT 8: WINGS OF THEVE', sub: 'Bandai Namco Aces', intro: '引擎轰鸣、导弹锁定与无线电通讯共同营造沉浸式空战临场感。' },
       { id: 'control-resonant', name: '控制：共振', en: 'CONTROL Resonant', sub: 'Remedy / Annapurna', intro: '低频压迫感与超自然音效，让扭曲建筑空间始终充满不安。' },
-      { id: 'gta6', name: 'Grand Theft Auto VI', en: 'Grand Theft Auto VI', sub: 'Rockstar Games', intro: '城市环境音、电台与枪战音效高度还原，塑造可信的开放世界。' },
+      { id: 'gta6', name: '侠盗猎车手6', en: 'Grand Theft Auto VI', sub: 'Rockstar Games', intro: '城市环境音、电台与枪战音效高度还原，塑造可信的开放世界。' },
       { id: 're-requiem', name: '生化危机：安魂曲', en: 'Resident Evil Requiem', sub: 'Capcom', intro: '以寂静与突然的声响制造恐惧，回归系列经典生存恐怖氛围。' },
       { id: 'star-wars-galactic-racer', name: '星球大战：银河赛车手', en: 'Star Wars: Galactic Racer', sub: 'Fuse Games / Secret Mode', intro: '星战宇宙竞速新作，飞车引擎与银河赛道的音效层次丰富。' }
     ]
@@ -207,7 +207,7 @@ module.exports = [
     nominees: [
       { id: '007-first-light', name: '007 初露锋芒', en: '007 First Light', sub: 'IO Interactive', intro: '邦德起源故事，融合潜行、谍战与电影化动作场面。' },
       { id: 'control-resonant', name: '控制：共振', en: 'CONTROL Resonant', sub: 'Remedy / Annapurna', intro: '超自然动作冒险，在扭曲的联邦控制局中运用念力战斗与解谜。' },
-      { id: 'gta6', name: 'Grand Theft Auto VI', en: 'Grand Theft Auto VI', sub: 'Rockstar Games', intro: '开放世界犯罪冒险，双主角故事横跨整个雷奥奈达州。' },
+      { id: 'gta6', name: '侠盗猎车手6', en: 'Grand Theft Auto VI', sub: 'Rockstar Games', intro: '开放世界犯罪冒险，双主角故事横跨整个雷奥奈达州。' },
       { id: 'pragmata', name: '识质存在', en: 'PRAGMATA', sub: 'Capcom', intro: '月球站背景的科幻动作冒险，与仿生少女协作对抗失控机械。' },
       { id: 're-requiem', name: '生化危机：安魂曲', en: 'Resident Evil Requiem', sub: 'Capcom', intro: '系列正统续作，在废弃酒店中调查惨案，重回生存恐怖。' },
       { id: 'zelda-oot', name: '塞尔达传说 时之笛', en: 'The Legend of Zelda: Ocarina of Time', sub: 'Nintendo', intro: '经典重制，穿越时空探索海拉鲁大陆的迷宫与传说。' }

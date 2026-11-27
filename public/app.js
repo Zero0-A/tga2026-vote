@@ -203,7 +203,7 @@
       button.setAttribute('aria-haspopup', 'dialog');
 
       const title = document.createElement('strong');
-      title.textContent = nominee.name;
+      title.textContent = compactName(nominee);
       button.insertAdjacentHTML('beforeend', coverCell(nominee, 'featured-cover'));
       button.querySelector('.featured-cover').setAttribute('aria-hidden', 'true');
       button.append(title);
@@ -211,6 +211,11 @@
         const subtitle = element('span', null, nominee.en);
         subtitle.lang = 'en';
         button.append(subtitle);
+      }
+      if (nominee.id === 'gta6') {
+        const studio = element('small', 'featured-studio', nominee.details?.studio || nominee.sub);
+        studio.title = '制作公司 · ' + studio.textContent;
+        button.append(studio);
       }
       item.append(button);
       return item;
@@ -258,6 +263,10 @@
       : nominee.name;
   }
 
+  function compactName(nominee, name = nominee.name) {
+    return nominee.id === 'zelda-oot' ? name.replace(' ', '\n') : name;
+  }
+
   function renderPicker(category) {
     picker.replaceChildren(...category.nominees.map((nominee) => {
       const button = element('button', 'nominee-thumb');
@@ -268,7 +277,7 @@
       const mark = element('span', 'thumb-mark');
       mark.append(icon('check'));
       mark.setAttribute('aria-hidden', 'true');
-      button.append(element('span', 'thumb-label', distinctName(category, nominee)));
+      button.append(element('span', 'thumb-label', compactName(nominee, distinctName(category, nominee))));
       button.append(mark);
       return button;
     }));
