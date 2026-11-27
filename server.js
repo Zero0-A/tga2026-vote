@@ -432,7 +432,21 @@ async function handleApi(req, res, url) {
       canPublish: Date.now() >= RESULTS_AVAILABLE_AT && !publication
     });
     if (req.method === 'POST') {
-      const archive = createArchive(ARCHIVE_DIR, resultSummary(), state);
+      // 票数已迁至云端数据库，归档快照由后台页从云端汇总后提交
+      let body;
+      try {
+        body = await readBody(req, 128 * 1024);
+      } catch {
+        return sendJson(res, 400, { error: '请求格式错误' });
+      }
+      const results = body?.results;
+      const valid = results && Array.isArray(results.categories) &&
+        Number.isFinite(results.totalVotes) && Number.isFinite(results.voters) &&
+        results.categories.every((category) => category && typeof category.id === 'string' &&
+          Array.isArray(category.nominees) && category.nominees.every((nominee) =>
+            nominee && typeof nominee.id === 'string' && Number.isFinite(nominee.votes)));
+      if (!valid) return sendJson(res, 400, { error: '归档数据不完整，请刷新后重试。' });
+      const archive = createArchive(ARCHIVE_DIR, results, null);
       return sendJson(res, 201, { archive });
     }
   }
@@ -450,8 +464,8 @@ async function handleApi(req, res, url) {
     if (publication) return sendJson(res, 409, { error: '结果已经公布。' });
     const archive = typeof body?.archiveId === 'string' && readArchive(ARCHIVE_DIR, body.archiveId);
     if (!archive) return sendJson(res, 404, { error: '未找到归档' });
-    if (JSON.stringify(archive.backup.votes) !== JSON.stringify(state.votes)) {
-      return sendJson(res, 409, { error: '归档后票数已有变化，请重新归档再公布。' });
+    if (!archive.results || !Array.isArray(archive.results.categories)) {
+      return sendJson(res, 409, { error: '归档内容不完整，请重新归档。' });
     }
     publication = publishArchive(ARCHIVE_DIR, archive, Date.now());
     return sendJson(res, 201, { id: publication.id, publishedAt: publication.publishedAt });
@@ -464,9 +478,7 @@ async function handleApi(req, res, url) {
     const archive = readArchive(ARCHIVE_DIR, id);
     if (!archive) return sendJson(res, 404, { error: '未找到归档' });
     if (format === 'backup') {
-      return sendJson(res, 200, archive.backup, {
-        'Content-Disposition': 'attachment; filename="suyou-backup-' + id + '.json"'
-      });
+      return sendJson(res, 410, { error: '原始投票记录保存在云数据库，不再随归档导出。' });
     }
     res.writeHead(200, {
       'Content-Type': 'text/csv; charset=utf-8',

@@ -4,845 +4,164 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>组织者后台 · 溯游工作室</title>
-  <link rel="stylesheet" href="/styles.css" />
-  <style>
-    .admin-wrap { max-width: 1120px; margin: auto; padding: clamp(20px, 4vw, 44px) var(--gutter) 55px; }
-    .admin-body .topbar { background: var(--paper) url("/brand/suyou-editorial.webp") right 43% / auto 270% no-repeat; }
-    .admin-body .topnav a { padding-inline: 10px; background: var(--paper); }
-    .admin-body .brand { width: fit-content; max-width: 100%; background: var(--paper); }
-    .hidden { display: none !important; }
-
-    .admin-masthead {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px 20px;
-      padding: 17px clamp(14px, 3vw, 27px);
-      background: var(--paper);
-      color: var(--ink);
-    }
-    .admin-masthead h1 { font-size: clamp(24px, 4vw, 43px); line-height: 1.14; letter-spacing: -.025em; }
-    .admin-masthead p { color: #593d73; font-size: 13px; font-variant-numeric: tabular-nums; }
-    .admin-actions { display: flex; flex-wrap: wrap; gap: 8px; padding-block: 12px; border-bottom: 1px solid var(--line); }
-    .admin-actions .btn:last-child { margin-inline-start: auto; }
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 44px;
-      padding: 6px 13px;
-      border: 1px solid var(--line);
-      border-radius: 2px;
-      background: transparent;
-      color: var(--text);
-      font-size: 13px;
-      font-weight: 700;
-    }
-    .btn:hover:not(:disabled) { border-color: var(--highlight); background: var(--panel); }
-    .btn[disabled] { opacity: .55; }
-    .btn.danger { border-color: #ff6b7366; color: #ffb2b8; }
-    .btn.danger:hover:not(:disabled) { border-color: #ffb2b8; background: #ff6b731c; }
-
-    .login-shell { display: grid; place-items: center; min-height: min(68dvh, 560px); padding: 25px 0; }
-    .login-card { width: min(100%, 400px); }
-    .login-card h1 { font-size: clamp(33px, 6vw, 52px); line-height: 1.13; letter-spacing: -.035em; }
-    .login-card > p { margin: 9px 0 23px; color: var(--muted); font-size: 14px; }
-    .login-card label { display: block; margin-bottom: 7px; color: var(--highlight); font-size: 14px; font-weight: 700; }
-    .login-card input {
-      width: 100%;
-      min-height: 46px;
-      padding: 8px 12px;
-      border: 1px solid transparent;
-      border-radius: 2px;
-      background: var(--paper);
-      color: var(--ink);
-    }
-    .login-card .button-primary { width: 100%; margin-top: 13px; }
-    .login-err, .dashboard-notice { color: #ffb2b8; font-size: 13px; }
-    .login-err:not(:empty), .dashboard-notice:not(:empty) { margin-top: 10px; }
-    .dashboard-notice[data-state="success"] { color: var(--mint); }
-
-    .stat-row {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      margin-block: 20px 27px;
-      padding-block: 16px;
-      background: var(--panel);
-    }
-    .stat-card { min-width: 0; padding-inline: clamp(9px, 3vw, 25px); }
-    .stat-card + .stat-card { border-inline-start: 1px solid var(--line); }
-    .stat-card .k { color: var(--muted); font-size: 13px; line-height: 1.25; }
-    .stat-card .v { margin-top: 7px; color: var(--mint); font: 800 clamp(30px, 5vw, 46px)/.95 var(--display); font-variant-numeric: tabular-nums; }
-    .stat-card .v small { color: var(--muted); font-size: .48em; }
-    .admin-section { margin-top: 30px; }
-    .admin-section h2 { margin-bottom: 9px; padding-bottom: 9px; border-bottom: 1px solid var(--line); font-size: clamp(18px, 2.7vw, 26px); }
-
-    .analytics-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; margin-bottom: 8px; }
-    .analytics-head h2 { flex: 1 1 auto; margin: 0; padding: 0; border: 0; }
-    .analytics-note { color: var(--muted); font-size: 12px; }
-    .analytics-table { width: 100%; margin-top: 9px; border-collapse: collapse; table-layout: fixed; font-size: clamp(11px, 1.5vw, 13px); font-variant-numeric: tabular-nums; }
-    .analytics-table :is(th, td) { padding: 7px clamp(2px, 1.4vw, 14px); border-bottom: 1px solid var(--line); text-align: end; overflow-wrap: anywhere; }
-    .analytics-table th:first-child { width: 20%; text-align: start; }
-    .analytics-table thead { background: var(--panel); color: var(--highlight); }
-    .analytics-table tbody th { font-weight: 650; }
-    .analytics-table [data-device="all"] { color: var(--mint); font-weight: 700; }
-    .analytics-trend { display: grid; gap: 10px; margin-top: 18px; }
-    .analytics-trend h3 { font-size: 17px; }
-    .analytics-trend-header { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px; }
-    .analytics-controls { display: flex; flex-wrap: wrap; gap: 6px 10px; }
-    .analytics-controls label { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; }
-    .analytics-controls select { max-width: 100%; min-height: 38px; padding: 4px 8px; border: 1px solid var(--line); border-radius: 2px; color: var(--text); background: var(--panel); font: inherit; }
-    .analytics-controls select:focus-visible { outline: 2px solid var(--mint); outline-offset: 2px; }
-    .analytics-plot { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: clamp(3px, 1.6vw, 16px); padding: 8px 8px 3px; background: var(--panel); }
-    .analytics-day { display: grid; grid-template-rows: minmax(0, 1fr) 17px; height: 112px; color: var(--muted); font-size: 11px; text-align: center; }
-    .analytics-track { display: flex; min-height: 0; align-items: end; justify-content: center; border-bottom: 1px solid var(--line); }
-    .analytics-track i { display: block; width: min(80%, 44px); border-radius: 2px 2px 0 0; background: var(--mint); }
-    .analytics-day time { white-space: nowrap; }
-    .analytics-daily summary { width: fit-content; min-height: 35px; padding-block: 7px; cursor: pointer; color: var(--highlight); font-size: 13px; }
-    .report-subhead { margin-top: 14px; font-size: 15px; }
-    .report-status { min-height: 18px; margin-top: 6px; color: var(--muted); font-size: 12px; }
-    .report-summary { margin-top: 8px; color: var(--highlight); font-size: 13px; }
-    .report-table-compact th:first-child { width: 68%; }
-    .channel-table th:first-child { width: 48%; }
-    .archive-list { margin-top: 10px; padding: 0; list-style: none; }
-    .archive-entry { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 14px; padding: 8px 0; border-top: 1px solid var(--line); }
-    .archive-entry p { color: var(--muted); font-size: 13px; }
-    .archive-entry time { display: block; color: var(--text); font-weight: 750; }
-    .archive-actions { display: flex; flex-wrap: wrap; gap: 6px; }
-
-    .cat-block { border-bottom: 1px solid var(--line); }
-    .cat-block-head {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto 20px;
-      align-items: center;
-      gap: 10px;
-      min-height: 52px;
-      padding: 7px 9px;
-      list-style: none;
-      cursor: pointer;
-    }
-    .cat-block-head::-webkit-details-marker { display: none; }
-    .cat-block-head:hover, .cat-block[open] > .cat-block-head { background: var(--panel); }
-    .cat-block-head :is(.cn, .en) { display: block; overflow-wrap: anywhere; }
-    .cat-block-head .cn { font-size: 15px; font-weight: 750; }
-    .cat-block-head .en { color: var(--muted); font-size: 11px; }
-    .cat-block-head .total { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
-    .cat-block-head .caret { transform: rotate(90deg); transition: transform 160ms ease; }
-    .cat-block[open] .caret { transform: rotate(-90deg); }
-    .cat-block-body { padding: 0 9px 14px; }
-    .res-row { margin-top: 11px; }
-    .res-line { display: flex; align-items: center; gap: 9px; font-size: 13px; font-variant-numeric: tabular-nums; }
-    .res-line .name { flex: 1; min-width: 0; overflow-wrap: anywhere; }
-    .res-line .name span, .res-line .num { color: var(--muted); }
-    .res-line .num, .res-line .pct { flex: none; }
-    .res-line .pct { min-width: 39px; text-align: right; }
-    .res-bar { height: 4px; margin-top: 4px; background: var(--line); }
-    .res-bar i { display: block; height: 100%; background: var(--highlight); }
-    .res-row.top .res-bar i { background: var(--mint); }
-
-    .recent-row { display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(0, 1fr); gap: 7px 16px; padding: 9px; border-bottom: 1px solid var(--line); font-size: 13px; }
-    .recent-row .t, .recent-row .c { color: var(--muted); }
-    .recent-row .t small { display: block; color: var(--dim); }
-    .recent-row .n { overflow-wrap: anywhere; font-weight: 650; }
-    .empty { padding: 10px 9px; color: var(--muted); font-size: 13px; }
-    .admin-maintenance { display: flex; justify-content: flex-end; margin-top: 28px; padding-top: 11px; border-top: 1px solid var(--line); }
-
-    @media (orientation: landscape) and (max-height: 500px) {
-      .admin-wrap, .admin-body .topbar-inner {
-        padding-inline-start: max(var(--gutter), env(safe-area-inset-left));
-        padding-inline-end: max(var(--gutter), env(safe-area-inset-right));
-      }
-    }
-
-    @media (max-width: 500px) {
-      .admin-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .admin-actions .btn:last-child { margin-inline-start: 0; }
-      .stat-row { padding-block: 13px; }
-      .stat-card .k { font-size: 11px; }
-      .recent-row { gap: 5px 8px; padding-inline: 5px; font-size: 12px; }
-      .recent-row .c { overflow-wrap: anywhere; }
-      .analytics-day time:not(.chart-tick) { visibility: hidden; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      .cat-block-head .caret { transition: none; }
-    }
-  </style>
+  <link rel="icon" href="/brand/suyou-fold.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/admin.css" />
+  <script defer src="/admin.js"></script>
 </head>
-<body class="admin-body">
-  <header class="topbar">
-    <div class="topbar-inner">
-      <a class="brand" href="/">
-        <span class="brand-mark">溯游工作室</span>
-        <span class="brand-text" lang="en">SUYO STUDIO</span>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="/" aria-label="溯游工作室首页">
+        <img src="/brand/suyou-fold.svg" width="30" height="30" alt="" />
+        <span><strong>溯游工作室</strong><small lang="en">SUYO STUDIO</small></span>
       </a>
-      <nav class="topnav" aria-label="后台导航">
-        <a href="/">返回票选</a>
-      </nav>
+      <span class="header-title">组织者后台</span>
+      <nav aria-label="站点导航"><a href="/">返回票选 <span aria-hidden="true">↗</span></a><button id="logoutBtn" hidden>退出登录</button></nav>
     </div>
   </header>
 
-  <main class="admin-wrap">
+  <main>
     <section class="login-shell" id="loginView" aria-labelledby="loginTitle">
-      <form class="login-card" id="loginForm">
-        <h1 id="loginTitle">后台登录</h1>
-        <p>查看本次社团票选的实时统计。</p>
-        <label for="passwordInput">管理密码</label>
-        <input type="password" id="passwordInput" autocomplete="current-password" required />
-        <button class="button-primary" type="submit" id="loginBtn">进入后台</button>
-        <p class="login-err" id="loginErr" role="status"></p>
-      </form>
+      <div class="login-art">
+        <div><span class="event-year">2026</span><h2>年度游戏票选</h2></div>
+      </div>
+      <div class="login-content">
+        <form id="loginForm">
+          <h1 id="loginTitle">后台登录</h1>
+          <p class="login-intro">登录后可查看票数、导出报表和管理结果归档。</p>
+          <label for="passwordInput">管理密码</label>
+          <div class="password-field">
+            <input type="password" id="passwordInput" autocomplete="current-password" aria-describedby="loginErr" required />
+            <button id="showPassword" type="button" aria-label="显示密码" aria-pressed="false">显示</button>
+          </div>
+          <p class="error" id="loginErr" role="alert"></p>
+          <button class="btn primary login-button" type="submit" id="loginBtn">进入后台</button>
+        </form>
+      </div>
     </section>
 
-    <section id="dashView" class="hidden" aria-labelledby="statsTitle">
-      <div class="admin-masthead">
-        <h1 id="statsTitle" tabindex="-1">投票统计</h1>
-        <p id="lastUpdated">加载中…</p>
-      </div>
-      <div class="admin-actions">
-        <button class="btn" type="button" id="refreshBtn">刷新</button>
-        <button class="btn" type="button" id="autoBtn" aria-pressed="true">自动刷新：开</button>
-        <button class="btn" type="button" id="exportBtn">导出 CSV</button>
-        <button class="btn" type="button" id="logoutBtn">退出登录</button>
-      </div>
-      <p class="dashboard-notice" id="dashboardNotice" role="status"></p>
+    <div id="dashView" hidden>
+      <nav class="view-nav" aria-label="后台栏目"><div class="page-width nav-inner">
+        <a href="#overview" aria-current="page">投票总览</a>
+        <a href="#awards">奖项明细</a>
+        <a href="#analytics">访问分析</a>
+        <a href="#archives">归档管理</a>
+      </div></nav>
 
-      <div class="stat-row">
-        <div class="stat-card"><div class="k">累计票数</div><div class="v" id="dTotalVotes">--</div></div>
-        <div class="stat-card"><div class="k">参与人数</div><div class="v" id="dVoters">--</div></div>
-        <div class="stat-card"><div class="k">已有票数的奖项</div><div class="v" id="dCatVoted">--</div></div>
-      </div>
-
-      <section class="admin-section" id="analytics" aria-labelledby="analyticsTitle">
-        <div class="analytics-head">
-          <h2 id="analyticsTitle">访问与投票分析</h2>
-          <button class="btn" type="button" id="exportAnalyticsBtn" disabled>导出分析 CSV</button>
-        </div>
-        <p class="analytics-note" id="analyticsPeriod">等待统计数据。</p>
-        <table class="analytics-table" aria-label="各设备访问与投票汇总">
-          <thead>
-            <tr><th scope="col">设备</th><th scope="col">访问量</th><th scope="col">独立访客</th><th scope="col">投票人数</th><th scope="col">票数</th><th scope="col">转化率</th></tr>
-          </thead>
-          <tbody id="analyticsSummary"></tbody>
-        </table>
-        <p class="analytics-note">人数按浏览器去重。转化率为同一统计范围内既访问又投票的浏览器数，占独立访客的比例。</p>
-        <div class="analytics-trend">
-          <div class="analytics-trend-header">
-            <h3>每日趋势 <span class="analytics-note">最近 14 天 · 北京时间</span></h3>
-            <div class="analytics-controls">
-              <label>设备
-                <select id="analyticsDevice">
-                  <option value="all">全部设备</option><option value="mobile">移动端</option><option value="desktop">电脑端</option><option value="tablet">平板</option><option value="unknown">未知</option>
-                </select>
-              </label>
-              <label>指标
-                <select id="analyticsMetric">
-                  <option value="visits">访问量</option><option value="visitors">独立访客</option><option value="voters">投票人数</option><option value="votes">票数</option><option value="conversionRate">转化率</option>
-                </select>
-              </label>
+      <div class="page-width workspace">
+        <header class="view-head">
+          <div><p class="event-name">2026 年度游戏票选</p><h1 id="statsTitle" tabindex="-1">投票总览</h1></div>
+          <div class="sync-tools">
+            <p id="lastUpdated">正在读取数据…</p>
+            <div class="actions">
+              <label class="auto-toggle"><input type="checkbox" id="autoBtn" checked /><span aria-hidden="true"></span>每 15 秒刷新</label>
+              <button class="btn" type="button" id="refreshBtn">立即刷新</button>
             </div>
           </div>
-          <div class="analytics-plot hidden" id="analyticsPlot" aria-hidden="true"></div>
-          <p class="empty hidden" id="analyticsEmpty">暂无该设备的趋势数据。</p>
-          <details class="analytics-daily">
-            <summary>查看每日明细</summary>
-            <table class="analytics-table" aria-label="所选设备的每日访问与投票">
-              <thead>
-                <tr><th scope="col">日期</th><th scope="col">访问量</th><th scope="col">独立访客</th><th scope="col">投票人数</th><th scope="col">票数</th><th scope="col">转化率</th></tr>
-              </thead>
-              <tbody id="analyticsDaily"></tbody>
-            </table>
+        </header>
+        <p class="notice" id="dashboardNotice" role="status"></p>
+
+        <section data-view="overview" aria-label="投票总览">
+          <div class="stat-row">
+            <div class="stat-card featured"><h2>累计票数</h2><strong id="dTotalVotes">—</strong><p class="source-label">正在读取票数</p></div>
+            <div class="stat-card"><h2>参与人数</h2><strong id="dVoters">—</strong><p>按浏览器去重</p></div>
+            <div class="stat-card"><h2>已获票奖项</h2><strong id="dCatVoted">—</strong><p id="coverage">占全部奖项的比例</p></div>
+          </div>
+          <div class="overview-grid">
+            <section class="panel">
+              <header class="panel-head"><div><h2>奖项票数排行</h2><p>按累计票数排列，最多显示五项</p></div><a class="text-link" href="#awards">全部奖项 <span aria-hidden="true">→</span></a></header>
+              <ol class="ranking" id="rankList"></ol>
+            </section>
+            <section class="panel">
+              <header class="panel-head"><div><h2>最近投票</h2><p id="recentSource">最近 30 条记录 · 北京时间</p></div></header>
+              <div class="recent-list" id="recentList"></div>
+            </section>
+          </div>
+        </section>
+
+        <section data-view="awards" aria-label="奖项明细" hidden>
+          <div class="panel award-tools">
+            <div><label for="awardSearch">搜索奖项或提名</label><input id="awardSearch" type="search" placeholder="输入中文或英文名称" /></div>
+            <div><label for="reportAward">选择奖项 <small id="awardMatches"></small></label><select id="reportAward"></select></div>
+            <button class="btn" id="exportBtn" type="button" disabled>导出全部票数 CSV</button>
+          </div>
+          <div id="awardEmpty" class="panel empty" hidden><p>没有匹配的奖项或提名。</p><button class="text-link" type="button" id="clearSearch">清除搜索</button></div>
+          <div id="awardDetail" class="award-grid">
+            <section class="panel">
+              <header class="panel-head"><div><p class="section-kicker" id="awardGroup"></p><h2 id="awardName">候选票数</h2><p id="awardSubtitle" lang="en"></p></div></header>
+              <p class="award-total"><strong id="awardTotal">—</strong> 票 <span class="source-label"></span></p>
+              <ol class="nominees" id="nomineeList"></ol>
+            </section>
+            <section class="panel">
+              <header class="panel-head"><div><h2>每日统计</h2><p>本地记录 · 北京时间</p></div><button class="btn" type="button" id="exportAwardBtn" disabled>导出明细 CSV</button></header>
+              <p class="report-summary" id="awardOverview"></p>
+              <p class="note" id="awardReportStatus" role="status"></p>
+              <div class="table-scroll"><table aria-label="奖项每日访问与投票">
+                <thead><tr><th scope="col">日期</th><th scope="col">打开次数</th><th scope="col">打开人数</th><th scope="col">投票人数</th><th scope="col">票数</th><th scope="col">转化率</th></tr></thead>
+                <tbody id="awardDaily"></tbody>
+              </table></div>
+              <p class="note">转化率为当天打开该奖项的访客中，同时投票的比例。</p>
+              <details><summary>候选单日票数</summary>
+                <label class="inline-label">选择日期 <select id="reportDate" disabled></select></label>
+                <div class="table-scroll"><table aria-label="候选单日票数"><thead><tr><th scope="col">候选</th><th scope="col">票数</th></tr></thead><tbody id="awardNominees"></tbody></table></div>
+              </details>
+            </section>
+          </div>
+        </section>
+
+        <section data-view="analytics" aria-label="访问分析" hidden>
+          <section class="panel" id="analytics">
+            <header class="panel-head"><div><h2>访问与投票</h2><p id="analyticsPeriod">正在读取本地访问记录…</p></div><button class="btn" type="button" id="exportAnalyticsBtn" disabled>导出分析 CSV</button></header>
+            <div class="table-scroll"><table aria-label="各设备访问与投票汇总">
+              <thead><tr><th scope="col">设备</th><th scope="col">访问量</th><th scope="col">独立访客</th><th scope="col">投票人数</th><th scope="col">票数</th><th scope="col">转化率</th></tr></thead>
+              <tbody id="analyticsSummary"></tbody>
+            </table></div>
+            <p class="note" id="conversionNote"></p>
+            <div class="trend-head"><h3>每日趋势</h3><div class="actions">
+              <label class="inline-label">设备 <select id="analyticsDevice"><option value="all">全部设备</option><option value="mobile">移动端</option><option value="desktop">电脑端</option><option value="tablet">平板</option><option value="unknown">未知</option></select></label>
+              <label class="inline-label">指标 <select id="analyticsMetric"><option value="visits">访问量</option><option value="visitors">独立访客</option><option value="voters">投票人数</option><option value="votes">票数</option><option value="conversionRate">转化率</option></select></label>
+            </div></div>
+            <p class="note">最近 14 天 · 北京时间</p>
+            <div class="analytics-plot hidden" id="analyticsPlot" aria-hidden="true"></div>
+            <p class="empty hidden" id="analyticsEmpty">所选设备暂无趋势数据。</p>
+            <details><summary>查看每日明细</summary>
+              <div class="table-scroll"><table aria-label="所选设备的每日访问与投票"><thead><tr><th scope="col">日期</th><th scope="col">访问量</th><th scope="col">独立访客</th><th scope="col">投票人数</th><th scope="col">票数</th><th scope="col">转化率</th></tr></thead><tbody id="analyticsDaily"></tbody></table></div>
+            </details>
+            <details><summary>查看访问渠道</summary>
+              <p class="note">分享链接可添加 <code>?utm_source=qq</code>，也可使用 wechat、bilibili 或 xiaohongshu。访客按渠道分别去重。</p>
+              <div class="table-scroll"><table aria-label="访问渠道统计"><thead><tr><th scope="col">渠道</th><th scope="col">访问量</th><th scope="col">独立访客</th></tr></thead><tbody id="channelRows"></tbody></table></div>
+              <button class="btn" type="button" id="exportChannelBtn" disabled>导出渠道 CSV</button>
+            </details>
+          </section>
+          <p id="analyticsUnavailable" class="panel empty" hidden>暂无访问分析数据。</p>
+        </section>
+
+        <section data-view="archives" aria-label="归档管理" hidden>
+          <section class="panel">
+            <header class="panel-head"><div><h2>结果归档</h2><p>保存当前云端票数快照，可下载结果 CSV。</p></div><button class="btn primary" type="button" id="archiveBtn" disabled>归档当前结果</button></header>
+            <p class="note" id="archiveSource"></p>
+            <p class="report-summary" id="archiveStatus" role="status"></p>
+            <p class="note" id="archiveFeedback" role="status"></p>
+            <ul class="archive-list" id="archiveList"></ul>
+          </section>
+          <details class="panel maintenance"><summary>数据维护</summary>
+            <p>清空后，所有云端投票记录将被永久删除。</p>
+            <button class="btn danger" type="button" id="resetBtn" disabled>清空云端投票</button>
+            <p class="note" id="resetStatus" role="status"></p>
           </details>
-        </div>
-        <details class="analytics-daily">
-          <summary>查看访问渠道</summary>
-          <p class="analytics-note">用带渠道标签的站点链接分享。各渠道的独立访客分别去重，未标记的访问归入最后一行。</p>
-          <table class="analytics-table channel-table" aria-label="访问渠道统计">
-            <thead><tr><th scope="col">渠道</th><th scope="col">访问量</th><th scope="col">独立访客</th></tr></thead>
-            <tbody id="channelRows"></tbody>
-          </table>
-          <p class="analytics-note report-subhead">链接参数可用 <code>?utm_source=qq</code>、<code>wechat</code>、<code>bilibili</code> 或 <code>xiaohongshu</code>。</p>
-          <button class="btn" type="button" id="exportChannelBtn" disabled>导出渠道 CSV</button>
-        </details>
-      </section>
-
-      <section class="admin-section" aria-labelledby="awardActivityTitle">
-        <div class="analytics-head">
-          <h2 id="awardActivityTitle">奖项每日统计</h2>
-          <button class="btn" type="button" id="exportAwardBtn" disabled>导出奖项明细 CSV</button>
-        </div>
-        <div class="analytics-controls"><label>奖项 <select id="reportAward"></select></label></div>
-        <p class="report-summary" id="awardOverview"></p>
-        <p class="report-status" id="awardReportStatus" role="status"></p>
-        <p class="analytics-note">按北京时间统计。同日打开且投票的浏览器，占当天打开该奖项的独立访客的比例，为当日转化率。</p>
-        <table class="analytics-table" aria-label="奖项每日访问和投票">
-          <thead><tr><th scope="col">日期</th><th scope="col">打开次数</th><th scope="col">打开人数</th><th scope="col">投票人数</th><th scope="col">票数</th><th scope="col">转化率</th></tr></thead>
-          <tbody id="awardDaily"></tbody>
-        </table>
-        <div class="analytics-controls report-subhead"><label>查看候选单日票数 <select id="reportDate" disabled></select></label></div>
-        <table class="analytics-table report-table-compact" aria-label="候选单日票数">
-          <thead><tr><th scope="col">候选</th><th scope="col">票数</th></tr></thead>
-          <tbody id="awardNominees"></tbody>
-        </table>
-      </section>
-
-      <section class="admin-section" aria-labelledby="awardStatsTitle">
-        <h2 id="awardStatsTitle">奖项统计</h2>
-        <div id="catList"></div>
-      </section>
-      <section class="admin-section" aria-labelledby="recentTitle">
-        <h2 id="recentTitle">最近投票</h2>
-        <div id="recentList"><div class="empty">暂无投票记录</div></div>
-      </section>
-      <section class="admin-section" aria-labelledby="archiveTitle">
-        <div class="analytics-head">
-          <h2 id="archiveTitle">结果归档与备份</h2>
-          <button class="btn" type="button" id="archiveBtn">归档当前结果</button>
-        </div>
-        <p class="analytics-note">归档后可下载结果 CSV 和原始数据 JSON。颁奖典礼前一天起，可选择最新归档正式公布并结束投票。</p>
-        <p class="report-status" id="archiveStatus" role="status"></p>
-        <ul class="archive-list" id="archiveList"></ul>
-      </section>
-      <div class="admin-maintenance">
-        <button class="btn danger" type="button" id="resetBtn">清空投票数据</button>
+        </section>
       </div>
-    </section>
+    </div>
   </main>
 
-
-  <script src="https://cdn.jsdelivr.net/npm/@tencent-ai/workbuddy-cloud-sdk@dev/lib/index.global.js"></script>
-  <script>
-    (() => {
-      const $ = (s) => document.querySelector(s);
-      const loginView = $('#loginView');
-      const dashView = $('#dashView');
-      const notice = $('#dashboardNotice');
-      const catList = $('#catList');
-      const awardPicker = $('#reportAward');
-      const datePicker = $('#reportDate');
-
-      const cloud = (() => {
-        try {
-          return window.WorkBuddyCloud?.createWorkBuddyCloud
-            ? window.WorkBuddyCloud.createWorkBuddyCloud({
-                endpoint: 'https://tga2026-vote.app.workbuddy.host',
-                oauthRelayBaseUrl: 'https://www.workbuddy.cn/v2/as/genie-baas/oauth',
-                publishableKey: 'wbpk_RAfiDZV87lfCVLYCIsVx2i_koKqsmoDnjqi8P9mcDNluoNgES5IO3Yc'
-              })
-            : null;
-        } catch {
-          return null;
-        }
-      })();
-
-      /* 票数真实来源是云数据库，服务端本地存档不再记录投票 */
-      async function overlayCloudStats(d) {
-        if (!cloud || !d) return d;
-        try {
-          const { data, error } = await cloud.database.rpc('vote_summary');
-          if (error) return d;
-          const summary = Array.isArray(data) ? data[0] || {} : data || {};
-          const tallies = summary.tallies || {};
-          d.totalVotes = Number(summary.totalVotes || 0);
-          d.voters = Number(summary.voters || 0);
-          for (const category of d.categories) {
-            const tally = tallies[category.id] || {};
-            category.total = Object.values(tally).reduce((sum, n) => sum + Number(n || 0), 0);
-            for (const nominee of category.nominees) nominee.votes = Number(tally[nominee.id] || 0);
-            category.nominees.sort((a, b) => b.votes - a.votes);
-            const base = category.total || 1;
-            for (const nominee of category.nominees) {
-              nominee.pct = Math.round((nominee.votes / base) * 1000) / 10;
-            }
-          }
-          d.cloudBacked = true;
-        } catch {
-          d.cloudBacked = false;
-        }
-        return d;
-      }
-
-      let statsData = null;
-      let adminCloudKey = '';
-
-      function promptCloudKey() {
-        if (adminCloudKey) return adminCloudKey;
-        const input = window.prompt('此操作直接作用于云端数据库，请再次输入管理密码确认');
-        if (!input) return '';
-        adminCloudKey = input.normalize('NFKC');
-        return adminCloudKey;
-      }
-      let awardActivity = null;
-      let awardRequest = 0;
-      let autoTimer = null;
-      let autoOn = true;
-
-      const fmt = (n) => Number(n || 0).toLocaleString('zh-CN');
-      const TAB_NAMES = { game: '游戏类', esports: '电竞类', production: '制作类' };
-      const DEVICE_NAMES = { all: '全部设备', mobile: '移动端', desktop: '电脑端', tablet: '平板', unknown: '未知' };
-      const CHANNEL_NAMES = { qq: 'QQ', wechat: '微信', bilibili: 'B 站', xiaohongshu: '小红书', untagged: '直接访问／未标记' };
-      const formatVoteTime = new Intl.DateTimeFormat('zh-CN', {
-        timeZone: 'Asia/Shanghai', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23'
-      });
-
-      const fmtRate = rate => rate === null ? '—' : rate + '%';
-
-      async function api(url, options = {}) {
-        try {
-          const res = await fetch(url, { headers: { 'Content-Type': 'application/json' }, ...options });
-          const data = await res.json().catch(() => ({}));
-          return { ok: res.ok, status: res.status, data };
-        } catch {
-          return { ok: false, status: 0, data: { error: '网络异常，请重试。' } };
-        }
-      }
-
-      function showLogin() {
-        statsData = null;
-        awardActivity = null;
-        awardPicker.replaceChildren();
-        notice.textContent = '';
-        loginView.classList.remove('hidden');
-        dashView.classList.add('hidden');
-        stopAuto();
-      }
-
-      function showDash() {
-        loginView.classList.add('hidden');
-        dashView.classList.remove('hidden');
-        if (autoOn) startAuto();
-      }
-
-      async function loadStats(silent = false) {
-        const { ok, status, data } = await api('/api/admin/stats');
-        if (!ok) {
-          if (status === 401) {
-            showLogin();
-            return;
-          }
-          if (!silent) report('统计加载失败：' + (data.error || '请重试。'));
-          return;
-        }
-        const firstLoad = !statsData;
-        statsData = await overlayCloudStats(data);
-        render();
-        if (dashView.classList.contains('hidden')) showDash();
-        if (firstLoad) {
-          awardPicker.replaceChildren(...data.categories.map(category => new Option(category.cn, category.id)));
-          awardPicker.value = 'goty';
-          loadArchives();
-        }
-        loadAwardActivity();
-      }
-
-      function report(message, state = 'error') {
-        notice.dataset.state = state;
-        notice.textContent = message;
-      }
-
-      function analyticsCells(row) {
-        return [fmt(row.visits), fmt(row.visitors), fmt(row.voters), fmt(row.votes), fmtRate(row.conversionRate)]
-          .map(value => '<td>' + value + '</td>').join('');
-      }
-
-      function renderAnalytics(analytics) {
-        $('#analytics').classList.toggle('hidden', !analytics);
-        if (!analytics) return;
-        const period = analytics.since ? '自 ' + analytics.since + ' 起统计（北京时间）。' : '首次访问或投票后开始统计。';
-        const legacy = analytics.legacyVotes ? ' 另有 ' + fmt(analytics.legacyVotes) + ' 票缺少设备记录，计入下方奖项统计。' : '';
-        $('#analyticsPeriod').textContent = period + legacy;
-        $('#analyticsSummary').innerHTML = Object.entries(DEVICE_NAMES).map(([key, name]) =>
-          '<tr data-device="' + key + '"><th scope="row">' + name + '</th>' + analyticsCells(analytics.summary[key]) + '</tr>'
-        ).join('');
-        $('#exportAnalyticsBtn').disabled = !analytics.daily.length;
-        const channels = analytics.channels || {};
-        $('#channelRows').innerHTML = Object.entries(CHANNEL_NAMES).map(([key, name]) => {
-          const row = channels[key];
-          return '<tr><th scope="row">' + name + '</th><td>' + fmt(row?.visits) + '</td><td>' + fmt(row?.visitors) + '</td></tr>';
-        }).join('');
-        $('#exportChannelBtn').disabled = !Object.values(channels).some(row => row.visits > 0);
-        renderTrend();
-      }
-
-      function renderTrend() {
-        const analytics = statsData?.analytics;
-        if (!analytics) return;
-        const device = $('#analyticsDevice').value;
-        const metric = $('#analyticsMetric').value;
-        const days = analytics.daily.slice(-14).map(day => ({ date: day.date, row: day.groups[device] }));
-        const values = days.map(day => day.row[metric] ?? 0);
-        const scale = metric === 'conversionRate' ? 100 : Math.max(1, ...values);
-        const hasData = days.some(day => day.row.visits || day.row.votes);
-        $('#analyticsEmpty').classList.toggle('hidden', hasData);
-        const plot = $('#analyticsPlot');
-        plot.classList.toggle('hidden', !hasData);
-        plot.innerHTML = days.map(({ date, row }, index) => {
-          const tick = index === 0 || index === days.length - 1 || (index % 4 === 0 && index < days.length - 2);
-          const label = metric === 'conversionRate' ? fmtRate(row[metric]) : fmt(row[metric]);
-          return '<div class="analytics-day" title="' + date + ' · ' + label + '"><div class="analytics-track"><i style="height:' +
-            values[index] / scale * 100 + '%"></i></div><time datetime="' + date + '"' +
-            (tick ? ' class="chart-tick"' : '') + '>' + date.slice(5) + '</time></div>';
-        }).join('');
-        $('#analyticsDaily').innerHTML = days.length ? days.reverse().map(({ date, row }) =>
-          '<tr><th scope="row"><time datetime="' + date + '">' + date.slice(5) + '</time></th>' + analyticsCells(row) + '</tr>'
-        ).join('') : '<tr><td colspan="6">暂无统计数据</td></tr>';
-      }
-
-      async function loadAwardActivity(showLoading = false) {
-        if (!awardPicker.value) return;
-        const request = ++awardRequest;
-        const status = $('#awardReportStatus');
-        if (showLoading) {
-          awardActivity = null;
-          $('#awardOverview').textContent = '';
-          $('#awardDaily').replaceChildren();
-          datePicker.replaceChildren();
-          datePicker.disabled = true;
-          $('#awardNominees').replaceChildren();
-          $('#exportAwardBtn').disabled = true;
-          status.textContent = '正在加载奖项明细…';
-        }
-        const { ok, data } = await api('/api/admin/award-activity?categoryId=' + encodeURIComponent(awardPicker.value));
-        if (request !== awardRequest || !statsData) return;
-        if (!ok) {
-          status.textContent = data.error || '奖项明细加载失败。';
-          return;
-        }
-        awardActivity = data;
-        const { summary, daily } = data;
-        $('#awardOverview').textContent = [
-          '累计打开 ' + fmt(summary.opens) + ' 次',
-          '打开人数 ' + fmt(summary.visitors),
-          '投票人数 ' + fmt(summary.voters),
-          '累计 ' + fmt(summary.votes) + ' 票'
-        ].join(' · ');
-        const tracking = data.opensSince ? '奖项打开数据自 ' + data.opensSince + ' 起累计。' : '首次打开该奖项后开始统计打开人数。';
-        status.textContent = tracking + (data.undatedVotes ? ' 另有 ' + fmt(data.undatedVotes) + ' 张旧票缺少日期，已计入累计。' : '');
-        const selected = datePicker.value;
-        $('#awardDaily').innerHTML = daily.map(day => '<tr><th scope="row">' + day.date + '</th>' +
-          [fmt(day.opens), fmt(day.visitors), fmt(day.voters), fmt(day.votes), fmtRate(day.conversionRate)]
-            .map(value => '<td>' + value + '</td>').join('') + '</tr>').join('') ||
-          '<tr><td colspan="6">暂无每日记录</td></tr>';
-        datePicker.replaceChildren(...daily.map(day => new Option(day.date, day.date)));
-        if (daily.some(day => day.date === selected)) datePicker.value = selected;
-        datePicker.disabled = !daily.length;
-        $('#exportAwardBtn').disabled = !daily.length;
-        renderAwardNominees();
-      }
-
-      function renderAwardNominees() {
-        const day = awardActivity?.daily.find(row => row.date === datePicker.value);
-        const tbody = $('#awardNominees');
-        tbody.replaceChildren();
-        if (!day) return;
-        for (const nominee of awardActivity.nominees) {
-          const row = document.createElement('tr');
-          const name = document.createElement('th');
-          name.scope = 'row';
-          name.textContent = nominee.name;
-          row.append(name);
-          row.insertCell().textContent = fmt(day.nomineeVotes[nominee.id]);
-          tbody.append(row);
-        }
-      }
-
-      async function loadArchives() {
-        const { ok, data } = await api('/api/admin/archives');
-        if (!statsData) return;
-        if (!ok) {
-          $('#archiveStatus').textContent = data.error || '归档列表加载失败。';
-          return;
-        }
-        const list = $('#archiveList');
-        $('#resetBtn').disabled = Boolean(data.publishedId);
-        $('#archiveStatus').textContent = data.publishedId ? '结果已公布，投票已结束。' :
-          data.canPublish ? '现在可以公布结果。' :
-            '最早可于 ' + formatVoteTime.format(data.availableAt) + '（北京时间）公布。';
-        list.replaceChildren();
-        if (!data.archives.length) {
-          const empty = document.createElement('li');
-          empty.className = 'empty';
-          empty.textContent = '暂无结果归档';
-          list.append(empty);
-          return;
-        }
-        for (const archive of data.archives) {
-          const item = document.createElement('li');
-          item.className = 'archive-entry';
-          const label = document.createElement('p');
-          const captured = document.createElement('time');
-          captured.dateTime = new Date(archive.archivedAt).toISOString();
-          captured.textContent = formatVoteTime.format(archive.archivedAt) + '（北京时间）';
-          label.append(captured, fmt(archive.totalVotes) + ' 票 · ' + fmt(archive.voters) + ' 位投票者');
-          const links = document.createElement('div');
-          links.className = 'archive-actions';
-          for (const [format, text] of [['results', '结果 CSV'], ['backup', '原始数据 JSON']]) {
-            const link = document.createElement('a');
-            link.className = 'btn';
-            link.href = '/api/admin/archives/' + encodeURIComponent(archive.id) + '/' + format;
-            link.textContent = text;
-            links.append(link);
-          }
-          if (archive.id === data.publishedId) {
-            const link = document.createElement('a');
-            link.className = 'btn';
-            link.href = '/results';
-            link.textContent = '查看已公布结果';
-            links.append(link);
-          } else if (data.canPublish && archive === data.archives[0]) {
-            const button = document.createElement('button');
-            button.type = 'button';
-            button.className = 'btn';
-            button.dataset.publishArchive = archive.id;
-            button.textContent = '正式公布';
-            links.append(button);
-          }
-          item.append(label, links);
-          list.append(item);
-        }
-      }
-
-      function render() {
-        const d = statsData;
-        $('#dTotalVotes').textContent = fmt(d.totalVotes);
-        $('#dVoters').textContent = fmt(d.voters);
-        const votedCats = d.categories.filter((c) => c.total > 0).length;
-        $('#dCatVoted').innerHTML = `${votedCats} <small>/ ${d.categories.length}</small>`;
-        $('#lastUpdated').textContent = '最后更新 ' + new Date().toLocaleTimeString('zh-CN');
-        renderAnalytics(d.analytics);
-
-        const expandedIds = new Set([...catList.querySelectorAll('details[open]')].map((node) => node.dataset.id));
-        const focusedId = document.activeElement.closest('.cat-block-head')?.parentElement.dataset.id;
-        catList.innerHTML = d.categories
-          .map((c) => {
-            const rows = c.nominees
-              .map((n, i) => `
-                <div class="res-row ${i === 0 && n.votes > 0 ? 'top' : ''}">
-                  <div class="res-line">
-                    <span class="name"><strong>${n.name}</strong>${n.en && n.en !== n.name ? ` <span lang="en">${n.en}</span>` : ''}</span>
-                    <span class="num">${fmt(n.votes)} 票</span>
-                    <span class="pct">${n.votes > 0 ? n.pct + '%' : '-'}</span>
-                  </div>
-                  <div class="res-bar"><i style="width:${n.votes > 0 ? n.pct : 0}%"></i></div>
-                </div>`)
-              .join('');
-            return `
-              <details class="cat-block" data-id="${c.id}"${expandedIds.has(c.id) ? ' open' : ''}>
-                <summary class="cat-block-head">
-                  <span>
-                    <span class="cn">${c.cn}</span>
-                    <span class="en" lang="en">${c.en}</span>
-                  </span>
-                  <span class="total">${fmt(c.total)} 票</span>
-                  <img class="caret ui-icon" src="/icons/chevron-right.svg" width="18" height="18" alt="" />
-                </summary>
-                <div class="cat-block-body">${rows || '<div class="empty">暂无提名</div>'}</div>
-              </details>`;
-          })
-          .join('');
-        if (focusedId) catList.querySelector('[data-id="' + CSS.escape(focusedId) + '"] summary')?.focus({ preventScroll: true });
-
-        const recentEl = $('#recentList');
-        if (d.recent.length === 0) {
-          recentEl.innerHTML = '<div class="empty">暂无投票记录</div>';
-        } else {
-          recentEl.innerHTML = d.recent
-            .map((r) => {
-              const time = Number.isFinite(r.ts) ? formatVoteTime.format(r.ts) : '时间未知';
-              return `<div class="recent-row"><span class="t">${time}<small>${DEVICE_NAMES[r.device] || '未知'}</small></span><span class="c">${r.category}</span><span class="n">${r.nominee}</span></div>`;
-            })
-            .join('');
-        }
-      }
-
-      function startAuto() {
-        stopAuto();
-        autoTimer = setInterval(() => loadStats(true), 15000);
-        $('#autoBtn').textContent = '自动刷新：开';
-        $('#autoBtn').setAttribute('aria-pressed', 'true');
-      }
-
-      function stopAuto() {
-        if (autoTimer) clearInterval(autoTimer);
-        autoTimer = null;
-        $('#autoBtn').textContent = '自动刷新：关';
-        $('#autoBtn').setAttribute('aria-pressed', 'false');
-      }
-
-      /* 登录 */
-      $('#loginForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = $('#loginBtn');
-        const errEl = $('#loginErr');
-        btn.disabled = true;
-        btn.textContent = '登录中…';
-        errEl.textContent = '';
-        const entered = $('#passwordInput').value;
-        const { ok, data } = await api('/api/admin/login', {
-          method: 'POST',
-          body: JSON.stringify({ password: entered })
-        });
-        btn.disabled = false;
-        btn.textContent = '进入后台';
-        if (ok) {
-          adminCloudKey = entered.normalize('NFKC');
-          $('#passwordInput').value = '';
-          showDash();
-          $('#statsTitle').focus({ preventScroll: true });
-          await loadStats();
-        } else {
-          errEl.textContent = data.error || '登录失败';
-        }
-      });
-
-      $('#logoutBtn').addEventListener('click', async () => {
-        const { ok, data } = await api('/api/admin/logout', { method: 'POST' });
-        if (ok) {
-          showLogin();
-          $('#passwordInput').focus();
-        } else {
-          report(data.error || '退出失败，请重试。');
-        }
-      });
-
-      $('#refreshBtn').addEventListener('click', () => {
-        notice.textContent = '';
-        loadStats();
-        loadArchives();
-      });
-
-      $('#autoBtn').addEventListener('click', () => {
-        autoOn = !autoOn;
-        if (autoOn) startAuto(); else stopAuto();
-      });
-
-      $('#analyticsDevice').addEventListener('change', renderTrend);
-      $('#analyticsMetric').addEventListener('change', renderTrend);
-      awardPicker.addEventListener('change', () => loadAwardActivity(true));
-      datePicker.addEventListener('change', renderAwardNominees);
-
-      $('#archiveBtn').addEventListener('click', async (event) => {
-        const button = event.currentTarget;
-        const status = $('#archiveStatus');
-        button.disabled = true;
-        status.textContent = '正在归档当前结果…';
-        const { ok, data } = await api('/api/admin/archives', { method: 'POST' });
-        button.disabled = false;
-        status.textContent = ok ? '归档完成，可下载 CSV 和 JSON。' : data.error || '归档失败，请重试。';
-        if (ok) loadArchives();
-      });
-
-      $('#archiveList').addEventListener('click', async (event) => {
-        const button = event.target.closest('[data-publish-archive]');
-        if (!button || !confirm('公布这份归档后，公众可查看最终结果，投票将结束。确定公布吗？')) return;
-        if (statsData?.cloudBacked && statsData.totalVotes > 0) {
-          $('#archiveStatus').textContent = '投票数据已保存在云端，本地归档不包含这些票数；结果公布流程需先完成云端迁移，暂时停用。';
-          return;
-        }
-        button.disabled = true;
-        const { ok, data } = await api('/api/admin/publish-results', {
-          method: 'POST',
-          body: JSON.stringify({ archiveId: button.dataset.publishArchive })
-        });
-        if (ok) {
-          await loadArchives();
-        } else {
-          $('#archiveStatus').textContent = data.error || '公布失败，请重试。';
-          button.disabled = false;
-        }
-      });
-
-      function downloadCsv(filename, lines) {
-        const blob = new Blob(['\uFEFF' + lines.join('\n')], { type: 'text/csv;charset=utf-8' });
-        const a = document.createElement('a');
-        a.href = URL.createObjectURL(blob);
-        a.download = filename;
-        a.click();
-        URL.revokeObjectURL(a.href);
-      }
-
-      function csvLine(values) {
-        return values.map(value => '"' + String(value).replaceAll('"', '""') + '"').join(',');
-      }
-
-      $('#exportChannelBtn').addEventListener('click', () => {
-        const channels = statsData?.analytics?.channels;
-        if (!channels) return;
-        const lines = ['渠道,访问量,独立访客'];
-        for (const [key, label] of Object.entries(CHANNEL_NAMES)) {
-          const row = channels[key];
-          lines.push(csvLine([label, row.visits, row.visitors]));
-        }
-        downloadCsv('suyou-channels.csv', lines);
-      });
-
-      $('#exportAwardBtn').addEventListener('click', () => {
-        if (!awardActivity) return;
-        const { categoryId, categoryName, daily, nominees, undatedVotes } = awardActivity;
-        const lines = ['日期,奖项,记录类型,候选,打开次数,打开人数,投票人数,票数,转化率'];
-        for (const day of daily) {
-          const rate = day.conversionRate === null ? '' : fmtRate(day.conversionRate);
-          lines.push(csvLine([day.date, categoryName, '奖项汇总', '', day.opens, day.visitors, day.voters, day.votes, rate]));
-          for (const nominee of nominees) {
-            lines.push(csvLine([day.date, categoryName, '候选票数', nominee.name, '', '', '', day.nomineeVotes[nominee.id] || 0, '']));
-          }
-        }
-        if (undatedVotes) lines.push(csvLine(['时间未知', categoryName, '旧票', '', '', '', '', undatedVotes, '']));
-        downloadCsv('suyou-award-' + categoryId + '.csv', lines);
-      });
-
-      $('#exportAnalyticsBtn').addEventListener('click', () => {
-        const analytics = statsData?.analytics;
-        if (!analytics) return;
-        const lines = ['日期,设备,访问量,独立访客,投票人数,票数,转化率'];
-        const periods = [{ date: '累计', groups: analytics.summary }, ...analytics.daily];
-        for (const { date, groups } of periods) {
-          for (const [device, name] of Object.entries(DEVICE_NAMES)) {
-            const row = groups[device];
-            lines.push([date, name, row.visits, row.visitors, row.voters, row.votes,
-              row.conversionRate === null ? '' : fmtRate(row.conversionRate)].join(','));
-          }
-        }
-        downloadCsv('tga2026-analytics-' + analytics.daily.at(-1).date + '.csv', lines);
-      });
-
-      $('#exportBtn').addEventListener('click', () => {
-        if (!statsData) return;
-        const lines = ['奖项分类,奖项(中文),奖项(英文),提名,票数,占比'];
-        statsData.categories.forEach((c) => {
-          c.nominees.forEach((n) => {
-            lines.push([TAB_NAMES[c.tab] || c.tab, c.cn, c.en, n.name, n.votes, n.votes > 0 ? n.pct + '%' : '0%'].join(','));
-          });
-        });
-        downloadCsv('tga2026-votes-' + new Date().toISOString().slice(0, 10) + '.csv', lines);
-      });
-
-      $('#resetBtn').addEventListener('click', async () => {
-        if (!confirm('确定要清空全部投票数据吗？此操作不可恢复。')) return;
-        if (!confirm('再次确认：所有投票记录将被删除。')) return;
-        if (!cloud) {
-          report('云端未连接，无法清空投票数据。');
-          return;
-        }
-        const key = promptCloudKey();
-        if (!key) return;
-        try {
-          const { data, error } = await cloud.database.rpc('admin_clear_votes', {
-            p_key: key.normalize('NFKC')
-          });
-          if (error) {
-            report(error.code && String(error.code).endsWith('42501') ? '口令不正确，未执行清空。' : '清空失败：' + (error.message || '请重试。'));
-            return;
-          }
-          await loadStats();
-          report('已清空 ' + Number(data || 0) + ' 条投票记录。', 'success');
-        } catch {
-          report('清空失败，请检查网络后重试。');
-        }
-      });
-
-      loadStats();
-    })();
-  </script>
+  <dialog id="resetDialog" aria-labelledby="resetTitle">
+    <form id="resetForm">
+      <h2 id="resetTitle">清空云端投票？</h2>
+      <p>此操作会永久删除所有云端投票记录。请输入管理密码确认。</p>
+      <label for="resetPassword">管理密码</label><input id="resetPassword" type="password" autocomplete="off" required />
+      <p id="resetError" class="error" role="alert"></p>
+      <div class="actions"><button id="cancelReset" class="btn" type="button" autofocus>取消</button><button class="btn danger" type="submit">确认清空</button></div>
+    </form>
+  </dialog>
 </body>
 </html>
