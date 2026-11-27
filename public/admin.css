@@ -241,3 +241,29 @@ dialog .actions { justify-content: end; margin-top: 18px; }
   th, td { padding-inline: 8px; }
   input:not([type='checkbox']), select { font-size: 16px; }
 }
+
+/* ---------- 逐票管理 ---------- */
+.vote-admin-bar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px;
+  margin-top: 12px; font-size: 13px;
+}
+.vote-admin-bar label { color: var(--muted); }
+.vote-admin-bar input,
+.vote-admin-bar select {
+  min-height: 34px; padding: 4px 8px; border: 1px solid #c9c3d2; border-radius: 6px;
+  background: #fff; font: inherit; color: inherit;
+}
+.vote-admin-bar input[type="password"] { width: 150px; }
+.vote-admin-bar input[type="date"] { width: 170px; }
+.vote-admin-bar select { max-width: 260px; }
+.vote-table-wrap { margin-top: 12px; overflow-x: auto; }
+.vote-table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: auto; }
+.vote-table th, .vote-table td {
+  padding: 7px 10px; border-bottom: 1px solid var(--line); text-align: left; white-space: nowrap;
+}
+.vote-table th { color: var(--muted); font-weight: 500; }
+.vote-table td code { font-size: 12px; color: var(--muted); }
+.vote-table tbody tr:hover { background: var(--tint); }
+.btn.small { padding: 3px 10px; font-size: 12px; }
+.btn.danger { border-color: #d9b4b4; color: #8c2f2f; }
+.btn.danger:hover:not(:disabled) { background: #fdf1f1; border-color: #c08585; }

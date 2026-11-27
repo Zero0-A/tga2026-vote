@@ -62,6 +62,7 @@ import { renderShareCard } from './share-card.js';
     }
   })();
 
+  let cloudWarned = false;
   const VOTER_KEY = 'tga-voter-id';
   function voterId() {
     try {
@@ -76,6 +77,17 @@ import { renderShareCard } from './share-card.js';
     } catch {
       return 'v-' + Date.now().toString(36);
     }
+  }
+
+  /* 设备类型交给云端做统计 */
+  function deviceKind() {
+    const agent = navigator.userAgent || '';
+    if (/bot\b|crawler|spider|headless/i.test(agent)) return 'unknown';
+    if (/iPad|Tablet|PlayBook|Kindle|Silk/i.test(agent)) return 'tablet';
+    if (/iPhone|iPod|Windows Phone|Mobile|Mobi/i.test(agent)) return 'mobile';
+    if (/Android/i.test(agent)) return 'tablet';
+    if (/Windows NT|Macintosh|X11|CrOS|Linux/i.test(agent)) return 'desktop';
+    return 'unknown';
   }
 
   /* 投票日按北京时间零点切分 */
@@ -661,7 +673,7 @@ import { renderShareCard } from './share-card.js';
 
     const { error } = await cloud.database
       .from('votes')
-      .insert({ category_id: categoryId, nominee_id: nomineeId, voter_id: voterId() });
+      .insert({ category_id: categoryId, nominee_id: nomineeId, voter_id: voterId(), device: deviceKind() });
 
     if (!error) {
       const summary = await fetchCloudSummary();
@@ -1037,6 +1049,10 @@ import { renderShareCard } from './share-card.js';
       data.cloudReady = true;
     } catch {
       data.cloudReady = false;
+      if (!cloudWarned) {
+        cloudWarned = true;
+        showToast('实时票数暂时不可用，请稍后刷新');
+      }
     }
     return data;
   }

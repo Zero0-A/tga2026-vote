@@ -713,6 +713,140 @@
     downloadCsv('tga2026-votes-' + new Date().toISOString().slice(0, 10) + '.csv', lines);
   });
 
+  /* ---------------- 逐票管理 ---------------- */
+  const voteDayInput = $('#voteDay');
+  const voteKeyInput = $('#voteKey');
+  const voteStatus = $('#voteStatus');
+  const voteRowsEl = $('#voteRows');
+  const voteCategorySel = $('#voteCategory');
+  const voteClearBtn = $('#voteClear');
+  let voteRows = [];
+
+  function beijingToday() {
+    return new Date(Date.now() + 8 * 3600e3).toISOString().slice(0, 10);
+  }
+
+  function voteKeyValue() {
+    const raw = voteKeyInput.value.trim();
+    return raw ? raw.normalize('NFKC') : '';
+  }
+
+  function voteLabel(categoryId, nomineeId) {
+    const category = statsData?.categories.find(item => item.id === categoryId);
+    const nominee = category?.nominees.find(item => item.id === nomineeId);
+    return { category: category?.cn || categoryId, nominee: nominee?.name || nomineeId };
+  }
+
+  function voteError(error, fallback) {
+    return String(error?.code || '').endsWith('42501') ? '管理密码不正确。' : fallback;
+  }
+
+  function renderVoteRows() {
+    if (!voteRows.length) {
+      voteRowsEl.innerHTML = '<tr><td colspan="6">这一天没有投票记录。</td></tr>';
+      voteClearBtn.disabled = true;
+      return;
+    }
+    voteRowsEl.innerHTML = voteRows.map((row) => {
+      const label = voteLabel(row.category_id, row.nominee_id);
+      return '<tr><td>' + formatVoteTime.format(Date.parse(row.created_at)) + '</td>' +
+        '<td>' + escapeHtml(label.category) + '</td>' +
+        '<td>' + escapeHtml(label.nominee) + '</td>' +
+        '<td>' + escapeHtml(DEVICE_NAMES[row.device] || '未知') + '</td>' +
+        '<td><code>' + escapeHtml(row.voter_short || '') + '</code></td>' +
+        '<td><button class="btn danger small" type="button" data-delete-vote="' + row.id + '">删除</button></td></tr>';
+    }).join('');
+
+    const ids = [...new Set(voteRows.map(row => row.category_id))];
+    const current = voteCategorySel.value;
+    voteCategorySel.replaceChildren(new Option('当天全部', ''),
+      ...ids.map(id => new Option(voteLabel(id).category, id)));
+    if (ids.includes(current)) voteCategorySel.value = current;
+    voteClearBtn.disabled = false;
+  }
+
+  async function loadVoteRows() {
+    if (!cloud) {
+      voteStatus.textContent = '云端未连接，无法读取投票明细。';
+      return;
+    }
+    const key = voteKeyValue();
+    if (!key) {
+      voteStatus.textContent = '请先输入管理密码。';
+      return;
+    }
+    const day = voteDayInput.value || beijingToday();
+    voteStatus.textContent = '正在读取…';
+    try {
+      const { data, error } = await cloud.database.rpc('admin_vote_rows', { p_key: key, p_day: day });
+      if (error) {
+        voteRows = [];
+        voteStatus.textContent = voteError(error, '读取失败，请稍后重试。');
+        renderVoteRows();
+        return;
+      }
+      voteRows = data || [];
+      voteStatus.textContent = day + ' 共 ' + fmt(voteRows.length) + ' 票。';
+      renderVoteRows();
+    } catch {
+      voteStatus.textContent = '网络异常，请重试。';
+    }
+  }
+
+  voteDayInput.value = beijingToday();
+  $('#voteLoad').addEventListener('click', loadVoteRows);
+  voteDayInput.addEventListener('change', () => {
+    if (voteKeyValue()) loadVoteRows();
+  });
+
+  voteRowsEl.addEventListener('click', async (event) => {
+    const button = event.target.closest('[data-delete-vote]');
+    if (!button) return;
+    const id = Number(button.dataset.deleteVote);
+    const row = voteRows.find(item => Number(item.id) === id);
+    const label = row ? voteLabel(row.category_id, row.nominee_id) : {};
+    const key = voteKeyValue();
+    if (!key) {
+      voteStatus.textContent = '请先输入管理密码。';
+      return;
+    }
+    if (!confirm('确定删除这一票（' + (label.nominee || id) + '）？此操作不可恢复。')) return;
+    button.disabled = true;
+    const { data, error } = await cloud.database.rpc('admin_delete_votes', { p_key: key, p_ids: [id] });
+    if (error) {
+      button.disabled = false;
+      voteStatus.textContent = voteError(error, '删除失败，请重试。');
+      return;
+    }
+    await loadVoteRows();
+    await loadStats(true);
+    voteStatus.textContent = '已删除 ' + fmt(data) + ' 票。';
+  });
+
+  voteClearBtn.addEventListener('click', async () => {
+    const key = voteKeyValue();
+    if (!key) {
+      voteStatus.textContent = '请先输入管理密码。';
+      return;
+    }
+    const day = voteDayInput.value || beijingToday();
+    const categoryId = voteCategorySel.value;
+    const label = categoryId ? voteLabel(categoryId).category : '当天全部奖项';
+    if (!confirm('确定删除「' + label + '」在 ' + day + ' 的全部投票？此操作不可恢复。')) return;
+    voteClearBtn.disabled = true;
+    const params = { p_key: key, p_day: day };
+    if (categoryId) params.p_category = categoryId;
+    const { data, error } = await cloud.database.rpc('admin_clear_votes', params);
+    voteClearBtn.disabled = false;
+    if (error) {
+      voteStatus.textContent = voteError(error, '删除失败，请重试。');
+      return;
+    }
+    await loadVoteRows();
+    await loadStats(true);
+    voteStatus.textContent = '已删除 ' + fmt(data) + ' 票。';
+  });
+
   const resetDialog = $('#resetDialog');
   const resetForm = $('#resetForm');
   const resetSubmit = resetForm.querySelector('[type="submit"]');

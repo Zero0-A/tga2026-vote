@@ -144,6 +144,28 @@
             <p class="note" id="archiveFeedback" role="status"></p>
             <ul class="archive-list" id="archiveList"></ul>
           </section>
+          <section class="panel">
+            <header class="panel-head"><div><h2>逐票管理</h2><p>按北京时间日期查看每一票，可单条删除或按奖项整批删除。</p></div></header>
+            <div class="vote-admin-bar">
+              <label for="voteDay">日期</label>
+              <input type="date" id="voteDay" />
+              <label for="voteKey">管理密码</label>
+              <input type="password" id="voteKey" autocomplete="off" placeholder="用于校验" />
+              <button class="btn" type="button" id="voteLoad">查询</button>
+            </div>
+            <div class="vote-admin-bar">
+              <label for="voteCategory">整批删除</label>
+              <select id="voteCategory"><option value="">当天全部</option></select>
+              <button class="btn danger" type="button" id="voteClear" disabled>删除所选</button>
+            </div>
+            <p class="note" id="voteStatus" role="status"></p>
+            <div class="vote-table-wrap">
+              <table class="vote-table">
+                <thead><tr><th>时间</th><th>奖项</th><th>候选</th><th>设备</th><th>标识</th><th></th></tr></thead>
+                <tbody id="voteRows"><tr><td colspan="6">输入日期与密码后查询。</td></tr></tbody>
+              </table>
+            </div>
+          </section>
           <details class="panel maintenance"><summary>数据维护</summary>
             <p>清空后，所有云端投票记录将被永久删除。</p>
             <button class="btn danger" type="button" id="resetBtn" disabled>清空云端投票</button>

@@ -336,47 +336,11 @@ async function handleApi(req, res, url) {
     return sendJson(res, open ? 200 : 403, { availableAt: RESULTS_AVAILABLE_AT, results: open ? publication : null });
   }
 
-  // 公共：投票
+  // 公共：投票（已迁移至云数据库，旧接口停用）
   if (req.method === 'POST' && pathname === '/api/vote') {
-    const voterId = ensureVoter(req, res);
-    let body;
-    try {
-      body = await readBody(req);
-    } catch (err) {
-      return sendJson(res, 400, { error: '请求格式错误' });
-    }
-    if (publication) return sendJson(res, 403, { code: 'VOTING_CLOSED', error: '本次投票已结束。' });
-    const { categoryId, nomineeId } = body ?? {};
-    const category = categories.find((c) => c.id === categoryId);
-    if (!category || !validCategory.get(categoryId).has(nomineeId)) {
-      return sendJson(res, 400, { error: '无效的奖项或提名' });
-    }
-    const ts = Date.now();
-    const voteClock = { serverNow: ts, voteDayEndsAt: nextDayAt(ts) };
-    const votes = state.votes[categoryId] ??= {};
-    const history = ballotHistory(votes[voterId]);
-    const existing = ballotForDay(history, dayKey(ts));
-    if (existing) {
-      return sendJson(res, 409, {
-        error: '你今天已经在该奖项投过票了',
-        votedFor: existing.nomineeId,
-        categoryTotal: categoryTotal(categoryId),
-        ...voteClock
-      });
-    }
-    const device = deviceFromHeaders(req.headers);
-    state.analytics.startedAt ??= ts;
-    votes[voterId] = [...history, { nomineeId, ts, device }];
-    state.log.push({ categoryId, nomineeId, ts, device });
-    if (state.log.length > 2000) state.log = state.log.slice(-2000);
-    saveState();
-    return sendJson(res, 200, {
-      ok: true,
-      votedFor: nomineeId,
-      categoryTotal: categoryTotal(categoryId),
-      totalVotes: totalVotes(),
-      voters: uniqueVoters(),
-      ...voteClock
+    return sendJson(res, 410, {
+      code: 'VOTING_MOVED',
+      error: '投票已迁移到云端，请刷新页面后重新投票。'
     });
   }
 
