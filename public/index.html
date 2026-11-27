@@ -25,10 +25,15 @@
         </div>
         <div class="site-nav-tools">
           <a class="tga-link" href="https://thegameawards.com/nominees" target="_blank" rel="noopener noreferrer" aria-label="前往 TGA 官网">
+            <svg class="tga-icon" aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M7 3h10v5a5 5 0 0 1-10 0zM7 5H3v2a4 4 0 0 0 5 4m9-6h4v2a4 4 0 0 1-5 4M12 13v5m-4 3 1-3h6l1 3z"/>
+            </svg>
             <span class="tga-label">TGA 官网</span>
-            <img class="ui-icon" src="/icons/external-link.svg" alt="" width="14" height="14" />
           </a>
-          <a class="site-admin-link" href="/admin">后台</a>
+          <button class="site-share" id="sharePage" type="button" aria-haspopup="dialog" aria-controls="shareDialog">
+            <img class="ui-icon" src="/icons/external-link.svg" alt="" width="16" height="16" />
+            分享
+          </button>
         </div>
       </nav>
     </div>
@@ -135,8 +140,27 @@
         <p class="footer-event">2026 年度游戏票选</p>
       </div>
       <p class="footer-invite">想一起聊游戏、做游戏？欢迎加入<button class="footer-recruit" type="button" aria-haspopup="dialog" aria-controls="recruitDialog">溯游工作室</button>。</p>
+      <a class="footer-admin" href="/admin">后台</a>
     </div>
   </footer>
+
+  <dialog class="share-dialog" id="shareDialog" aria-labelledby="shareTitle">
+    <header class="share-head">
+      <h2 id="shareTitle">分享投票卡</h2>
+      <form method="dialog"><button type="submit" aria-label="关闭" autofocus><img class="ui-icon" src="/icons/x.svg" width="19" height="19" alt="" /></button></form>
+    </header>
+    <div class="share-preview" role="region" aria-label="投票卡预览" tabindex="0">
+      <img id="sharePoster" alt="" hidden />
+      <p id="shareProgress" role="status">正在生成投票卡…</p>
+    </div>
+    <div class="share-tools">
+      <button type="button" id="shareCopy">复制链接</button>
+      <a id="shareSave" download="我的投票.png" hidden>保存卡片</a>
+      <button type="button" id="shareFile" hidden>分享卡片</button>
+      <input id="shareUrl" aria-label="票选网址，可手动复制" type="url" readonly hidden />
+      <p id="shareStatus" role="status" class="share-status"></p>
+    </div>
+  </dialog>
 
   <dialog class="recruit-dialog" id="recruitDialog" aria-labelledby="recruitTitle">
     <div class="recruit-artwork" aria-hidden="true">
@@ -225,9 +249,9 @@
     </div>
   </dialog>
 
-  <div class="toast" id="toast"></div>
+  <div class="toast" id="toast" role="status"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/@tencent-ai/workbuddy-cloud-sdk@dev/lib/index.global.js"></script>
-  <script src="/app.js"></script>
+  <script type="module" src="/app.js"></script>
 </body>
 </html>
