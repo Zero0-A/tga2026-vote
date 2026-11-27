@@ -19,6 +19,9 @@ const { createArchive, readArchive, listArchives, archiveCsv, readPublication, p
 const PORT = Number(process.env.PORT) || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'sy42065#@#@！！';
+
+/* 全角/半角标点视为等价：NFKC 会把 ！＃＠ 等折成半角，避免输入法差异导致登录失败 */
+const normalizePassword = (value) => String(value).normalize('NFKC');
 const PUBLIC_DIR = path.join(__dirname, 'public');
 const COVER_DIR = path.join(PUBLIC_DIR, 'covers');
 const STORAGE_DIR = path.join(__dirname, 'storage');
@@ -385,9 +388,9 @@ async function handleApi(req, res, url) {
     } catch (err) {
       return sendJson(res, 400, { error: '请求格式错误' });
     }
-    const input = String(body.password || '');
+    const input = normalizePassword(body.password || '');
     const a = Buffer.from(input);
-    const b = Buffer.from(ADMIN_PASSWORD);
+    const b = Buffer.from(normalizePassword(ADMIN_PASSWORD));
     const ok = a.length === b.length && crypto.timingSafeEqual(a, b);
     if (!ok) return sendJson(res, 401, { error: '密码错误' });
     const token = crypto.randomBytes(24).toString('hex');
