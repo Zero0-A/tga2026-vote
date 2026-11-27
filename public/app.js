@@ -1,4 +1,4 @@
-import { renderShareCard } from './share-card.js';
+import { copyShareCard, renderShareCard } from './share-card.js';
 
 (() => {
   const $ = (sel) => document.querySelector(sel);
@@ -204,7 +204,7 @@ import { renderShareCard } from './share-card.js';
     }
     ui.pendingCardRefresh = false;
     stopCoverRotation();
-    if ($('#shareDialog').open) updateShareCard();
+    if ($('#shareDialog').open) renderShareCard(getShareBallot(), !desktopShare);
     const { categories, myVotes, event } = ui.data;
     $('#todayVoteCount').textContent = categories.filter(c => myVotes[c.id]).length + ' / ' + categories.length;
     unvotedOnly.disabled = false;
@@ -825,7 +825,7 @@ import { renderShareCard } from './share-card.js';
     tabs[next].focus();
   });
 
-  function updateShareCard() {
+  function getShareBallot() {
     const data = ui.data;
     const choices = [];
     for (const category of data?.categories || []) {
@@ -836,18 +836,41 @@ import { renderShareCard } from './share-card.js';
         cover: nominee.cover ? '/covers/previews/' + nominee.id + '.jpg' : ''
       });
     }
-    renderShareCard({
+    return {
       choices,
       total: data?.categories.length,
       synced: Boolean(data?.cloudReady),
       closed: Boolean(data?.event.votingClosed),
       dayEnd: data?.voteDayEndsAt || voteClockNow().voteDayEndsAt
-    });
+    };
   }
 
-  $('#sharePage').addEventListener('click', () => {
+  const shareButton = $('#sharePage');
+  const kind = deviceKind();
+  const touchMac = /Macintosh/i.test(navigator.userAgent) && navigator.maxTouchPoints > 1;
+  const desktopShare = !touchMac && (kind === 'desktop' || (kind === 'unknown' && matchMedia('(pointer: fine)').matches));
+  if (desktopShare) {
+    shareButton.removeAttribute('aria-haspopup');
+    shareButton.removeAttribute('aria-controls');
+    shareButton.title = '复制分享卡片';
+  }
+
+  shareButton.addEventListener('click', async () => {
+    if (desktopShare) {
+      if (shareButton.hasAttribute('aria-busy')) return;
+      shareButton.setAttribute('aria-busy', 'true');
+      try {
+        await copyShareCard(initialStateReady.then(getShareBallot));
+        showToast('已复制分享卡片');
+        return;
+      } catch {
+        $('#shareStatus').textContent = '未能自动复制，可右键复制图片或保存卡片。';
+      } finally {
+        shareButton.removeAttribute('aria-busy');
+      }
+    }
     $('#shareDialog').showModal();
-    updateShareCard();
+    renderShareCard(getShareBallot(), !desktopShare);
   });
 
   function openRecruitDialog() {
@@ -1126,5 +1149,5 @@ import { renderShareCard } from './share-card.js';
     }
   }
 
-  init();
+  const initialStateReady = init();
 })();

@@ -171,7 +171,16 @@ function resetImage() {
   poster.hidden = save.hidden = share.hidden = true;
 }
 
-export async function renderShareCard(ballot) {
+export function copyShareCard(ballotReady) {
+  if (!navigator.clipboard?.write || typeof ClipboardItem === 'undefined') {
+    throw new Error('Image clipboard unavailable');
+  }
+  // Start the write during the click. The PNG can finish rendering afterwards.
+  const item = new ClipboardItem({ 'image/png': ballotReady.then(drawTicket) });
+  return navigator.clipboard.write([item]);
+}
+
+export async function renderShareCard(ballot, allowNativeShare) {
   const current = ++revision;
   resetImage();
   progress.hidden = false;
@@ -185,7 +194,7 @@ export async function renderShareCard(ballot) {
       : '投票记录暂未同步';
     poster.alt = ['我的投票', ...ballot.choices.map(c => c.award + '：' + c.name), summary, '扫码打开票选网站'].join('。');
     poster.src = save.href = imageUrl;
-    if (typeof File === 'function' && navigator.share && navigator.canShare) {
+    if (allowNativeShare && typeof File === 'function' && navigator.share && navigator.canShare) {
       imageFile = new File([blob], '我的投票.png', { type: 'image/png' });
     }
     const canShare = imageFile && navigator.canShare({ files: [imageFile] });
