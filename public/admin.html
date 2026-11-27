@@ -310,6 +310,7 @@
   </main>
 
 
+  <script src="https://cdn.jsdelivr.net/npm/@tencent-ai/workbuddy-cloud-sdk@dev/lib/index.global.js"></script>
   <script>
     (() => {
       const $ = (s) => document.querySelector(s);
@@ -319,6 +320,48 @@
       const catList = $('#catList');
       const awardPicker = $('#reportAward');
       const datePicker = $('#reportDate');
+
+      const cloud = (() => {
+        try {
+          return window.WorkBuddyCloud?.createWorkBuddyCloud
+            ? window.WorkBuddyCloud.createWorkBuddyCloud({
+                endpoint: 'https://tga2026-vote.app.workbuddy.host',
+                oauthRelayBaseUrl: 'https://www.workbuddy.cn/v2/as/genie-baas/oauth',
+                publishableKey: 'wbpk_RAfiDZV87lfCVLYCIsVx2i_koKqsmoDnjqi8P9mcDNluoNgES5IO3Yc'
+              })
+            : null;
+        } catch {
+          return null;
+        }
+      })();
+
+      /* 票数真实来源是云数据库，服务端本地存档不再记录投票 */
+      async function overlayCloudStats(d) {
+        if (!cloud || !d) return d;
+        try {
+          const { data, error } = await cloud.database.rpc('vote_summary');
+          if (error) return d;
+          const summary = Array.isArray(data) ? data[0] || {} : data || {};
+          const tallies = summary.tallies || {};
+          d.totalVotes = Number(summary.totalVotes || 0);
+          d.voters = Number(summary.voters || 0);
+          for (const category of d.categories) {
+            const tally = tallies[category.id] || {};
+            category.total = Object.values(tally).reduce((sum, n) => sum + Number(n || 0), 0);
+            for (const nominee of category.nominees) nominee.votes = Number(tally[nominee.id] || 0);
+            category.nominees.sort((a, b) => b.votes - a.votes);
+            const base = category.total || 1;
+            for (const nominee of category.nominees) {
+              nominee.pct = Math.round((nominee.votes / base) * 1000) / 10;
+            }
+          }
+          d.cloudBacked = true;
+        } catch {
+          d.cloudBacked = false;
+        }
+        return d;
+      }
+
       let statsData = null;
       let awardActivity = null;
       let awardRequest = 0;
@@ -372,7 +415,7 @@
           return;
         }
         const firstLoad = !statsData;
-        statsData = data;
+        statsData = await overlayCloudStats(data);
         render();
         if (dashView.classList.contains('hidden')) showDash();
         if (firstLoad) {
@@ -681,6 +724,10 @@
       $('#archiveList').addEventListener('click', async (event) => {
         const button = event.target.closest('[data-publish-archive]');
         if (!button || !confirm('公布这份归档后，公众可查看最终结果，投票将结束。确定公布吗？')) return;
+        if (statsData?.cloudBacked && statsData.totalVotes > 0) {
+          $('#archiveStatus').textContent = '投票数据已保存在云端，本地归档不包含这些票数；结果公布流程需先完成云端迁移，暂时停用。';
+          return;
+        }
         button.disabled = true;
         const { ok, data } = await api('/api/admin/publish-results', {
           method: 'POST',

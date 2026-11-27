@@ -43,6 +43,87 @@
   const fmt = (n) => Number(n || 0).toLocaleString('zh-CN');
   const dailyVoteRule = '每个奖项每日仅限一票';
 
+  /* ---------------- 云服务（WorkBuddy Cloud Service） ---------------- */
+  const CLOUD_CONFIG = {
+    endpoint: 'https://tga2026-vote.app.workbuddy.host',
+    oauthRelayBaseUrl: 'https://www.workbuddy.cn/v2/as/genie-baas/oauth',
+    publishableKey: 'wbpk_RAfiDZV87lfCVLYCIsVx2i_koKqsmoDnjqi8P9mcDNluoNgES5IO3Yc'
+  };
+
+  const cloud = (() => {
+    try {
+      return window.WorkBuddyCloud?.createWorkBuddyCloud
+        ? window.WorkBuddyCloud.createWorkBuddyCloud(CLOUD_CONFIG)
+        : null;
+    } catch {
+      return null;
+    }
+  })();
+
+  const VOTER_KEY = 'tga-voter-id';
+  function voterId() {
+    try {
+      let id = localStorage.getItem(VOTER_KEY);
+      if (!id) {
+        id = crypto.randomUUID
+          ? crypto.randomUUID()
+          : 'v-' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+        localStorage.setItem(VOTER_KEY, id);
+      }
+      return id;
+    } catch {
+      return 'v-' + Date.now().toString(36);
+    }
+  }
+
+  /* 投票日按北京时间零点切分 */
+  function voteClockNow() {
+    const now = Date.now();
+    const beijing = new Date(now + 8 * 3600e3);
+    const dayEnd = Date.UTC(
+      beijing.getUTCFullYear(), beijing.getUTCMonth(), beijing.getUTCDate() + 1
+    ) - 8 * 3600e3;
+    return { serverNow: now, voteDayEndsAt: dayEnd };
+  }
+
+  function summaryOf(payload) {
+    if (Array.isArray(payload)) return payload[0] || {};
+    return payload || {};
+  }
+
+  function applySummaryTo(data, payload) {
+    const summary = summaryOf(payload);
+    if (!data) return summary;
+    data.event.totalVotes = Number(summary.totalVotes || 0);
+    data.event.voters = Number(summary.voters || 0);
+    const categories = summary.categories || {};
+    for (const category of data.categories) {
+      category.total = Number(categories[category.id] || 0);
+    }
+    return summary;
+  }
+
+  function categoryTotalOf(summary, categoryId) {
+    return Number((summary.categories || {})[categoryId] || 0);
+  }
+
+  async function fetchCloudSummary() {
+    if (!cloud) throw new Error('cloud-unavailable');
+    const { data, error } = await cloud.database.rpc('vote_summary');
+    if (error) throw error;
+    return summaryOf(data);
+  }
+
+  async function fetchMyVotes() {
+    if (!cloud) throw new Error('cloud-unavailable');
+    const { data, error } = await cloud.database.rpc('my_votes', { p_voter: voterId() });
+    if (error) throw error;
+    const mine = {};
+    for (const row of data || []) mine[row.category_id] = row.nominee_id;
+    return mine;
+  }
+
+
   /* ---------------- 封面图 ---------------- */
   function coverCell(n, extraClass = '') {
     const directory = extraClass === 'ballot-poster' ? '/covers/' : '/covers/previews/';
@@ -564,6 +645,50 @@
   });
 
   /* ---------------- 投票 ---------------- */
+  /* SDK 会把 PostgreSQL 错误码前缀成 DATABASE_xxx */
+  function hasPgCode(error, code) {
+    const raw = String(error && error.code || '');
+    return raw === code || raw.endsWith('_' + code);
+  }
+
+  async function submitVote(categoryId, nomineeId) {
+    const clock = voteClockNow();
+    if (!cloud) return { ok: false, error: '云端服务暂不可用，请刷新页面后重试。' };
+    if (ui.data.event.votingClosed) return { closed: true, ...clock };
+
+    const { error } = await cloud.database
+      .from('votes')
+      .insert({ category_id: categoryId, nominee_id: nomineeId, voter_id: voterId() });
+
+    if (!error) {
+      const summary = await fetchCloudSummary();
+      applySummaryTo(ui.data, summary);
+      return {
+        ok: true,
+        votedFor: nomineeId,
+        categoryTotal: categoryTotalOf(summary, categoryId),
+        totalVotes: ui.data.event.totalVotes,
+        voters: ui.data.event.voters,
+        ...clock
+      };
+    }
+
+    if (hasPgCode(error, '23505')) {
+      const [summary, mine] = await Promise.all([fetchCloudSummary(), fetchMyVotes()]);
+      applySummaryTo(ui.data, summary);
+      return {
+        conflict: true,
+        votedFor: mine[categoryId] || null,
+        categoryTotal: categoryTotalOf(summary, categoryId),
+        ...clock
+      };
+    }
+
+    if (hasPgCode(error, '42501')) return { ok: false, error: '没有权限提交投票，请稍后再试。' };
+    if (hasPgCode(error, '42P01')) return { ok: false, error: '投票服务尚未就绪，请联系主办方。' };
+    return { ok: false, error: error.message || '投票失败，请重试。' };
+  }
+
   async function vote(categoryId, nomineeId, btn) {
     if (ui.busy) return;
     ui.busy = true;
@@ -575,38 +700,33 @@
       btn.textContent = '提交中…';
     }
     try {
-      const res = await fetch('/api/vote', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ categoryId, nomineeId })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        updateVoteClock(data);
+      const result = await submitVote(categoryId, nomineeId);
+      if (result.ok) {
+        updateVoteClock(result);
         const cat = findCategory(categoryId);
-        if (cat) cat.total = data.categoryTotal;
-        ui.data.myVotes[categoryId] = data.votedFor;
-        ui.data.event.totalVotes = data.totalVotes;
-        ui.data.event.voters = data.voters;
+        if (cat) cat.total = result.categoryTotal;
+        ui.data.myVotes[categoryId] = result.votedFor;
+        ui.data.event.totalVotes = result.totalVotes;
+        ui.data.event.voters = result.voters;
         renderStats();
         renderCards();
         if (!modal.open) showToast('投票成功，感谢参与！');
-      } else if (data.code === 'VOTING_CLOSED') {
+      } else if (result.closed) {
         ui.data.event.votingClosed = true;
         renderStats();
         renderCards();
-      } else if (res.status === 409) {
-        updateVoteClock(data);
-        ui.data.myVotes[categoryId] = data.votedFor;
+      } else if (result.conflict) {
+        updateVoteClock(result);
+        if (result.votedFor) ui.data.myVotes[categoryId] = result.votedFor;
         const cat = findCategory(categoryId);
-        if (cat) cat.total = data.categoryTotal;
+        if (cat) cat.total = result.categoryTotal;
         renderCards();
         if (!modal.open) showToast('你今天已经在该奖项投过票了');
       } else {
-        error = data.error || '投票失败，请重试。';
+        error = result.error || '投票失败，请重试。';
       }
     } catch (err) {
-      error = '网络异常，请重试。';
+      error = err && String(err.code || '').endsWith('42501') ? '没有权限提交投票，请稍后再试。' : '网络异常，请重试。';
     } finally {
       ui.busy = false;
       if (ui.openCategory) {
@@ -880,7 +1000,17 @@
     const url = source ? '/api/state?utm_source=' + encodeURIComponent(source) : '/api/state';
     const res = await fetch(url, recordVisit ? { headers: { 'X-Suyou-View': '1' } } : {});
     if (!res.ok) throw new Error('bad status');
-    return res.json();
+    const data = await res.json();
+    try {
+      const [summary, mine] = await Promise.all([fetchCloudSummary(), fetchMyVotes()]);
+      applySummaryTo(data, summary);
+      data.myVotes = mine;
+      Object.assign(data, voteClockNow());
+      data.cloudReady = true;
+    } catch {
+      data.cloudReady = false;
+    }
+    return data;
   }
 
   function scheduleVoteDay(clock) {
