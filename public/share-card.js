@@ -8,7 +8,6 @@ const share = document.querySelector('#shareFile');
 const status = document.querySelector('#shareStatus');
 const urlField = document.querySelector('#shareUrl');
 const sans = '"PingFang SC", "Microsoft YaHei", system-ui, sans-serif';
-const display = '"Barlow Condensed", ' + sans;
 let revision = 0;
 let imageUrl;
 let imageFile;
@@ -24,12 +23,14 @@ async function loadImage(src) {
 function wrapName(ctx, text, width) {
   const lines = [];
   let line = '';
-  for (const char of text) {
-    if (line && ctx.measureText(line + char).width > width) {
+  const tokens = text.match(/[\p{Script=Latin}\d]+|./gu) || [];
+  const parts = tokens.flatMap(token => ctx.measureText(token).width > width ? [...token] : [token]);
+  for (const part of parts) {
+    if (line && ctx.measureText(line + part).width > width) {
       lines.push(line.trimEnd());
       line = '';
     }
-    line += char;
+    line += line ? part : part.trimStart();
   }
   lines.push(line.trimEnd());
   return lines;
@@ -63,8 +64,8 @@ function drawTicketPaper(ctx, mark, width, top, height) {
     }
   }
   if (mark) {
-    ctx.globalAlpha = 0.46;
-    ctx.drawImage(mark, 94, -14, 168, 168);
+    ctx.globalAlpha = 0.28;
+    ctx.drawImage(mark, 202, -16, 150, 150);
   }
   ctx.restore();
 }
@@ -74,21 +75,22 @@ async function drawTicket({ choices, total, synced, closed, dayEnd }) {
     loadImage('/brand/vote-site-qr.png'),
     loadImage('/brand/suyou-awards-stage.jpg').catch(() => null),
     loadImage('/brand/suyou-fold.svg').catch(() => null),
-    Promise.all(choices.map(({ cover }) => loadImage(cover).catch(() => null))),
-    document.fonts.load('800 48px "Barlow Condensed"').catch(() => {})
+    Promise.all(choices.map(({ cover }) => loadImage(cover).catch(() => null)))
   ]);
   const canvas = document.createElement('canvas');
   const ctx = canvas.getContext('2d');
-  const nameFont = 'bold 17px ' + sans;
+  const nameFont = 'bold 22px ' + sans;
   ctx.font = nameFont;
   const rows = choices.map(({ name }, i) => {
-    const x = thumbs[i] ? 76 : 22;
+    const x = thumbs[i] ? 90 : 22;
     const lines = wrapName(ctx, name, 338 - x);
-    return { x, lines, height: 66 + (lines.length - 1) * 23 };
+    return { x, lines, height: 82 + (lines.length - 1) * 28 };
   });
   const width = 360;
-  const stubEnd = 308;
-  const height = stubEnd + rows.reduce((sum, row) => sum + row.height, 0);
+  const headerHeight = 112;
+  const listHeight = rows.reduce((sum, row) => sum + row.height, 0);
+  const footerTop = headerHeight + (rows.length ? listHeight : 64);
+  const height = footerTop + 102;
   canvas.width = width * 2;
   canvas.height = height * 2;
   ctx.scale(2, 2);
@@ -99,68 +101,62 @@ async function drawTicket({ choices, total, synced, closed, dayEnd }) {
   }
 
   ctx.fillStyle = '#190b29';
-  ctx.fillRect(0, 0, width, 158);
-  if (hero) ctx.drawImage(hero, 70, 0, 290, 163);
+  ctx.fillRect(0, 0, width, headerHeight);
+  if (hero) ctx.drawImage(hero, 152, -2, 208, 117);
   const shade = ctx.createLinearGradient(0, 0, 282, 0);
   shade.addColorStop(0, '#1b0d2c');
   shade.addColorStop(0.45, '#1b0d2cf5');
   shade.addColorStop(1, '#1b0d2c00');
   ctx.fillStyle = shade;
-  ctx.fillRect(0, 0, width, 158);
-  if (mark) ctx.drawImage(mark, 20, 19, 19, 19);
-  text('溯游工作室', mark ? 46 : 22, 34, 'bold 12px ' + sans, '#e9d9fa');
-  text('我的投票', 19, 105, '900 42px ' + sans, '#fff7ff');
-  text('2026 年度游戏票选', 22, 134, '600 15px ' + sans, '#d8bde9');
+  ctx.fillRect(0, 0, width, headerHeight);
+  if (mark) ctx.drawImage(mark, 20, 12, 17, 17);
+  text('溯游工作室', mark ? 43 : 22, 25, 'bold 12px ' + sans, '#e9d9fa');
+  text('我的投票', 20, 71, '900 34px ' + sans, '#fff7ff');
+  text('2026 年度游戏票选', 22, 95, '600 13px ' + sans, '#d8bde9');
 
-  drawTicketPaper(ctx, mark, width, 158, height - 158);
+  drawTicketPaper(ctx, mark, width, headerHeight, height - headerHeight);
+  if (!choices.length) {
+    const note = !synced ? '投票记录暂未同步' : closed ? '本次票选已结束' : '今天还没有投票';
+    text(note, 22, headerHeight + 38, '15px ' + sans, '#624d6f');
+  }
+  let top = headerHeight;
+  choices.forEach(({ award }, i) => {
+    const { x, lines, height: rowHeight } = rows[i];
+    if (i > 0) {
+      ctx.fillStyle = '#cdbbd6';
+      ctx.fillRect(22, top, 316, 1);
+    }
+    if (thumbs[i]) {
+      const img = thumbs[i];
+      const size = Math.min(img.width, img.height);
+      ctx.drawImage(img, (img.width - size) / 2, (img.height - size) / 2, size, size, 22, top + 14, 54, 54);
+    }
+    text(award, x, top + 30, '13px ' + sans, '#6d527c');
+    lines.forEach((line, j) => text(line, x, top + 58 + j * 28, nameFont, '#301b3d'));
+    top += rowHeight;
+  });
+
   ctx.strokeStyle = '#947aa4';
   ctx.setLineDash([3, 4]);
   ctx.beginPath();
-  ctx.moveTo(0, 158.5);
-  ctx.lineTo(width, 158.5);
+  ctx.moveTo(0, footerTop + 0.5);
+  ctx.lineTo(width, footerTop + 0.5);
   ctx.stroke();
-  ctx.setLineDash([]);
   ctx.save();
   ctx.globalCompositeOperation = 'destination-out';
   for (const x of [0, width]) {
     ctx.beginPath();
-    ctx.arc(x, 158, 7, 0, Math.PI * 2);
+    ctx.arc(x, footerTop, 6, 0, Math.PI * 2);
     ctx.fill();
   }
   ctx.restore();
-
   const date = new Date(dayEnd - 1).toLocaleDateString('sv-SE', { timeZone: 'Asia/Shanghai' }).replaceAll('-', '.');
-  text(date, 22, 187, '800 17px ' + display, '#715782');
-  text('今日已投', 22, 215, 'bold 14px ' + sans, '#4f395e');
-  const count = synced || choices.length ? String(choices.length).padStart(2, '0') : '—';
-  text(count, 20, 265, '800 58px ' + display, '#321840');
-  const countWidth = ctx.measureText(count).width;
-  if (total) text('/ ' + total, 29 + countWidth, 264, '800 26px ' + display, '#785f86');
-  if (!choices.length) {
-    const note = !synced ? '投票记录暂未同步' : closed ? '本次票选已结束' : '今天还没有投票';
-    text(note, 22, 288, '12px ' + sans, '#624d6f');
-  }
+  const count = synced || choices.length ? choices.length : '—';
+  const progressText = '今日已投 ' + count + (total ? ' / ' + total : '');
+  text(closed ? '扫码查看票选' : '扫码参与票选', 22, footerTop + 46, 'bold 15px ' + sans, '#4f395e');
+  text(date + '  ·  ' + progressText, 22, footerTop + 69, '12px ' + sans, '#624d6f');
   ctx.imageSmoothingEnabled = false;
-  ctx.drawImage(qr, 235, 177, 102.5, 102.5);
-  ctx.imageSmoothingEnabled = true;
-  ctx.textAlign = 'center';
-  text(closed ? '扫码查看票选' : '扫码参与票选', 286, 296, 'bold 12px ' + sans, '#4f395e');
-  ctx.textAlign = 'start';
-
-  let top = stubEnd;
-  choices.forEach(({ award }, i) => {
-    const { x, lines, height: rowHeight } = rows[i];
-    ctx.fillStyle = '#cdbbd6';
-    ctx.fillRect(22, top, 316, 1);
-    if (thumbs[i]) {
-      const img = thumbs[i];
-      const size = Math.min(img.width, img.height);
-      ctx.drawImage(img, (img.width - size) / 2, (img.height - size) / 2, size, size, 22, top + 12, 42, 42);
-    }
-    text(award, x, top + 24, '12px ' + sans, '#6d527c');
-    lines.forEach((line, j) => text(line, x, top + 47 + j * 23, nameFont, '#301b3d'));
-    top += rowHeight;
-  });
+  ctx.drawImage(qr, 256, footerTop + 10, 82, 82);
   return new Promise((resolve, reject) => canvas.toBlob(
     (blob) => blob ? resolve(blob) : reject(new Error('PNG export failed')), 'image/png'
   ));
@@ -187,7 +183,7 @@ export async function renderShareCard(ballot) {
     const summary = ballot.synced || ballot.choices.length
       ? '今日已投 ' + ballot.choices.length + ' 项'
       : '投票记录暂未同步';
-    poster.alt = ['我的投票', summary, ...ballot.choices.map(c => c.award + '：' + c.name), '扫码打开票选网站'].join('。');
+    poster.alt = ['我的投票', ...ballot.choices.map(c => c.award + '：' + c.name), summary, '扫码打开票选网站'].join('。');
     poster.src = save.href = imageUrl;
     if (typeof File === 'function' && navigator.share && navigator.canShare) {
       imageFile = new File([blob], '我的投票.png', { type: 'image/png' });
